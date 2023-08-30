@@ -1,0 +1,31 @@
+#files-list{
+    list-style-type: none;
+    
+}
+
+#files-list-box{
+    margin: 5% 0 0 0;
+    background-color: #D3D3D3;
+    overflow-y: scroll;
+    height: 100%;
+    width: 80%;
+}
+
+input[type="file"] {
+    display: none;
+}
+
+label {
+    display: block;
+    position: relative;
+    background-color: #dda15e;
+    color: #000000;
+    font-size: 1.12em;
+    font-weight: 500;
+    text-align: center;
+    width: 80%;
+    padding: 1.12em 0;
+    margin: 0;
+    border-radius: 0.31em;
+    cursor: pointer;
+}
