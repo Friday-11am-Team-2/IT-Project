@@ -7,6 +7,10 @@ nav {
     background-color: #dda15e;
 }
 
+#logo {
+    margin-right: 0.75rem;
+}
+
 .navbar-brand {
     color: #283618;
     font-size: 1.5rem;
