@@ -44,38 +44,54 @@
         </div>
     </nav>
 
-    <div class="container-xxl">
-        <div class="row justify-content-center">
+    <form class="container-xxl" >
+        <div class="row justify-content-md-left mt-4">
             <div class="col-md-4">
-                <h2 style="font-weight: bold">Upload Documents</h2>
+                <h1 style="font-weight: bold">Upload Documents</h2>
                 <p>Upload Documents to add to a profile</p>
-                <input type="file" id="upload">
+                <input type="file" id="upload" name="file-upload" multiple/>
                 <label for="upload">
                     <i class="fa-solid fa-circle-arrow-up"></i>
                     &nbsp;Upload&nbsp;Documents
                 </label>
                 
                 <!--Displaying the uploaded documents-->
-                
-                <section class="container" id="files-list-box">
+                <div id="uploaded-file-list-box">
                     <ul id="files-list"></ul>
-                </section>
+                </div>
+
+                <div id="num-of-files">No Files Choosen</div>
                 
             </div>
-            <div class="col-md-4">
-                Column
+            <div class="col-md-4" >
+                <h1 style="font-weight: bold">Select Profile</h2>
+                <p>Select a profile to add the documents to, or create a new one</p>
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type = "button" 
+                            data-bs-toggle = "dropdown" aria-expanded="false" id = "curr-profile-name"> None </button>
+                    <ul class="dropdown-menu" id = "profile-list">
+                        <li><a class="dropdown-item" href = "#">Test</a></li>
+                    </ul>
+                </div>
             </div>
+
             <div class="col-md-4">
-                Column
+                <h1 style="font-weight: bold">Current Profile</h2>
+                
+
+                <div class="row" style="background-color: #F0E2B6; width: 80%; margin : 5% 0 0 0;">
+                    <p id = "curr-profile-name">Profile&nbsp;:&nbsp;None</p>
+                </div>
+                <div class="row" id = "curr-profile-list-box">
+                    <ul id="files-list">
+                        <li> Cat.jpg</li>
+                    </ul>
+                </div>
+                <input class="btn btn-primary" type="submit" value="Submit Documents">
             </div>
         </div>
         
-    </div>
-
-
-
-
-
+    </form>
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
