@@ -35,6 +35,12 @@ section h1 {
 
 }
 
+h2 {
+    margin: 0 auto;
+    font-weight: 800;
+    font-weight: bold;
+}
+
 .lead {
     text-align: center;
     padding-top: 5%;
@@ -46,6 +52,7 @@ section h1 {
     background-color: #d88d4c;
     font-size: 1.5rem;
     transition: all 0.25s;
+    color: #faedcd;
 }
 
 .btn:hover {
@@ -53,4 +60,21 @@ section h1 {
     box-shadow: 0 0.6em 0.6em -0.4em #283618;
     background-color: #fca311;
     transform: translateY(-0.25em);
+}
+
+p {
+    font-size: 1.2em;
+    padding-top: 2.5%;
+}
+
+#verification-results {
+    border-left: 1px solid #283618;
+    padding-left: 2%;
+    height: 100vh;
+}
+
+#verify-button {
+    margin-top: 40%;
+    background-color: #d87016;
+    padding: 8% 10%;
 }

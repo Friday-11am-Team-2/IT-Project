@@ -15,8 +15,12 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
 
+    <!-- Upload Button Icon Source-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" />
+
     <!-- Custom CSS -->
     <link rel="stylesheet" href="styles/app.css">
+    <link rel="stylesheet" href="styles/uploadButton.css">
 
     <title>Verify Documents</title>
 </head>
@@ -40,13 +44,63 @@
         </div>
     </nav>
 
+    <form class="container-xxl">
+        <div class="row justify-content-md-left mt-4">
+            <div class="col-md-4">
+                <h2 class="display-5">Select Profile</h2>
+                <p>Select a profile to run the comparision tool on</p>
+                <div class="dropdown">
+                    <button class="btn btn-large dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                        aria-expanded="false" id="curr-profile-name"> None </button>
+                    <ul class="dropdown-menu" id="profile-list">
+                        <li><a class="dropdown-item" href="#">Test</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <h2 class="display-5">Upload Documents</h2>
+                <p>Upload a document for comparision to a profile</p>
+                <input type="file" id="upload" name="file-upload">
+                <label for="upload">
+                    <i class="fa-solid fa-circle-arrow-up"></i>
+                    &nbsp;Upload&nbsp;Documents
+                </label>
+
+                <!--Displaying the uploaded documents-->
+                <div id="uploaded-file-list-box">
+                    <ul id="files-list"></ul>
+                </div>
+
+                <div id="num-of-files">No File Chosen</div>
+
+                <div class="row justify-content-center">
+                    <div class="col-6">
+                        <input class="btn btn-large" type="submit" value="Run Verification" id="verify-button">
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4" id="verification-results">
+                <h2 class="display-5">Verification Results</h2>
+                <p>Run verification test to see results</p>
+            </div>
+        </div>
+
+    </form>
 
 
 
 
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
         crossorigin="anonymous"></script>
+
+    <!-- Upload Button Script -->
+    <script src="scripts/uploadButton.js"></script>
 </body>
 
 </html>
