@@ -49,3 +49,9 @@ label:hover {
     background-color: #fca311;
     transform: translateY(-0.25em);
 }
+
+.col-md-4.profile-section {
+    text-align: center; 
+    padding: 20px; 
+    background-color: #FCEEC0;
+}

@@ -1,19 +1,19 @@
-$(document).ready(function() {
-    // Attach a click event handler to each dropdown item
-    $('.dropdown-item').on('click', function(e) {
-        e.preventDefault();
+// $(document).ready(function() {
+//     // Attach a click event handler to each dropdown item
+//     $('.dropdown-item').on('click', function(e) {
+//         e.preventDefault();
         
-        // Get the selected profile's name and ID
-        var profileName = $(this).text();
-        profileId = $(this).data('profile-id');
+//         // Get the selected profile's name and ID
+//         var profileName = $(this).text();
+//         profileId = $(this).data('profile-id');
         
-        // Set the dropdown button text to the selected profile's name
-        $('#curr-profile-name').text(profileName);
+//         // Set the dropdown button text to the selected profile's name
+//         $('#curr-profile-name').text(profileName);
         
-        // You can also store the selected profile's ID in a hidden input field
-        $('#selected-profile-id').val(profileId);
-    });
-});
+//         // You can also store the selected profile's ID in a hidden input field
+//         $('#selected-profile-id').val(profileId);
+//     });
+// });
 
 $(document).ready(function() {
     // Attach a click event handler to the "Add Profile" button
@@ -30,8 +30,8 @@ $(document).ready(function() {
                 // Include any additional data you need to send to the server
             },
             success: function(data) {
-                // Create a new list item for the profile
-                var listItem = $('<li><a class="dropdown-item" href="#" data-profile-id="' + data.id + '">' + data.name + '</a></li>');
+                // Create a new list item for the profile with the same structure and classes as the existing ones
+                var listItem = $('<li><a class="profile-item" href="#" data-profile-id="' + data.id + '">' + data.name + '</a></li>');
                 
                 // Find the "New Profile" list item and insert the new item before it
                 $('#profile-list li:last').before(listItem);
@@ -39,6 +39,9 @@ $(document).ready(function() {
                 // Clear the modal form and close the modal
                 $('#newProfileName').val('');
                 $('#addProfileModal').modal('hide');
+                
+                // Reload page
+                location.reload();  
             },
             error: function() {
                 alert('Error adding profile');
