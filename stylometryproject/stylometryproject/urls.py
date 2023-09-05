@@ -16,12 +16,22 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from stylometryapp.views import home_page_view, about_page_view, profile_page_view, verify_page_view
+from stylometryapp.views import *
 
 urlpatterns = [
+    # Pages
     path('admin/', admin.site.urls),
     path('', home_page_view),
     path('about/', about_page_view),
     path('profile/', profile_page_view),
     path('verify/', verify_page_view),
+
+    # Create profile
+    path('create_profile/', create_profile, name='create_profile'),
+    
+    # URL pattern for fetching the profile name
+    path('get_profile_name/<int:profile_id>/', get_profile_name, name='get_profile_name'),
+
+    # URL pattern for fetching documents by profile
+    path('get_documents/<int:profile_id>/', get_documents, name='get_documents'),
 ] 
