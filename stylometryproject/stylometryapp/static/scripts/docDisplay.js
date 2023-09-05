@@ -1,3 +1,5 @@
+let uniqueCurrentProfileID = 0;
+
 $(document).ready(function() {
     // Attach a click event handler to the profile dropdown items
     $('.profile-item').on('click', function(event) {
@@ -5,7 +7,8 @@ $(document).ready(function() {
         
         // Get the selected profile ID
         var selectedProfileId = $(this).data('profile-id');
-        
+        uniqueCurrentProfileID = selectedProfileId;
+
         // Update the profile name and documents based on the selected profile ID
         updateProfileDisplay(selectedProfileId);
     });

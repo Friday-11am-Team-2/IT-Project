@@ -5,7 +5,7 @@ $(document).ready(function() {
         
         // Get the selected profile's name and ID
         var profileName = $(this).text();
-        var profileId = $(this).data('profile-id');
+        profileId = $(this).data('profile-id');
         
         // Set the dropdown button text to the selected profile's name
         $('#curr-profile-name').text(profileName);

@@ -22,6 +22,7 @@ urlpatterns = [
     # Pages
     path('admin/', admin.site.urls),
     path('', home_page_view),
+    path('home/', home_page_view),
     path('about/', about_page_view),
     path('profile/', profile_page_view),
     path('verify/', verify_page_view),
@@ -34,4 +35,7 @@ urlpatterns = [
 
     # URL pattern for fetching documents by profile
     path('get_documents/<int:profile_id>/', get_documents, name='get_documents'),
+
+    # Add docs to pofile
+    path('add_profile_docs/', add_profile_docs, name='add_profile_docs'),
 ] 
