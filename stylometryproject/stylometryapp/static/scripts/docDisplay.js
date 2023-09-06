@@ -24,7 +24,16 @@ function updateProfileDisplay(profileId) {
             if (data.length > 0) {
                 $('#profile-files-list').empty();
                 for (var i = 0; i < data.length; i++) {
-                    $('#profile-files-list').append('<li>' + data[i].title + '</li>');
+                    // Create a list item with the document title and a delete button
+                    var listItem = $('<li>' + data[i].title + '</li>');
+                    var deleteButton = $('<button>X</button>');
+                    deleteButton.data('documentId', data[i].id); // Store document ID as data
+                    deleteButton.addClass('delete-document-button');
+                    deleteButton.attr('style', 'background-color: #ff0000; color: #ffffff; width: 20px; height: 20px; line-height: 10px; text-align: center; font-size: 15px; padding: 0;  border: 2px solid #ff0000; float: right');
+
+
+                    listItem.append(deleteButton);
+                    $('#profile-files-list').append(listItem);
                 }
             } else {
                 // Display 'No Documents' if there are no documents
@@ -55,3 +64,23 @@ $(document).ready(function() {
     $('#profile-files-list').empty().append('<li>No Documents</li>');
 });
 
+
+// Add a click event listener for delete buttons
+$('#profile-files-list').on('click', '.delete-document-button', function(event) {
+    event.preventDefault();
+    var documentId = $(this).data('documentId');
+    var listItem = $(this).closest('li'); // Get the parent list item
+
+    // Send an AJAX request to delete the document by its ID
+    $.ajax({
+        url: '/delete_document/' + documentId + '/', // Replace with your Django endpoint
+        method: 'DELETE',
+        success: function() {
+            // Document deleted successfully, you can update the UI as needed
+            listItem.remove();
+        },
+        error: function() {
+            alert('Error deleting document');
+        }
+    });
+});

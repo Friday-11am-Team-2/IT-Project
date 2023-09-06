@@ -44,4 +44,7 @@ urlpatterns = [
 
     # Edit Profile
     path('edit_profile/<int:profile_id>/', edit_profile, name='edit_profile'),
+
+    # Delete Document
+    path('delete_document/<int:document_id>/', delete_document, name='delete_document'),
 ] 

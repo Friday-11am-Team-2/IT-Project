@@ -55,7 +55,7 @@ def get_documents(request, profile_id):
     try:
         profile = Profile.objects.get(pk=profile_id)
         documents = Document.objects.filter(profile=profile)
-        documents_data = [{'title': doc.title} for doc in documents]
+        documents_data = [{'id': document.id, 'title': document.title} for document in documents]
         return JsonResponse(documents_data, safe=False)
     except Profile.DoesNotExist:
         return JsonResponse([], safe=False)
@@ -114,3 +114,15 @@ def edit_profile(request, profile_id):
             return JsonResponse({"error": "Profile not found"}, status=404)
     else:
         return JsonResponse({"error": "Invalid request"}, status=400)
+    
+@csrf_exempt
+def delete_document(request, document_id):
+    try:
+        # Assuming you have a Document model with an 'id' field
+        document = Document.objects.get(id=document_id)
+        document.delete()
+        return JsonResponse({'message': 'Document deleted successfully'})
+    except Document.DoesNotExist:
+        return JsonResponse({'error': 'Document not found'}, status=404)
+    except Exception as e:
+        return JsonResponse({'error': 'An error occurred while deleting the document'}, status=500)
