@@ -47,4 +47,7 @@ urlpatterns = [
 
     # Delete Document
     path('delete_document/<int:document_id>/', delete_document, name='delete_document'),
+
+    # Run Verify
+    path('run_verify/', run_verification, name='run_verify'),
 ] 

@@ -1,4 +1,5 @@
 let uniqueCurrentProfileID = 0;
+let uniqueCurrentProfileName = "";
 
 // Function to update the profile name and documents
 function updateProfileDisplay(profileId) {
@@ -10,6 +11,7 @@ function updateProfileDisplay(profileId) {
         success: function(data) {
             $('#curr-profile-name').text(' ' + data.name + ' ');
             $('#display-curr-profile-name').text(' ' + data.name + ' ');
+            uniqueCurrentProfileName = data.name;
         },
         error: function() {
             alert('Error fetching profile name');
