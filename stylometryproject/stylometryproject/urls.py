@@ -38,4 +38,10 @@ urlpatterns = [
 
     # Add docs to pofile
     path('add_profile_docs/', add_profile_docs, name='add_profile_docs'),
+
+    # Delete Profile
+    path('delete_profile/', delete_profile, name='delete_profile'),
+
+    # Edit Profile
+    path('edit_profile/<int:profile_id>/', edit_profile, name='edit_profile'),
 ] 

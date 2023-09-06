@@ -56,7 +56,8 @@
 
     <form class="container-xxl">
         <div class="row justify-content-md-left mt-4">
-
+            
+            
             <!-- Add File -->
             <div class="col-md-4">
                 <h2 class="display-5">Upload Documents</h2>
@@ -74,7 +75,7 @@
 
                 <div id="num-of-files">No Files Chosen</div>
             </div>
-
+            
             <!-- Select Profile -->
             <div class="col-md-4">
                 <h2 class="display-5">Select Profile</h2>
@@ -83,12 +84,23 @@
                     <button class="btn btn-large dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="curr-profile-name"> None </button>
                     <ul class="dropdown-menu" id="profile-list">
                         {% for profile in profiles %}
-                            <li><a class="profile-item" href="#" data-profile-id="{{ profile.id }}">{{ profile.name }}</a></li>
+                            <li>
+                                <a class="profile-item" href="#" data-profile-id="{{ profile.id }}">
+                                    <div class="d-flex justify-content-between">
+                                        <span>{{ profile.name }}</span>
+                                        <div>
+                                            <button class="delete-profile btn btn-danger btn-sm ml-auto" data-profile-id="{{ profile.id }}" style="background-color: #ff0000; color: #ffffff; width: 30px; height: 30px; line-height: 20px; text-align: center; font-size: 25px; padding: 0;">X</button>
+                                            <button class="edit-profile btn btn-danger btn-sm ml-auto" data-profile-id="{{ profile.id }}" style="background-color: #008a29; color: #ffffff; width: 30px; height: 30px; line-height: 20px; text-align: center; font-size: 20px; padding: 0;">✏️</button>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
                         {% endfor %}
                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addProfileModal"><i class="fas fa-plus"></i> New Profile</a></li>
-                    </ul>                    
+                    </ul>
                 </div>
             </div>
+
             
             <!-- Submit Profile -->
             <div class="col-md-4">
@@ -119,6 +131,7 @@
     <script src="{% static 'scripts/uploadButton.js'%}"></script>
     <script src="{% static 'scripts/dropdown.js'%}"></script>
     <script src="{% static 'scripts/docDisplay.js'%}"></script>
+    <script src="{% static 'scripts/profileManage.js'%}"></script>
 
     <!-- Modal for adding a new profile -->
     <div class="modal fade" id="addProfileModal" tabindex="-1" aria-labelledby="addProfileModalLabel" aria-hidden="true">
@@ -140,6 +153,33 @@
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="button" class="btn btn-primary" id="addProfileBtn">Add Profile</button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editProfileModalLabel">Edit Profile Name</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="editProfileForm" method="POST">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="profileName">New Profile Name</label>
+                            <input type="text" class="form-control" id="profileName" name="profile_name" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

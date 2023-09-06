@@ -87,3 +87,30 @@ def add_profile_docs(request):
         except Exception as e:
             # Handle exceptions and return an error response
             return JsonResponse({"error": str(e)}, status=400)
+        
+@csrf_exempt 
+def delete_profile(request):
+    if request.method == "POST" and request.META.get("HTTP_X_REQUESTED_WITH") == "XMLHttpRequest":
+        profile_id = request.POST.get("profile_id")
+        try:
+            profile = Profile.objects.get(id=profile_id)
+            profile.delete()
+            return JsonResponse({"message": "Profile deleted successfully"})
+        except Profile.DoesNotExist:
+            return JsonResponse({"error": "Profile not found"}, status=404)
+    else:
+        return JsonResponse({"error": "Invalid request"}, status=400)
+    
+@csrf_exempt 
+def edit_profile(request, profile_id):
+    if request.method == "POST" and request.META.get("HTTP_X_REQUESTED_WITH") == "XMLHttpRequest":
+        new_name = request.POST.get("profile_name")
+        try:
+            profile = Profile.objects.get(id=profile_id)
+            profile.name = new_name
+            profile.save()
+            return JsonResponse({"message": "Profile updated successfully"})
+        except Profile.DoesNotExist:
+            return JsonResponse({"error": "Profile not found"}, status=404)
+    else:
+        return JsonResponse({"error": "Invalid request"}, status=400)

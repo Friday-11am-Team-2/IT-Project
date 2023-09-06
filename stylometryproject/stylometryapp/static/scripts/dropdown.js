@@ -1,20 +1,3 @@
-// $(document).ready(function() {
-//     // Attach a click event handler to each dropdown item
-//     $('.dropdown-item').on('click', function(e) {
-//         e.preventDefault();
-        
-//         // Get the selected profile's name and ID
-//         var profileName = $(this).text();
-//         profileId = $(this).data('profile-id');
-        
-//         // Set the dropdown button text to the selected profile's name
-//         $('#curr-profile-name').text(profileName);
-        
-//         // You can also store the selected profile's ID in a hidden input field
-//         $('#selected-profile-id').val(profileId);
-//     });
-// });
-
 $(document).ready(function() {
     // Attach a click event handler to the "Add Profile" button
     $('#addProfileBtn').on('click', function() {
