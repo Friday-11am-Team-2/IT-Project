@@ -10,7 +10,7 @@ $(document).ready(function() {
             method: 'POST',
             data: {
                 'name': newProfileName,
-                // Include any additional data you need to send to the server
+                // TO DO? - any new profiles fields in the future go here
             },
             success: function(data) {
                 // Create a new list item for the profile with the same structure and classes as the existing ones

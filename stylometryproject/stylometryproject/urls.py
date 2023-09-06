@@ -19,6 +19,7 @@ from django.urls import path
 from stylometryapp.views import *
 
 urlpatterns = [
+
     # Pages
     path('admin/', admin.site.urls),
     path('', home_page_view),
@@ -48,6 +49,7 @@ urlpatterns = [
     # Delete Document
     path('delete_document/<int:document_id>/', delete_document, name='delete_document'),
 
-    # Run Verify
+    # Run Verification
     path('run_verify/', run_verification, name='run_verify'),
+    
 ] 

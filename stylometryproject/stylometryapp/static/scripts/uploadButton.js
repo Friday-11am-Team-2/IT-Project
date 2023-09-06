@@ -7,6 +7,7 @@ let numOfFiles = document.getElementById("num-of-files");
 const fileNamesArray = [];
 const fileContentArray = [];
 
+// Javascript for upload button (BOTH ON PROFILE AND VERIFY)
 fileInput.addEventListener("change", () => {
     // Clear previous selections
     fileList.innerHTML = "";
@@ -16,6 +17,7 @@ fileInput.addEventListener("change", () => {
     fileNamesArray.length = [];
     fileContentArray.length = [];
 
+    // For each file selected, create a list item and add it to the list
     for (const file of fileInput.files) {
         let reader = new FileReader();
         let listItem = document.createElement("li");
@@ -47,6 +49,8 @@ fileInput.addEventListener("change", () => {
     }
 });
 
+
+// Javascript for submit button (ONLY ON PROFILE)
 const submitButton = document.getElementById("submit-button");
 if (submitButton) {
     submitButton.addEventListener("click", () => {
@@ -82,6 +86,8 @@ if (submitButton) {
     });
 }
 
+
+// Javascript for verification button (ONLY ON VERIFY)
 document.addEventListener("DOMContentLoaded", () => {
     console.log("loading")
     const runVerificationButton = document.getElementById("verify-button");

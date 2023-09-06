@@ -14,13 +14,13 @@ $(document).ready(function () {
             // Send an AJAX request to delete the profile
             $.ajax({
                 type: "POST",
-                url: "/delete_profile/",  // Create a Django view for this URL
+                url: "/delete_profile/", 
                 data: {
                     profile_id: profileId,
-                    csrfmiddlewaretoken: '{{ csrf_token }}'  // Include the CSRF token
+                    csrfmiddlewaretoken: '{{ csrf_token }}'  
                 },
                 success: function () {
-                    // Refresh the page or update the UI as needed
+                    // Refresh the page
                     location.reload();
                 }
             });

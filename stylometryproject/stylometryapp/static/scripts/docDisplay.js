@@ -1,3 +1,4 @@
+// Globally store the current profile ID and name (used in uploadButton.js)
 let uniqueCurrentProfileID = 0;
 let uniqueCurrentProfileName = "";
 
@@ -24,23 +25,28 @@ function updateProfileDisplay(profileId) {
         method: 'GET',
         success: function(data) {
             if (data.length > 0) {
+                // Iterate through the documents
                 $('#profile-files-list').empty();
                 for (var i = 0; i < data.length; i++) {
                     // Create a list item with the document title and a delete button
                     var listItem = $('<li>' + data[i].title + '</li>');
+
+                    // Add delete button to list (for the document)
                     var deleteButton = $('<button>X</button>');
-                    deleteButton.data('documentId', data[i].id); // Store document ID as data
+                    deleteButton.data('documentId', data[i].id); 
                     deleteButton.addClass('delete-document-button');
                     deleteButton.attr('style', 'background-color: #ff0000; color: #ffffff; width: 20px; height: 20px; line-height: 10px; text-align: center; font-size: 15px; padding: 0;  border: 2px solid #ff0000; float: right');
-
-
                     listItem.append(deleteButton);
+
+                    // Append the document
                     $('#profile-files-list').append(listItem);
                 }
+
             } else {
                 // Display 'No Documents' if there are no documents
                 $('#profile-files-list').empty().append('<li>No Documents</li>');
             }
+    
         },
         error: function() {
             alert('Error fetching documents');
@@ -75,10 +81,10 @@ $('#profile-files-list').on('click', '.delete-document-button', function(event) 
 
     // Send an AJAX request to delete the document by its ID
     $.ajax({
-        url: '/delete_document/' + documentId + '/', // Replace with your Django endpoint
+        url: '/delete_document/' + documentId + '/', 
         method: 'DELETE',
         success: function() {
-            // Document deleted successfully, you can update the UI as needed
+            // Remove the list item as document was deleted from back-end
             listItem.remove();
         },
         error: function() {

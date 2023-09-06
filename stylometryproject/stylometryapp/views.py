@@ -9,27 +9,34 @@ import random
 from .forms import DocumentForm
 from .models import *
 
+# TO DO - remove CSRF decorators
 
 def home_page_view(request):
+    """ Renders the home page """
     return render(request, 'index.html')
 
 
 def about_page_view(request):
+    """ Renders the about page """
     return render(request, 'about.html')
 
 
 def profile_page_view(request):
+    """ Renders the profile page """
     profiles = Profile.objects.all()
     return render(request, 'profile.html', {'profiles': profiles})
 
 
 def verify_page_view(request):
+    """ Renders the verify page """
     profiles = Profile.objects.all()
     return render(request, 'verify.html', {'profiles': profiles})
 
 
-@csrf_exempt  # Use this decorator if you want to bypass CSRF protection for this view (for simplicity)
+@csrf_exempt
 def create_profile(request):
+    """ Creates a new profile """
+
     if request.method == 'POST':
         new_profile_name = request.POST.get('name')
 
@@ -51,6 +58,8 @@ def create_profile(request):
 
 
 def get_profile_name(request, profile_id):
+    """ Returns the name of the profile with the given ID """
+
     try:
         profile = Profile.objects.get(pk=profile_id)
         return JsonResponse({'name': profile.name})
@@ -59,6 +68,8 @@ def get_profile_name(request, profile_id):
 
 
 def get_documents(request, profile_id):
+    """ Returns the documents for the profile with the given ID """
+
     try:
         profile = Profile.objects.get(pk=profile_id)
         documents = Document.objects.filter(profile=profile)
@@ -70,6 +81,7 @@ def get_documents(request, profile_id):
 
 @csrf_exempt 
 def add_profile_docs(request):
+    """ Adds documents to a profile """
 
     if request.method == "POST":
         try:
@@ -99,6 +111,8 @@ def add_profile_docs(request):
 
 @csrf_exempt 
 def delete_profile(request):
+    """ Deletes a profile """
+
     if request.method == "POST" and request.META.get("HTTP_X_REQUESTED_WITH") == "XMLHttpRequest":
         profile_id = request.POST.get("profile_id")
         try:
@@ -113,6 +127,8 @@ def delete_profile(request):
 
 @csrf_exempt 
 def edit_profile(request, profile_id):
+    """ Edits a profile's name """
+
     if request.method == "POST" and request.META.get("HTTP_X_REQUESTED_WITH") == "XMLHttpRequest":
         new_name = request.POST.get("profile_name")
         try:
@@ -128,6 +144,8 @@ def edit_profile(request, profile_id):
 
 @csrf_exempt
 def delete_document(request, document_id):
+    """ Deletes a document """
+
     try:
         document = Document.objects.get(id=document_id)
         document.delete()
@@ -140,6 +158,8 @@ def delete_document(request, document_id):
 
 @csrf_exempt
 def run_verification(request):
+    """ Runs the verification algorithm """
+
     if request.method == "POST":
         try:
             # Get the JSON data from the request
