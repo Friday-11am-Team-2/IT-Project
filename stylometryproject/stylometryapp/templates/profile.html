@@ -29,6 +29,8 @@
     <link rel="stylesheet" href="{% static 'styles/app.css' %}">
     <link rel="stylesheet" href="{% static 'styles/uploadbutton.css' %}">
     <link rel="stylesheet" href="{% static 'styles/dropdown.css' %}">
+
+    
     
  
 
@@ -131,6 +133,7 @@
     <script src="{% static 'scripts/uploadButton.js'%}"></script>
     <script src="{% static 'scripts/dropdown.js'%}"></script>
     <script src="{% static 'scripts/docDisplay.js'%}"></script>
+    <script src="{% static 'scripts/submit.js'%}"></script>
     <script src="{% static 'scripts/profileManage.js'%}"></script>
 
     <!-- Modal for adding a new profile -->
@@ -150,7 +153,6 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="button" class="btn btn-primary" id="addProfileBtn">Add Profile</button>
                 </div>
             </div>
@@ -163,9 +165,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="editProfileModalLabel">Edit Profile Name</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form id="editProfileForm" method="POST">
                     {% csrf_token %}
@@ -176,7 +176,6 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-primary">Save Changes</button>
                     </div>
                 </form>
