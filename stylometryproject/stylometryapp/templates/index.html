@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Style Sheet Loading -->
+{% load static %}
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;1,300;1,400&display=swap"
+        rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'styles/app.css' %}">
+
+    <title>AuthorGuard | Authorship Verification</title>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-md py-2">
+        <div class="container-xxl">
+            <a class="navbar-brand" href="/"><img id="logo" src="{% static 'images/Logo.png' %}" alt="AuthroGuard" width="30"
+                    height="30">AuthorGuard</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navLinks"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navLinks">
+                <ul class="navbar-nav">
+                    <li><a href="/profile" class="nav-link">PROFILE MANAGER</a></li>
+                    <li><a href="/verify" class="nav-link">VERIFY DOCUMENTS</a></li>
+                    <li><a href="/about" class="nav-link">ABOUT</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <section class="container-xxl">
+        <h1 class="display-2">Defend Authorial Integrity with AuthorGuard</h1>
+        <p class="lead">
+            Using AI, AuthorGuard can easily perform authorship verification with just a small sample of documents
+        </p>
+        <div class="container">
+            <div class="row justify-content-md-center">
+                <div class="col col-lg-2 mx-5"><a href="/profile"><button type="button" class="btn btn-lg">Profile
+                            Manager</button></a></div>
+                <div class="col col-lg-2 mx-5"><a href="/verify"><button type="button" class="btn btn-lg">Verify
+                            Documents</button></a>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

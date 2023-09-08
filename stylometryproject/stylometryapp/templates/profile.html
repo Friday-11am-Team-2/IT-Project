@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.5.3/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.5.3/dist/js/bootstrap.min.js"></script>
+    
+    <!-- Include jQuery (before Bootstrap JS) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;1,300;1,400&display=swap"
+        rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+
+    <!-- Upload Button Icon Source-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'styles/app.css' %}">
+    <link rel="stylesheet" href="{% static 'styles/uploadbutton.css' %}">
+    <link rel="stylesheet" href="{% static 'styles/dropdown.css' %}">
+
+    
+    
+ 
+
+    <title>Manage Profiles</title>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-md py-2">
+        <div class="container-xxl">
+            <a class="navbar-brand" href="/"><img id="logo" src="{% static 'images/Logo.png' %}" alt="AuthroGuard" width="30"
+                    height="30">AuthorGuard</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navLinks"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navLinks">
+                <ul class="navbar-nav">
+                    <li><a href="/profile" class="nav-link">PROFILE MANAGER</a></li>
+                    <li><a href="/verify" class="nav-link">VERIFY DOCUMENTS</a></li>
+                    <li><a href="/about" class="nav-link">ABOUT</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <form class="container-xxl">
+        <div class="row justify-content-md-left mt-4">
+            
+            
+            <!-- Add File -->
+            <div class="col-md-4">
+                <h2 class="display-5">Upload Documents</h2>
+                <p>Upload Documents to add to a profile</p>
+                <input type="file" id="upload" name="file-upload" multiple />
+                <label for="upload">
+                    <i class="fa-solid fa-circle-arrow-up"></i>
+                    &nbsp;Upload&nbsp;Documents
+                </label>
+
+                <!--Displaying the uploaded documents-->
+                <div id="uploaded-file-list-box">
+                    <ul id="files-list"></ul>
+                </div>
+
+                <div id="num-of-files">No Files Chosen</div>
+            </div>
+            
+            <!-- Select Profile -->
+            <div class="col-md-4">
+                <h2 class="display-5">Select Profile</h2>
+                <p>Select a profile to add the documents to, or create a new one</p>
+                <div class="dropdown">
+                    <button class="btn btn-large dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="curr-profile-name"> None </button>
+                    <ul class="dropdown-menu" id="profile-list">
+                        {% for profile in profiles %}
+                            <li>
+                                <a class="profile-item" href="#" data-profile-id="{{ profile.id }}">
+                                    <div class="d-flex justify-content-between">
+                                        <span>{{ profile.name }}</span>
+                                        <div>
+                                            <button class="delete-profile btn btn-danger btn-sm ml-auto" data-profile-id="{{ profile.id }}" style="background-color: #ff0000; color: #ffffff; width: 30px; height: 30px; line-height: 20px; text-align: center; font-size: 25px; padding: 0;">X</button>
+                                            <button class="edit-profile btn btn-danger btn-sm ml-auto" data-profile-id="{{ profile.id }}" style="background-color: #008a29; color: #ffffff; width: 30px; height: 30px; line-height: 20px; text-align: center; font-size: 20px; padding: 0;">✏️</button>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                        {% endfor %}
+                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addProfileModal"><i class="fas fa-plus"></i> New Profile</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            
+            <!-- Submit Profile -->
+            <div class="col-md-4">
+                <h2 class="display-5">Current Profile</h2>
+            
+                <div class="row" style="background-color: #F0E2B6; width: 80%; margin: 5% 0 0 0;">
+                    <p id="display-curr-profile-name">Profile: None</p>
+                </div>
+                <div class="row" id="curr-profile-list-box">
+                    <ul id="profile-files-list">
+                        <!-- Documents will be displayed here -->
+                    </ul>
+                </div>
+                <input class="btn btn-large" id = "submit-button" type="button" value="Submit Documents">
+            </div>
+            
+        </div>
+
+    </form>
+
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+        crossorigin="anonymous"></script>
+
+    <!-- Upload Button Script -->
+    <script src="{% static 'scripts/uploadButton.js'%}"></script>
+    <script src="{% static 'scripts/dropdown.js'%}"></script>
+    <script src="{% static 'scripts/docDisplay.js'%}"></script>
+    <script src="{% static 'scripts/submit.js'%}"></script>
+    <script src="{% static 'scripts/profileManage.js'%}"></script>
+
+    <!-- Modal for adding a new profile -->
+    <div class="modal fade" id="addProfileModal" tabindex="-1" aria-labelledby="addProfileModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addProfileModalLabel">Add New Profile</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addProfileForm">
+                        <div class="mb-3">
+                            <label for="newProfileName" class="form-label">Profile Name:</label>
+                            <input type="text" class="form-control" id="newProfileName" name="newProfileName" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="addProfileBtn">Add Profile</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editProfileModalLabel">Edit Profile Name</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="editProfileForm" method="POST">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="profileName">New Profile Name</label>
+                            <input type="text" class="form-control" id="profileName" name="profile_name" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

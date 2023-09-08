@@ -16,9 +16,40 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from stylometryapp.views import home_page_view
+from stylometryapp.views import *
 
 urlpatterns = [
+
+    # Pages
     path('admin/', admin.site.urls),
     path('', home_page_view),
+    path('home/', home_page_view),
+    path('about/', about_page_view),
+    path('profile/', profile_page_view),
+    path('verify/', verify_page_view),
+
+    # Create profile
+    path('create_profile/', create_profile, name='create_profile'),
+    
+    # URL pattern for fetching the profile name
+    path('get_profile_name/<int:profile_id>/', get_profile_name, name='get_profile_name'),
+
+    # URL pattern for fetching documents by profile
+    path('get_documents/<int:profile_id>/', get_documents, name='get_documents'),
+
+    # Add docs to pofile
+    path('add_profile_docs/', add_profile_docs, name='add_profile_docs'),
+
+    # Delete Profile
+    path('delete_profile/', delete_profile, name='delete_profile'),
+
+    # Edit Profile
+    path('edit_profile/<int:profile_id>/', edit_profile, name='edit_profile'),
+
+    # Delete Document
+    path('delete_document/<int:document_id>/', delete_document, name='delete_document'),
+
+    # Run Verification
+    path('run_verify/', run_verification, name='run_verify'),
+    
 ] 
