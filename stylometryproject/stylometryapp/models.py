@@ -1,13 +1,15 @@
 from django.db import models
 
+
 class Profile(models.Model):
     """ Profile Table """
-
+    
     name = models.CharField(max_length=100)
     
     def __str__(self):
         return self.name
     
+
 class Document(models.Model):
     """ Document Table """
 
@@ -17,3 +19,4 @@ class Document(models.Model):
     
     def __str__(self):
         return self.title
+    
