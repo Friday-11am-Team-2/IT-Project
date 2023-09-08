@@ -51,6 +51,7 @@ h2 {
 .btn {
     background-color: #d88d4c;
     font-size: 1.5rem;
+    letter-spacing: 1px;
     transition: all 0.25s;
     color: #faedcd;
 }
