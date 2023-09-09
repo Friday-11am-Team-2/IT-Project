@@ -75,7 +75,7 @@ class StyloNet:
 		# Save validiy threshold for making predictions
 		self.threshold = valid_threshold
 
-	def _vectorize(self,text : dict):
+	def _vectorize(self, text: dict) -> dict:
 		vectors = {
 			'known': get_vectors(text['known'],self.word2vec),
 			'unknown': get_vectors(text['unknown'],self.word2vec)
@@ -88,7 +88,7 @@ class StyloNet:
 			vectors.append(self._vectorize(text))
 		return vectors
 
-	def _concatenate(self, vectors : dict):
+	def _concatenate(self, vectors : dict) -> np.array:
 		known_feature_vectors = self.base_network(np.array(vectors['known']))
 		unknown_feature_vectors = self.base_network(np.array(vectors['unknown']))
 
@@ -98,18 +98,23 @@ class StyloNet:
 		concat_vec = np.concatenate((author_representation, unknown_representation), axis=None)
 		return concat_vec
 
-	def _concatenate_multi(self, vectors : list[dict]):
+	def _concatenate_multi(self, vectors : list):
 		concats = []
 		for vec in vectors:
 			concats.append(self._concatenate(vec))
 		return np.array(concats)
+	
+	def _bad_input(self, text: dict) -> bool:
+		if type(text.get('known')) is not list or type(text.get('unknown')) is not list: return True
+		if len(text['known']) == 0 or len(text['unknown']) == 0: return True
+		return False
 
 	### Interface Functions ###
 	def score(self, texts : dict) -> float:
 		"""Run the model and return the similarity score as a decimal"""
-		if len(texts['unknown']) == 0: return 0  # Incase of empty unknown set
+		if self._bad_input(texts): return 0  # Check for bad input, and return now instead of erroring later
 
-		vectors = self._vectorize(texts['known'], texts['unknown'])
+		vectors = self._vectorize(texts)
 		concats = self._concatenate(vectors)
 		
 		prediction : tf.Tensor = self.clf_network(np.array([concats]))
@@ -125,7 +130,7 @@ class StyloNet:
 		vectors = self._vectorize_multi(texts)
 		concats = self._concatenate_multi(vectors)
 
-		predicts = self.clf_network.predict(concats, verbose=0)
+		predicts = self.clf_network.predict(concats)
 		
 		if type(texts) is dict:
 			results = {}
@@ -247,12 +252,12 @@ def buildSiameseNet(checkpoint_dir: str, embedding_dim: tuple = (323,)) -> Siame
 	siamese_model = SiameseNet(base_network, clf_network)
 	siamese_model.compile(optimizer='adam', loss=customer_loss)
 
+	# Compile clf model
+	clf_network.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy', tf.keras.metrics.AUC()])
+
 	# Load model weights from checkpoint_dir
 	latest = tf.train.latest_checkpoint(checkpoint_dir)
-	siamese_model.load_weights(latest)
-	
-	# Finish compiling clf model
-	clf_network.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy', tf.keras.metrics.AUC()])
+	siamese_model.load_weights(latest).expect_partial()
 	
 	return siamese_model
 
