@@ -1,6 +1,7 @@
 .vscode
 .venv
 __pycache__
+nltk_data
 
 # PAN14_Code stuff
 PAN14_Model_Code/nltk_data
