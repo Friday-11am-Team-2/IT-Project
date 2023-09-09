@@ -8,7 +8,7 @@
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.5.3/dist/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.5.3/dist/js/bootstrap.min.js"></script>
-    
+
     <!-- Include jQuery (before Bootstrap JS) -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
@@ -30,9 +30,9 @@
     <link rel="stylesheet" href="{% static 'styles/uploadbutton.css' %}">
     <link rel="stylesheet" href="{% static 'styles/dropdown.css' %}">
 
-    
-    
- 
+
+
+
 
     <title>Manage Profiles</title>
 </head>
@@ -40,8 +40,8 @@
 <body>
     <nav class="navbar navbar-expand-md py-2">
         <div class="container-xxl">
-            <a class="navbar-brand" href="/"><img id="logo" src="{% static 'images/Logo.png' %}" alt="AuthroGuard" width="30"
-                    height="30">AuthorGuard</a>
+            <a class="navbar-brand" href="/"><img id="logo" src="{% static 'images/Logo.png' %}" alt="AuthroGuard"
+                    width="30" height="30">AuthorGuard</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navLinks"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -61,14 +61,14 @@
 
     <form class="container-xxl">
         <div class="row justify-content-md-left mt-4">
-            
-            
+
+
             <!-- Add File -->
             <div class="col-md-4">
                 <h2 class="display-5">Upload Documents</h2>
                 <p>Upload Documents to add to a profile</p>
                 <input type="file" id="upload" name="file-upload" multiple />
-                <label for="upload">
+                <label for="upload" class="upload-label">
                     <i class="fa-solid fa-circle-arrow-up"></i>
                     &nbsp;Upload&nbsp;Documents
                 </label>
@@ -80,37 +80,55 @@
 
                 <div id="num-of-files">No Files Chosen</div>
             </div>
-            
+
             <!-- Select Profile -->
             <div class="col-md-4">
                 <h2 class="display-5">Select Profile</h2>
                 <p>Select a profile to add the documents to, or create a new one</p>
                 <div class="dropdown">
-                    <button class="btn btn-large dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="curr-profile-name"> None </button>
+                    <button class="btn btn-lg dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                        aria-expanded="false" id="curr-profile-name"> None </button>
                     <ul class="dropdown-menu" id="profile-list">
                         {% for profile in profiles %}
-                            <li>
-                                <a class="profile-item" href="#" data-profile-id="{{ profile.id }}">
-                                    <div class="d-flex justify-content-between">
-                                        <span>{{ profile.name }}</span>
-                                        <div>
-                                            <button class="delete-profile btn btn-danger btn-sm ml-auto" data-profile-id="{{ profile.id }}" style="background-color: #ff0000; color: #ffffff; width: 30px; height: 30px; line-height: 20px; text-align: center; font-size: 25px; padding: 0;">X</button>
-                                            <button class="edit-profile btn btn-danger btn-sm ml-auto" data-profile-id="{{ profile.id }}" style="background-color: #008a29; color: #ffffff; width: 30px; height: 30px; line-height: 20px; text-align: center; font-size: 20px; padding: 0;">✏️</button>
-                                        </div>
+                        <li>
+                            <a class="profile-item" href="#" data-profile-id="{{ profile.id }}">
+                                <div class="d-flex justify-content-between">
+                                    <span>{{ profile.name }}</span>
+                                    <div>
+                                        <button class="edit delete-profile btn btn-danger btn-sm ml-auto"
+                                            data-profile-id="{{ profile.id }}" style="color: #ae2012;"><svg
+                                                xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
+                                                <path
+                                                    d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z" />
+                                            </svg></button>
+                                        <button class="edit edit-profile btn btn-outline-danger btn-sm ml-auto"
+                                            data-profile-id="{{ profile.id }}" style="color: #6a994e;"><svg
+                                                xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+                                                <path
+                                                    d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
+                                            </svg></button>
                                     </div>
-                                </a>
-                            </li>
+                                </div>
+                            </a>
+                        </li>
                         {% endfor %}
-                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addProfileModal"><i class="fas fa-plus"></i> New Profile</a></li>
+                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal"
+                                data-bs-target="#addProfileModal"><svg xmlns="http://www.w3.org/2000/svg" width="16"
+                                    height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd"
+                                        d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z" />
+                                </svg> New Profile</a></li>
                     </ul>
                 </div>
             </div>
 
-            
+
             <!-- Submit Profile -->
             <div class="col-md-4">
                 <h2 class="display-5">Current Profile</h2>
-            
+
                 <div class="row" style="background-color: #F0E2B6; width: 80%; margin: 5% 0 0 0;">
                     <p id="display-curr-profile-name">Profile: None</p>
                 </div>
@@ -119,9 +137,9 @@
                         <!-- Documents will be displayed here -->
                     </ul>
                 </div>
-                <input class="btn btn-large" id = "submit-button" type="button" value="Submit Documents">
+                <input class="btn btn-large" id="submit-button" type="button" value="Submit Documents">
             </div>
-            
+
         </div>
 
     </form>
@@ -140,7 +158,8 @@
     <script src="{% static 'scripts/profileManage.js'%}"></script>
 
     <!-- Modal for adding a new profile -->
-    <div class="modal fade" id="addProfileModal" tabindex="-1" aria-labelledby="addProfileModalLabel" aria-hidden="true">
+    <div class="modal fade" id="addProfileModal" tabindex="-1" aria-labelledby="addProfileModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -156,14 +175,15 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="addProfileBtn">Add Profile</button>
+                    <button type="button" class="btn btn-sm" id="addProfileBtn">Add Profile</button>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Edit Profile Modal -->
-    <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+    <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -179,7 +199,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                        <button type="submit" class="btn btn-sm" id="saveChanges">Save Changes</button>
                     </div>
                 </form>
             </div>
