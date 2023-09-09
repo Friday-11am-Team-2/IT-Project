@@ -13,6 +13,9 @@ import random
 from .forms import DocumentForm
 from .models import *
 
+from Stylometry import StyloNet
+stylometry_model = StyloNet("model_storage")
+
 # TO DO - remove CSRF decorators
 def home_page_view(request):
     """ Renders the home page """
@@ -196,12 +199,16 @@ def run_verification(request):
                 return JsonResponse({"error": "No documents found for the profile"}, status=400)
 
 
-            # RUN ALGORITHM HERE
-            # for now make random number
-            value = round(random.uniform(0, 1), 2)
+            # RUN ALGORITHM #
+            text_data = {
+                'known': [ document.text for document in documents ],
+                'unknown': [ texts ]
+            }
+
+            value = round(stylometry_model.score(text_data), 3)
 
             # Return a success response
-            return JsonResponse({"message": "Verification Successful", "result": value}, status=201)
+            return JsonResponse({"message": "Verification Successful", "result": str(value)}, status=201)
         
 
         except Exception as e:
