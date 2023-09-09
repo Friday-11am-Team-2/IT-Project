@@ -6,5 +6,4 @@ class StylometryappConfig(AppConfig):
     name = 'stylometryapp'
 
     def ready(self):
-        print("Call to get Stylo from AppConfig")
         getStyloNet()  # Run get to force the Stylometry Model initialization
