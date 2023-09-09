@@ -50,7 +50,9 @@
                     <li><a href="/about" class="nav-link">ABOUT</a></li>
                 </ul>
             </div>
-            <button class="btn btn-danger ms-2" onclick="window.location.href='/logout'">LOGOUT</button>
+            {% if user.is_authenticated %}
+                <button class="btn btn-danger ms-2" onclick="window.location.href='/logout'">LOGOUT</button>
+            {% endif %}
         </div>
     </nav>
 
