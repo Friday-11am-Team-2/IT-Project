@@ -27,7 +27,7 @@ input[type="file"] {
 
 }
 
-label {
+.upload-label {
     display: block;
     position: relative;
     background-color: #dda15e;
@@ -43,10 +43,9 @@ label {
     transition: all 0.25s;
 }
 
-label:hover {
+.upload-label:hover {
     color: #283618;
     box-shadow: 0 0.6em 0.6em -0.4em #283618;
     background-color: #fca311;
     transform: translateY(-0.25em);
 }
-

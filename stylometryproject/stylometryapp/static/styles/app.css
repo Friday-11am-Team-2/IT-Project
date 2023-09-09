@@ -17,6 +17,7 @@ nav {
     font-weight: 700;
 }
 
+
 .nav-link {
     color: #fefae0;
     font-size: 1rem;
@@ -54,6 +55,7 @@ h2 {
     letter-spacing: 1px;
     transition: all 0.25s;
     color: #faedcd;
+    letter-spacing: 1px;
 }
 
 .btn:hover {
@@ -75,7 +77,48 @@ p {
 }
 
 #verify-button {
-    margin-top: 40%;
+    margin-top: 10%;
     background-color: #d87016;
-    padding: 8% 10%;
+    padding: 6% 8%;
+}
+
+.edit {
+    border: none;
+    background-color: transparent;
+    width: 30px;
+    height: 30px;
+    line-height: 20px;
+    text-align: center;
+    font-size: 25px;
+    padding: 0;
+    margin-left: 2px;
+}
+
+.edit:hover {
+    box-shadow: 0 0.6em 0.6em -0.4em currentColor;
+    transform: translateY(-0.25em);
+    background-color: transparent;
+}
+
+#profile-files-list {
+    list-style-type: none;
+}
+
+.modal-content {
+    background-color: #fefae0;
+}
+
+#saveChanges,
+#addProfileBtn {
+    font-size: 1rem;
+    padding: 2%;
+}
+
+#submit-button {
+    padding: 3%;
+}
+
+#verify-text {
+    font-weight: bold;
+    margin-top: auto;
 }
