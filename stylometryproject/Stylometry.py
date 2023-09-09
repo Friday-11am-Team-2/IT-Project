@@ -3,6 +3,9 @@
 
 ### Required imports ###
 import os
+import glob
+import pickle
+import json
 import numpy as np
 import string
 
@@ -162,7 +165,7 @@ class StyloNet:
 def setupNltk(path = f"{os.curdir}/nltk_data") -> None:
 	"""Set up the NLTK package path and downloads datapacks (if required)"""
 	nltk.data.path = [ path ]
-	nltk.download(["punkt", "stopwords","wordnet"], download_dir=nltk.data.path[0])
+	nltk.download(["punkt", "stopwords","wordnet"], nltk.data.path[0])
 
 ### Model Definition ###
 class SiameseNet(tf.keras.Model):
