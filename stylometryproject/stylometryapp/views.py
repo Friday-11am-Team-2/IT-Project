@@ -9,12 +9,11 @@ from django.contrib.auth.decorators import login_required
 
 import json
 import random
+from Stylometry import StyloNet
 
 from .forms import DocumentForm
 from .models import *
-
-from Stylometry import StyloNet
-stylometry_model = StyloNet("model_storage")
+import stylometryapp.utils as utils
 
 # TO DO - remove CSRF decorators
 def home_page_view(request):
@@ -205,7 +204,9 @@ def run_verification(request):
                 'unknown': [ texts ]
             }
 
-            value = round(stylometry_model.score(text_data), 3)
+            model = utils.getStyloNet()
+
+            value = round(model.score(text_data), 3)
 
             # Return a success response
             return JsonResponse({"message": "Verification Successful", "result": str(value)}, status=201)

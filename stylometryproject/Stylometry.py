@@ -3,14 +3,7 @@
 
 ### Required imports ###
 import os
-import json
-import math
-import csv
 import numpy as np
-import glob
-import pickle
-import itertools
-from collections import Counter
 import string
 
 import nltk
@@ -20,28 +13,27 @@ from nltk.stem import WordNetLemmatizer
 
 import tensorflow as tf
 from tensorflow import keras
-from tensorflow.keras import layers
-from tensorflow.keras.layers import Dense, Dropout
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.optimizers import Adam
-from tensorflow.keras.optimizers.schedules import PolynomialDecay
-from tensorflow.keras.callbacks import EarlyStopping
+#from tensorflow.keras import layers
+#from tensorflow.keras.layers import Dense, Dropout
+#from tensorflow.keras.models import Sequential
+#from tensorflow.keras.optimizers import Adam
+#from tensorflow.keras.optimizers.schedules import PolynomialDecay
+#from tensorflow.keras.callbacks import EarlyStopping
 
 import gensim
 from gensim.models import Word2Vec
-from gensim.models.doc2vec import Doc2Vec, TaggedDocument
-from gensim.test.utils import common_texts
-from sklearn.metrics import f1_score, accuracy_score, roc_auc_score
-from sklearn.model_selection import train_test_split, GridSearchCV
-from sklearn.preprocessing import MinMaxScaler, StandardScaler
-from sklearn.metrics.pairwise import cosine_similarity
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.linear_model import LogisticRegression
-from sklearn.cluster import KMeans
-from scipy.spatial.distance import cosine
-from sklearn.svm import SVC
-from sklearn.model_selection import KFold
-from collections import defaultdict
+#from gensim.models.doc2vec import Doc2Vec, TaggedDocument
+#from gensim.test.utils import common_texts
+#from sklearn.metrics import f1_score, accuracy_score, roc_auc_score
+#from sklearn.model_selection import train_test_split, GridSearchCV
+#from sklearn.preprocessing import MinMaxScaler, StandardScaler
+#from sklearn.metrics.pairwise import cosine_similarity
+#from sklearn.feature_extraction.text import TfidfVectorizer
+#from sklearn.linear_model import LogisticRegression
+#from sklearn.cluster import KMeans
+#from scipy.spatial.distance import cosine
+#from sklearn.svm import SVC
+#from sklearn.model_selection import KFold
 
 ### Classes (for use outside the model) ###
 class StyloNet:
@@ -111,7 +103,7 @@ class StyloNet:
 
 	### Interface Functions ###
 	def score(self, texts : dict) -> float:
-		"""Run the model and return the similarity score as a decimal"""
+		"""Run the model and return the similarity score as a float"""
 		if self._bad_input(texts): return 0  # Check for bad input, and return now instead of erroring later
 
 		vectors = self._vectorize(texts)
