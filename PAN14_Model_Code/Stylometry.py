@@ -13,27 +13,27 @@ from nltk.stem import WordNetLemmatizer
 
 import tensorflow as tf
 from tensorflow import keras
-#from tensorflow.keras import layers
-#from tensorflow.keras.layers import Dense, Dropout
-#from tensorflow.keras.models import Sequential
-#from tensorflow.keras.optimizers import Adam
-#from tensorflow.keras.optimizers.schedules import PolynomialDecay
-#from tensorflow.keras.callbacks import EarlyStopping
+from tensorflow.keras import layers
+from tensorflow.keras.layers import Dense, Dropout
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.optimizers.schedules import PolynomialDecay
+from tensorflow.keras.callbacks import EarlyStopping
 
 import gensim
 from gensim.models import Word2Vec
-#from gensim.models.doc2vec import Doc2Vec, TaggedDocument
-#from gensim.test.utils import common_texts
-#from sklearn.metrics import f1_score, accuracy_score, roc_auc_score
-#from sklearn.model_selection import train_test_split, GridSearchCV
-#from sklearn.preprocessing import MinMaxScaler, StandardScaler
-#from sklearn.metrics.pairwise import cosine_similarity
-#from sklearn.feature_extraction.text import TfidfVectorizer
-#from sklearn.linear_model import LogisticRegression
-#from sklearn.cluster import KMeans
-#from scipy.spatial.distance import cosine
-#from sklearn.svm import SVC
-#from sklearn.model_selection import KFold
+from gensim.models.doc2vec import Doc2Vec, TaggedDocument
+from gensim.test.utils import common_texts
+from sklearn.metrics import f1_score, accuracy_score, roc_auc_score
+from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
+from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.linear_model import LogisticRegression
+from sklearn.cluster import KMeans
+from scipy.spatial.distance import cosine
+from sklearn.svm import SVC
+from sklearn.model_selection import KFold
 
 ### Classes (for use outside the model) ###
 class StyloNet:

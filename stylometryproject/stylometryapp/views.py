@@ -13,7 +13,7 @@ from Stylometry import StyloNet
 
 from .forms import DocumentForm
 from .models import *
-import stylometryapp.utils as utils
+from .utils import getStyloNet
 
 # TO DO - remove CSRF decorators
 def home_page_view(request):
@@ -204,7 +204,7 @@ def run_verification(request):
                 'unknown': [ texts ]
             }
 
-            model = utils.getStyloNet()
+            model = getStyloNet()
 
             value = round(model.score(text_data), 3)
 
