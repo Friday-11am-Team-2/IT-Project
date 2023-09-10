@@ -9,9 +9,11 @@ from django.contrib.auth.decorators import login_required
 
 import json
 import random
+from Stylometry import StyloNet
 
 from .forms import DocumentForm
 from .models import *
+from .utils import getStyloNet
 
 # TO DO - remove CSRF decorators
 def home_page_view(request):
@@ -196,12 +198,18 @@ def run_verification(request):
                 return JsonResponse({"error": "No documents found for the profile"}, status=400)
 
 
-            # RUN ALGORITHM HERE
-            # for now make random number
-            value = round(random.uniform(0, 1), 2)
+            # RUN ALGORITHM #
+            text_data = {
+                'known': [ document.text for document in documents ],
+                'unknown': [ texts ]
+            }
+
+            model = getStyloNet()
+
+            value = round(model.score(text_data), 3)
 
             # Return a success response
-            return JsonResponse({"message": "Verification Successful", "result": value}, status=201)
+            return JsonResponse({"message": "Verification Successful", "result": str(value)}, status=201)
         
 
         except Exception as e:
