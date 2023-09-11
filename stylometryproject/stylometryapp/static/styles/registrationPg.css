@@ -1,0 +1,11 @@
+body {
+    background-color: #fefae0;
+}
+
+
+#login-block{
+    background-color: #dda15e;
+    padding-top: 3%;
+    padding-bottom: 2%;
+    border-radius: 1%;
+}
