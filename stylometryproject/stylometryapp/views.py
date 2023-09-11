@@ -49,6 +49,7 @@ def create_profile(request):
 
     if request.method == 'POST':
         new_profile_name = request.POST.get('name')
+        print("Creating profile with name: " + new_profile_name)
 
         # Create a new profile
         profile = Profile(name=new_profile_name, user=request.user)
