@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-
 class Profile(models.Model):
     """ Profile Table """
     
@@ -10,6 +9,7 @@ class Profile(models.Model):
     
     def __str__(self):
         return self.name
+    
     
 
 class Document(models.Model):
@@ -21,4 +21,5 @@ class Document(models.Model):
     
     def __str__(self):
         return self.title
+
     
