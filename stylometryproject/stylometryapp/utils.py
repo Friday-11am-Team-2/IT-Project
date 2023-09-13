@@ -14,3 +14,24 @@ def getStyloNet() -> StyloNet:
 		print(f"Initialized Stylometry Model at {id(stylometry_model)}")
 
 	return stylometry_model
+
+# # File type prosessing (only accepts txt, docx)
+# def convert_file(file_name, file_content):             
+
+# 	file_extension = os.path.splitext(file_name)[1].lower()
+# 	converted_content = ""
+
+# 	if file_extension == '.txt':
+# 		# leave .txt files as is
+# 		converted_content = file_content
+# 		print("txt to txt")
+# 	elif file_extension == '.docx':
+# 		# convert .docx to .txt
+# 		converted_content = convert_docx_to_txt(file_content)
+# 		print("docx to txt")
+# 	else:
+# 		# unsupported file type
+# 		print(f"Unsupported file type: {file_name}")
+# 		# TO DO: deal with unsupported file type if they somehow got passed in
+	
+# 	return converted_content

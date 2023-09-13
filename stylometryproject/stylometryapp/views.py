@@ -106,6 +106,11 @@ def add_profile_docs(request):
             names = data.get("file_names")
             texts = data.get("file_contents")
 
+            # Handle file type conversion (TO DO: upload seems to corrupt docx files)
+            # for i in range(len(names)):
+            #     print(i)
+            #     texts[i] = convert_file(names[i], texts[i])
+
             # Check if the profile exists (you can add more error handling here)
             profile = Profile.objects.get(pk=profile_id, user=request.user)
 
@@ -185,9 +190,12 @@ def run_verification(request):
 
             # Extract the profile_id and file_data from the JSON data
             profile_id = data.get("profile_id")
-            names = data.get("file_names")
-            texts = data.get("file_contents")
+            name = data.get("file_names")
+            text = data.get("file_contents")
 
+            # Handle file type conversion (TO DO: upload seems to corrupt docx files)
+            # text[0] = convert_file(name[0], text[0])
+            
             # Check if the profile exists (you can add more error handling here)
             profile = Profile.objects.get(pk=profile_id, user=request.user)
 
@@ -196,12 +204,11 @@ def run_verification(request):
             if (len(documents) == 0):
                 print("No documents found for the profile")
                 return JsonResponse({"error": "No documents found for the profile"}, status=400)
-
-
+            
             # RUN ALGORITHM #
             text_data = {
                 'known': [ document.text for document in documents ],
-                'unknown': [ texts ]
+                'unknown': [ text ]
             }
 
             model = getStyloNet()
