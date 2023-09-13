@@ -2,9 +2,24 @@
 .venv
 __pycache__
 nltk_data
+env
 
-# PAN14_Code stuff
+# Database
+db.sqlite3
+
+# PAN14_Code Ignores
 PAN14_Model_Code/nltk_data
 PAN14_Model_Code/model_weights
 !PAN14_Model_Code/model_weights/.keep
 PAN14_Model_Code/Word2Vec.model
+
+# JetBrains IDE Ignores
+.idea/inspectionProfiles/profiles_settings.xml
+.idea/inspectionProfiles/Project_Default.xml
+.idea/IT-Project.iml
+.idea/misc.xml
+.idea/modules.xml
+.idea/vcs.xml
+.idea/workspace.xml
+stylometryproject/db.sqlite3
+stylometryproject/db.sqlite3
