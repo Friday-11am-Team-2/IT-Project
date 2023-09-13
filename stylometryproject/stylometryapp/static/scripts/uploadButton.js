@@ -7,16 +7,10 @@ let numOfFiles = document.getElementById("num-of-files");
 const fileNamesArray = [];
 const fileContentArray = [];
 
+
 // Javascript for upload button 
 fileInput.addEventListener("change", () => {
-    // Clear previous selections
-    fileList.innerHTML = "";
-    numOfFiles.textContent = `${fileInput.files.length} Files Selected`;
-
-    // Reset arrays for each new selection
-    fileNamesArray.length = [];
-    fileContentArray.length = [];
-
+        
     // For each file selected, create a list item and add it to the list
     for (const file of fileInput.files) {
         let reader = new FileReader();
@@ -36,15 +30,22 @@ fileInput.addEventListener("change", () => {
         reader.onload = (event) => {
             const fileContent = event.target.result;
             fileNamesArray.push(fileName);
+            
 
             // TO DO - ADD TREATMENT FOR FILE TYPES (either restrict to .txt/add more)
             fileContentArray.push(fileContent);
 
-            // You can perform further processing with the file content here
-            console.log(`File "${fileName}" content: ${fileContent}`);
+            // See file name & file content here
+            // console.log(`File "${fileName}" content: ${fileContent}`);
+            
+            numOfFiles.textContent = `${fileNamesArray.length} Files Selected`;
         };
+
+        
 
         // Read the file as text
         reader.readAsText(file);
     }
+
+    
 });
