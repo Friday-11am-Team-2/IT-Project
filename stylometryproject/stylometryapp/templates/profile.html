@@ -54,7 +54,7 @@
                 </ul>
             </div>
             {% if user.is_authenticated %}
-                <button class="btn btn-danger ms-2" onclick="window.location.href='/logout'">LOGOUT</button>
+            <button class="btn btn-lg ms-2" id="logout-btn" onclick="window.location.href='/logout'">LOGOUT</button>
             {% endif %}
         </div>
     </nav>
@@ -68,7 +68,7 @@
                 <h2 class="display-5">Upload Documents</h2>
                 <p>Upload Documents to add to a profile</p>
                 <!-- Restrict file type to .txt -->
-                <input type="file" id="upload" name="file-upload" accept=".txt" multiple/>
+                <input type="file" id="upload" name="file-upload" accept=".txt" multiple />
                 <label for="upload" class="upload-label">
                     <i class="fa-solid fa-circle-arrow-up"></i>
                     &nbsp;Upload&nbsp;Documents
@@ -171,8 +171,8 @@
                     <form id="addProfileForm">
                         <div class="mb-3">
                             <label for="newProfileName" class="form-label">Profile Name:</label>
-                            <input type="text" class="form-control" id="newProfileName" name="newProfileName" 
-                             maxlength="20" required>
+                            <input type="text" class="form-control" id="newProfileName" name="newProfileName"
+                                maxlength="20" required>
                             <label for="newProfileName" class="form-label">(Max Characters 20)</label>
                         </div>
                     </form>

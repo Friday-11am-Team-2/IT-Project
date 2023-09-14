@@ -7,12 +7,31 @@ document.addEventListener("DOMContentLoaded", () => {
     let previousProfileName = "";
     let previousFileName = "";
 
+    // Check if the button has been clicked before by looking for a flag in local storage
+    localStorage.setItem('buttonClicked', false);
+    // const buttonClicked = localStorage.getItem('buttonClicked');
+    // console.log(`Button Clicked: ${buttonClicked}`);
+
+    // if (buttonClicked) {
+    //     // If the button has been clicked before, disable it
+    //     // runVerificationButton.disabled = true;
+    // } else {
+    //     runVerificationButton.disabled = false;
+    // }
+
     if (runVerificationButton) {
         runVerificationButton.addEventListener("click", (event) => {
             event.preventDefault();
 
             console.log("hello")
-            
+
+            // Check if the button has already been clicked
+            const buttonClicked = localStorage.getItem('buttonClicked');
+            if (buttonClicked) {
+                alert("Button has already been clicked once.");
+                return;
+            }
+
             // Get profile ID from docDisplay
             const profileID = uniqueCurrentProfileID;
             if (profileID <= 0) {
@@ -55,9 +74,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     isNew = false;
                     if (previousProfileID !== profileID || previousFileName !== fileNamesArray[0]) {
                         previousProfileID = profileID;
-                        previousProfileName = uniqueCurrentProfileName;    
+                        previousProfileName = uniqueCurrentProfileName;
                         previousFileName = fileNamesArray[0];
-                        isNew = true;                
+                        isNew = true;
                     }
 
                     // Update the <p> field within the "verification-results" div
@@ -69,7 +88,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     // Get Data Fields
                     const resultValue = document.createElement("strong");
                     resultValue.textContent = data.result;
-                    
+
                     const newField = document.createElement("p");
                     newField.appendChild(document.createTextNode("Value: "));
                     newField.appendChild(resultValue);
@@ -80,7 +99,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         // If 'isNew' is true, clear previous "Value" fields
                         const verificationResultsDiv = document.getElementById("verification-results");
                         const valueFields = verificationResultsDiv.querySelectorAll("p");
-                        
+
                         // Iterate through the "Value" fields and remove them
                         valueFields.forEach((field) => {
                             if (field.textContent.startsWith("Value: ")) {
@@ -89,11 +108,17 @@ document.addEventListener("DOMContentLoaded", () => {
                         });
                     }
                     document.getElementById("verification-results").appendChild(newField);
+
+                    // Set a flag in local storage to indicate that the button has been clicked
+                    localStorage.setItem('buttonClicked', true);
+
+                    // Disable the button after clicking
+                    runVerificationButton.disabled = true;
                 })
                 .catch((error) => {
                     console.log(error.message)
                     alert(error.message);
-            });
+                });
         });
     }
 });
