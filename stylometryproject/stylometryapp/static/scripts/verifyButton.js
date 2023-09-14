@@ -2,6 +2,7 @@
 let fileInput = document.getElementById("upload");
 let fileList = document.getElementById("files-list");
 let numOfFiles = document.getElementById("num-of-files");
+const runVerificationButton = document.getElementById("verify-button");
 
 // Define arrays to store file names and file content
 const fileNamesArray = [];
@@ -10,11 +11,15 @@ const fileContentArray = [];
 // For the upload in the verify page
 fileInput.addEventListener("change", () => {
 
+    // make verify clickable again
+    localStorage.removeItem('buttonClicked');
+    runVerificationButton.disabled = false;
+
     fileList.innerHTML = "";
     numOfFiles.textContent = `${fileInput.files.length} Files Selected`;
     fileNamesArray.length = 0;
     fileContentArray.length = 0;
-        
+
     // For each file selected, create a list item and add it to the list
     for (const file of fileInput.files) {
         let reader = new FileReader();
@@ -34,7 +39,7 @@ fileInput.addEventListener("change", () => {
         reader.onload = (event) => {
             const fileContent = event.target.result;
             fileNamesArray.push(fileName);
-            
+
 
             // TO DO - ADD TREATMENT FOR FILE TYPES (either restrict to .txt/add more)
             fileContentArray.push(fileContent);
@@ -43,11 +48,11 @@ fileInput.addEventListener("change", () => {
             // console.log(`File "${fileName}" content: ${fileContent}`);
         };
 
-        
+
 
         // Read the file as text
         reader.readAsText(file);
     }
 
-    
+
 });
