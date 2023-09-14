@@ -42,11 +42,11 @@
                 </ul>
             </div>
             {% if user.is_authenticated %}
-                <button class="btn btn-danger ms-2" onclick="window.location.href='/logout'">LOGOUT</button>
+            <button class="btn btn-lg ms-2" id="logout-btn" onclick="window.location.href='/logout'">LOGOUT</button>
             {% endif %}
         </div>
     </nav>
-    
+
 
     <section class="container-xxl">
         <h1 class="display-2">Defend Authorial Integrity with AuthorGuard</h1>

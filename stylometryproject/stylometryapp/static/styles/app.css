@@ -122,3 +122,9 @@ p {
     font-weight: bold;
     margin-top: auto;
 }
+
+#logout-btn {
+    color: #fefae0;
+    font-size: 1rem;
+    font-weight: 100;
+}
