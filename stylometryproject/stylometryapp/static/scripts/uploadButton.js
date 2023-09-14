@@ -37,7 +37,6 @@ fileInput.addEventListener("change", () => {
             const fileContent = event.target.result;
             fileNamesArray.push(fileName);
 
-            // TO DO - ADD TREATMENT FOR FILE TYPES (either restrict to .txt/add more)
             fileContentArray.push(fileContent);
 
             // You can perform further processing with the file content here
