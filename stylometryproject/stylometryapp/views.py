@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required
 
 import json
 import random
-from Stylometry import StyloNet
+from stylometry import StyloNet
 
 from .forms import DocumentForm
 from .models import *

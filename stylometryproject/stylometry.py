@@ -3,10 +3,10 @@
 
 ### Required imports ###
 import os
-import math
-import glob
-import pickle
-import json
+#import math
+#import glob
+#import pickle
+#import json
 import string
 
 # Lambda for print out module name/version
@@ -21,21 +21,23 @@ from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 ver(nltk)
 
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # Suppress tensorflow logging to critical only
+# Restrict tensorflow logging to only critical events
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+
 import tensorflow as tf
-from tensorflow import keras
-from tensorflow.keras import layers
-from tensorflow.keras.layers import Dense, Dropout
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.optimizers import Adam
-from tensorflow.keras.optimizers.schedules import PolynomialDecay
-from tensorflow.keras.callbacks import EarlyStopping
+#from tensorflow import keras
+#from tensorflow.keras import layers
+#from tensorflow.keras.layers import Dense, Dropout
+#from tensorflow.keras.models import Sequential
+#from tensorflow.keras.optimizers import Adam
+#from tensorflow.keras.optimizers.schedules import PolynomialDecay
+#from tensorflow.keras.callbacks import EarlyStopping
 ver(tf)
 
 import gensim
-from gensim.models import Word2Vec
-from gensim.models.doc2vec import Doc2Vec, TaggedDocument
-from gensim.test.utils import common_texts
+#from gensim.models import Word2Vec
+#from gensim.models.doc2vec import Doc2Vec, TaggedDocument
+#from gensim.test.utils import common_texts
 ver(gensim)
 
 #import sklearn
@@ -52,7 +54,6 @@ ver(gensim)
 
 #import scipy
 #from scipy.spatial.distance import cosine
-#ver(scipy)
 
 
 ### Classes (for use outside the model) ###
