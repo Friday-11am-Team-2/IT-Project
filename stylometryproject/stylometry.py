@@ -183,7 +183,7 @@ class StyloNet:
 def setupNltk(path = f"{os.curdir}/nltk_data") -> None:
 	"""Set up the NLTK package path and downloads datapacks (if required)"""
 	nltk.data.path = [ path ]
-	nltk.download(["punkt", "stopwords","wordnet"], nltk.data.path[0])
+	nltk.download(["punkt", "stopwords","wordnet"], nltk.data.path[0], quiet=True)
 
 def unwrap(var):
 	"""Function to extract variables nested inside 1-element lists/arrays"""
@@ -258,7 +258,7 @@ def customer_loss(y_true, y_pred):
     return loss
 
 ### Model Loading Functions ###
-def buildSiameseNet(checkpoint_dir: str, embedding_dim: tuple = (323,)) -> SiameseNet:
+def buildSiameseNet(checkpoint_file: str, embedding_dim: tuple = (323,)) -> SiameseNet:
 	"""Construct the SiameseNet model using code from PAN14_data_demo.ipynb
 		using saved weights at checkpoint_dir
 		embedding_dim defines the input shape for the model, the default from the build process is (323,None)"""
@@ -269,14 +269,12 @@ def buildSiameseNet(checkpoint_dir: str, embedding_dim: tuple = (323,)) -> Siame
 
 	# Create main model frame
 	siamese_model = SiameseNet(base_network, clf_network)
+	
+	# Compile models
 	siamese_model.compile(optimizer='adam', loss=customer_loss)
-
-	# Compile clf model
 	clf_network.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy', tf.keras.metrics.AUC()])
 
-	# Load model weights from checkpoint_dir
-	latest = tf.train.latest_checkpoint(checkpoint_dir)
-	siamese_model.load_weights(latest).expect_partial()
+	siamese_model.load_weights(checkpoint_file).expect_partial()
 	
 	return siamese_model
 
