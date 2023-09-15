@@ -60,7 +60,7 @@ ver(gensim)
 class StyloNet:
 	"""Contains the whole stylometry model, functions score, score_multi, predict and predict_multi
 		can be called to run the stylometry model on a text.
-		
+
 		Input format for predictions is the following:
 			texts = {
 				'known': list[str] (known text(s))
@@ -70,17 +70,17 @@ class StyloNet:
 	"""
 
 	def __init__(self, working_dir:str = os.curdir, valid_threshold:float = 0.5,
-					model_checkpoints:str = "model_weights", w2v_save:str = "Word2Vec.model", nltk_path:str = "nltk_data"):
-		
+					model_checkpoints:str = "model_weights/cp.ckpt", w2v_save:str = "Word2Vec.model", nltk_path:str = "nltk_data"):
+
 		# Most args can be left at their default values, as long as working_dir is correct the model should work.
 		if not os.path.isdir(working_dir):
 			raise OSError(f"Working dir for StyloNet does not exist: {working_dir}")
-		
+
 		setupNltk(os.path.join(working_dir, nltk_path))
 
 		# Load Word2Vec model
 		self.word2vec = loadW2v(os.path.join(working_dir, w2v_save))
-		
+
 		# Redefine and load the SiameseNet model from checkpoints
 		self.siamese_model = buildSiameseNet(os.path.join(working_dir, model_checkpoints))
 		self.base_network, self.clf_network = self.siamese_model.base, self.siamese_model.clf
@@ -88,20 +88,20 @@ class StyloNet:
 		# Save validiy threshold for making predictions
 		self.threshold = valid_threshold
 
-	def _vectorize(self, text: dict) -> dict:
+	def _vectorize(self,text : dict):
 		vectors = {
 			'known': get_vectors(text['known'],self.word2vec),
 			'unknown': get_vectors(text['unknown'],self.word2vec)
 		}
 		return vectors
 
-	def _vectorize_multi(self, texts : list[dict]):
+	def _vectorize_multi(self, texts: list[dict]):
 		vectors = []
 		for text in texts:
 			vectors.append(self._vectorize(text))
 		return vectors
 
-	def _concatenate(self, vectors : dict) -> np.array:
+	def _concatenate(self, vectors: dict):
 		known_feature_vectors = self.base_network(np.array(vectors['known']))
 		unknown_feature_vectors = self.base_network(np.array(vectors['unknown']))
 
@@ -111,51 +111,51 @@ class StyloNet:
 		concat_vec = np.concatenate((author_representation, unknown_representation), axis=None)
 		return concat_vec
 
-	def _concatenate_multi(self, vectors : list):
+	def _concatenate_multi(self, vectors : list[dict]):
 		concats = []
 		for vec in vectors:
 			concats.append(self._concatenate(vec))
 		return np.array(concats)
-	
-	def _bad_input(self, text: dict) -> bool:
-		if type(text.get('known')) is not list or type(text.get('unknown')) is not list: return True
-		if len(text['known']) == 0 or len(text['unknown']) == 0: return True
-		return False
 
 	### Interface Functions ###
 	def score(self, texts : dict) -> float:
-		"""Run the model and return the similarity score as a float"""
-		if self._bad_input(texts): return 0  # Check for bad input, and return now instead of erroring later
+		"""Run the model and return the similarity score as a decimal"""
+		if len(texts['unknown']) == 0: return 0  # Incase of empty unknown set
 
 		vectors = self._vectorize(texts)
 		concats = self._concatenate(vectors)
-		
+
 		prediction : tf.Tensor = self.clf_network(np.array([concats]))
 		if prediction.shape != (1,1): raise ValueError("Result incorrect shape!")
-		
+
 		# Convert to numpy array and flatten, as output shape will be (1,1)
 		return prediction.numpy()[0][0]
 
 	def score_batch(self, texts: list|dict) -> list[float]|dict:
 		"""Calculate score over a list or dictionary of texts and return a list/dict of the results"""
-		texts = texts.values() if type(texts) is dict else texts
 
-		vectors = self._vectorize_multi(texts)
-		concats = self._concatenate_multi(vectors)
+		# Return a key/value pair generator for both a list and existing dictionary
+		unpack = lambda texts: texts.items() if type(texts) is dict else enumerate(data)
 
-		predicts = self.clf_network.predict(concats)
-		
-		if type(texts) is dict:
-			results = {}
-			for i, key in enumerate(texts.keys()):
-				# Unpack np.array and match the predictions up to the keys of the original dictionary
-				results[key] = predicts[i][0]
+		# Check whether a value is valid input (i.e. it's unknown text is non-empty)
+		good_input = lambda text: type(text['unknown']) is list and len(text['unknown']) != 0
+
+		# Convert input to a dictionary, if not already.
+		# Ensures bad input can be filtered out and given a 0.0 rating at the end
+		data = { k: v for k, v in unpack(texts) if good_input(v) }
+		# Important for list ordering and including all keys in dictionaries
+
+		# Run the predictions
+		vectors = self._vectorize_multi(data.values())
+		concates = self._concatenate_multi(vectors)
+		predictions = { k: unwrap(v) for k, v in zip(data.keys(), self.clf_network.predict(concates, verbose=0)) }
+
+		# Format the output (unwrapping already done above)
+		if type(texts) is list:
+			results = [ predictions.get(x, 0.0) for x in range(len(texts)) ]
 		else:
-			results = []
-			for val in predicts:
-				# Unpack the nested np.array to convert to a basic array of results
-				results.append(val[0])
-		
+			results = { k: predictions.get(k, 0.0) for k in texts.keys() }
+
 		return results
 
 	def predict(self, texts: dict) -> bool:
@@ -175,7 +175,7 @@ class StyloNet:
 			results = []
 			for val in scores:
 				results.append(pred(val))
-		
+
 		return results
 
 ### Utility functions ###
@@ -184,6 +184,12 @@ def setupNltk(path = f"{os.curdir}/nltk_data") -> None:
 	"""Set up the NLTK package path and downloads datapacks (if required)"""
 	nltk.data.path = [ path ]
 	nltk.download(["punkt", "stopwords","wordnet"], nltk.data.path[0])
+
+def unwrap(var):
+	"""Function to extract variables nested inside 1-element lists/arrays"""
+	is_array = lambda var : isinstance(var, (list, tuple, set, np.ndarray))
+	while is_array(var) and len(var) == 1: var = var[0]
+	return var
 
 ### Model Definition ###
 class SiameseNet(tf.keras.Model):
