@@ -12,7 +12,9 @@ body {
 } */
 
 #id_username,
-#id_password {
+#id_password,
+#id_password1,
+#id_password2 {
     border-radius: 30px;
     padding-left: 41px;
     height: 45px;
@@ -57,4 +59,8 @@ p a {
     color: rgba(216, 141, 76, 1);
     text-decoration: none;
     font-weight: 700;
+}
+
+.bottom {
+    margin-top: 20px;
 }
