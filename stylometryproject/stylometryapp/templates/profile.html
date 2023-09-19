@@ -60,26 +60,6 @@
     <form class="container-xxl">
         <div class="row justify-content-md-left mt-4">
 
-
-            <!-- Add File -->
-            <div class="col-md-4">
-                <h2 class="display-5">Upload Documents</h2>
-                <p>Upload Documents to add to a profile</p>
-                <!-- Restrict file type to .txt -->
-                <input type="file" id="upload" name="file-upload" accept=".txt" multiple />
-                <label for="upload" class="upload-label">
-                    <i class="fa-solid fa-circle-arrow-up"></i>
-                    &nbsp;Upload&nbsp;Documents
-                </label>
-
-                <!--Displaying the uploaded documents-->
-                <div id="uploaded-file-list-box">
-                    <ul id="files-list"></ul>
-                </div>
-
-                <div id="num-of-files">No Files Chosen</div>
-            </div>
-
             <!-- Select Profile -->
             <div class="col-md-4">
                 <h2 class="display-5">Select Profile</h2>
@@ -121,6 +101,26 @@
                                 </svg> New Profile</a></li>
                     </ul>
                 </div>
+            </div>
+
+
+            <!-- Upload File -->
+            <div class="col-md-4">
+                <h2 class="display-5">Upload Documents</h2>
+                <p>Upload Documents to add to a profile</p>
+                <!-- Restrict file type to .txt -->
+                <input type="file" id="upload" name="file-upload" accept=".txt" multiple />
+                <label for="upload" class="upload-label">
+                    <i class="fa-solid fa-circle-arrow-up"></i>
+                    &nbsp;Upload&nbsp;Documents
+                </label>
+
+                <!--Displaying the uploaded documents-->
+                <div id="uploaded-file-list-box">
+                    <ul id="files-list"></ul>
+                </div>
+
+                <div id="num-of-files">No Files Chosen</div>
             </div>
 
 
