@@ -1,5 +1,5 @@
 from django.conf import settings
-from Stylometry import StyloNet
+from stylometry import StyloNet
 
 ### Stylometry Model Utils ###
 stylometry_model: StyloNet|None = None
