@@ -1,0 +1,27 @@
+body{
+    width: 100%;
+}
+
+h3{
+    font-weight:bold;
+    margin-bottom: 0;
+}
+
+p{
+    margin-top: 0;
+    padding-top: 1%;
+}
+
+h1{
+    font-weight:bold;
+}
+
+
+#title{
+    text-align: center;
+    padding: 2% 0 2% 0;
+}
+section{
+    width: 100%;
+    padding: 0% 5% 2% 5%;
+}
