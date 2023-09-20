@@ -15,6 +15,13 @@ if (submitButton) {
             file_contents: fileContentArray,
         };
 
+        // checking if there are any files to upload
+        if (dataToSend.file_names.length == 0) {
+            alert("Please add documents to upload to profile");
+            return;
+        }
+
+
         fetch("/add_profile_docs/", {
             method: "POST",
             headers: {
@@ -30,6 +37,6 @@ if (submitButton) {
             })
             .catch((error) => {
                 // Handle errors
-        });
+            });
     });
 }
