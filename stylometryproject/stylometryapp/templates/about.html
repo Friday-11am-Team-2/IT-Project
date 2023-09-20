@@ -19,6 +19,7 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{% static 'styles/app.css' %}">
     <link rel="icon" type="image/png" href="../static/images/Favicon.png"/>
+    <link rel="stylesheet" href="{% static 'styles/about.css' %}">
 
     <title>About AuthorGuard</title>
 </head>
@@ -44,6 +45,52 @@
             {% endif %}
         </div>
     </nav>
+
+    <div id ="title">
+        <h1>About AuthorGuard</h1>
+    </div>
+    <div>
+        <section>
+            <h3>What is AuthorGuard</h3>
+            <p>AuthorGuard leverages powerful modern day AI and machine learning techniques to detect 
+               the likelihood that a given piece of writing was written by a 
+               particular individual, with a high accuracy. It works by identifying and analysing
+               certain stylistic features
+               unique to each users and compares a document based on a user's 'profile'.
+            </p>
+        </section>
+        <section>
+            <h3>Why is this needed?</h3>
+            <p>Universities and other institutions have always had the need to check for the 
+               orginality of works of students and researchers.
+               There are tools like Turnitin that checks for plagerism in work done by students or researchers.
+               However, with the rise of AI technologies such as ChatGPT which is able to generate essays and
+               other work, tools
+               that checks for plagerism are unable to provide authorship verification. 
+               This is where Authorguard hopes to help. 
+               By detecting stylistic feature unique to each person, AuthorGuard is able to distinguish work 
+               written by the author in quesiton from work
+               potentially written by AI or others.
+            </p>
+        </section>
+
+        <section>
+            <h3>Future Plans</h3>
+            <p>Currently, the application is only able to respond with predictions on whether
+               it's written by the person in question or is potentially sourced from other sources. In the future, 
+               the application may be fitted with the ability to report aspects of stylometry unique to each
+               individuals and the comparisons will have a detailed breakdown of areas 
+               the model has detected to be different. In addition, the application
+               may be extended to handle more file types as well as files with images.  
+            </p>
+        </section>
+
+
+        <section>
+            <h3>Enquiries</h3>
+            <p></p>
+        </section>
+    </div>
 
 
     <!-- Bootstrap JS -->
