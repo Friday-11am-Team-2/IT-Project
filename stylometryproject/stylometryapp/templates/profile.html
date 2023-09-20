@@ -6,9 +6,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Include jQuery (before Bootstrap JS) -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
     <!-- Google Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -26,7 +23,7 @@
     <link rel="stylesheet" href="{% static 'styles/app.css' %}">
     <link rel="stylesheet" href="{% static 'styles/uploadbutton.css' %}">
     <link rel="stylesheet" href="{% static 'styles/dropdown.css' %}">
-    <link rel="icon" type="image/png" href="../static/images/Favicon.png"/>
+    <link rel="icon" type="image/png" href="../static/images/Favicon.png" />
 
 
 
@@ -143,19 +140,6 @@
 
     </form>
 
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
-        crossorigin="anonymous"></script>
-
-    <!-- Upload Button Script -->
-    <script src="{% static 'scripts/uploadButton.js'%}"></script>
-    <script src="{% static 'scripts/dropdown.js'%}"></script>
-    <script src="{% static 'scripts/docDisplay.js'%}"></script>
-    <script src="{% static 'scripts/submit.js'%}"></script>
-    <script src="{% static 'scripts/profileManage.js'%}"></script>
-
     <!-- Modal for adding a new profile -->
     <div class="modal fade" id="addProfileModal" tabindex="-1" aria-labelledby="addProfileModalLabel"
         aria-hidden="true">
@@ -206,6 +190,21 @@
             </div>
         </div>
     </div>
+
+    <!-- Include jQuery (before Bootstrap JS) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+        crossorigin="anonymous"></script>
+
+    <!-- Upload Button Script -->
+    <script src="{% static 'scripts/uploadButton.js'%}"></script>
+    <script src="{% static 'scripts/dropdown.js'%}"></script>
+    <script src="{% static 'scripts/docDisplay.js'%}"></script>
+    <script src="{% static 'scripts/submit.js'%}"></script>
+    <script src="{% static 'scripts/profileManage.js'%}"></script>
 
 </body>
 

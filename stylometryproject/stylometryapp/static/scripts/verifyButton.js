@@ -1,4 +1,5 @@
 // Javascript for making buttons and display work
+let profileDropdownOptions = document.querySelectorAll(".dropdown-menu li a");
 let fileInput = document.getElementById("upload");
 let fileList = document.getElementById("files-list");
 let numOfFiles = document.getElementById("num-of-files");
@@ -10,10 +11,10 @@ const fileContentArray = [];
 
 // For the upload in the verify page
 fileInput.addEventListener("change", () => {
-
     // make verify clickable again
     localStorage.removeItem('buttonClicked');
     runVerificationButton.disabled = false;
+
 
     fileList.innerHTML = "";
     numOfFiles.textContent = `${fileInput.files.length} Files Selected`;
@@ -56,3 +57,18 @@ fileInput.addEventListener("change", () => {
 
 
 });
+
+let lastElementID = null;
+
+for (let option of profileDropdownOptions) {
+    option.addEventListener("click", () => {
+        let id = option.getAttribute("data-profile-id");
+        if (id != lastElementID) {
+            // different option clicked so update
+            lastElementID = id;
+            // make verify clickable again
+            localStorage.removeItem('buttonClicked');
+            runVerificationButton.disabled = false;
+        }
+    })
+}
