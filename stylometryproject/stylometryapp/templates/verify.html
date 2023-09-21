@@ -62,8 +62,8 @@
                 <h2 class="display-5">Select Profile</h2>
                 <p>Select a profile to run the comparison tool on.</p>
                 <div class="dropdown">
-                    <button class="btn btn-large dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                        aria-expanded="false" id="curr-profile-name"> None </button>
+                    <button class="btn btn-large dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"
+                        id="curr-profile-name" {% if profile_id %} data-profile-id="{{ profile_id }}" {% endif %}> {{ profile_name }} </button>
                     <ul class="dropdown-menu" id="profile-list">
                         {% for profile in profiles %}
                         <li>

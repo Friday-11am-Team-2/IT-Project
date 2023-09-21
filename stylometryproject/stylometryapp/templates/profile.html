@@ -60,17 +60,37 @@
     <form class="container-xxl">
         <div class="row justify-content-md-left mt-4">
 
+
+            <!-- Add File -->
+            <div class="col-md-4">
+                <h2 class="display-5">Upload Documents</h2>
+                <p>Upload Documents to add to a profile</p>
+                <!-- Restrict file type to .txt -->
+                <input type="file" id="upload" name="file-upload" accept=".txt" multiple />
+                <label for="upload" class="upload-label">
+                    <i class="fa-solid fa-circle-arrow-up"></i>
+                    &nbsp;Upload&nbsp;Documents
+                </label>
+
+                <!--Displaying the uploaded documents-->
+                <div id="uploaded-file-list-box">
+                    <ul id="files-list"></ul>
+                </div>
+
+                <div id="num-of-files">No Files Chosen</div>
+            </div>
+
             <!-- Select Profile -->
             <div class="col-md-4">
                 <h2 class="display-5">Select Profile</h2>
                 <p>Select a profile to add the documents to, or create a new one</p>
                 <div class="dropdown">
                     <button class="btn btn-lg dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                        aria-expanded="false" id="curr-profile-name"> None </button>
+                        aria-expanded="false" id="curr-profile-name" {% if profile_id %} data-profile-id="{{ profile_id }}" {% endif %}"> {{ profile_name }} </button>
                     <ul class="dropdown-menu" id="profile-list">
                         {% for profile in profiles %}
                         <li>
-                            <a class="profile-item" href="#" data-profile-id="{{ profile.id }}">
+                            <a class="profile-item" data-profile-id="{{ profile.id }}">
                                 <div class="d-flex justify-content-between">
                                     <span>{{ profile.name }}</span>
                                     <div>
@@ -101,26 +121,6 @@
                                 </svg> New Profile</a></li>
                     </ul>
                 </div>
-            </div>
-
-
-            <!-- Upload File -->
-            <div class="col-md-4">
-                <h2 class="display-5">Upload Documents</h2>
-                <p>Upload Documents to add to a profile</p>
-                <!-- Restrict file type to .txt -->
-                <input type="file" id="upload" name="file-upload" accept=".txt" multiple />
-                <label for="upload" class="upload-label">
-                    <i class="fa-solid fa-circle-arrow-up"></i>
-                    &nbsp;Upload&nbsp;Documents
-                </label>
-
-                <!--Displaying the uploaded documents-->
-                <div id="uploaded-file-list-box">
-                    <ul id="files-list"></ul>
-                </div>
-
-                <div id="num-of-files">No Files Chosen</div>
             </div>
 
 
