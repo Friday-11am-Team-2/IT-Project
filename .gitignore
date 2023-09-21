@@ -5,7 +5,7 @@ nltk_data
 env
 
 # Database
-db.sqlite3
+stylometryproject/db.sqlite3
 
 # PAN14_Code Ignores
 PAN14_Model_Code/nltk_data
@@ -21,5 +21,4 @@ PAN14_Model_Code/Word2Vec.model
 .idea/modules.xml
 .idea/vcs.xml
 .idea/workspace.xml
-stylometryproject/db.sqlite3
-stylometryproject/db.sqlite3
+
