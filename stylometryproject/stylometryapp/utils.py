@@ -2,6 +2,9 @@ from django.conf import settings
 from stylometry import StyloNet
 import os
 import docx2txt
+import zipfile
+from io import BytesIO
+from lxml import etree
 
 ### Stylometry Model Utils ###
 stylometry_model: StyloNet|None = None
@@ -38,12 +41,26 @@ def convert_file(file_name, file_content):
 	
 	return converted_content
 
-import docx2txt
 
 def convert_docx_to_txt(file_content):
-	# doc = docx2txt.process("word1.docx")
-	fp = open("test", 'w', encoding="utf-8")
-	fp.write(file_content)
-	fp.close()
-	
 	return ""
+	file_content_bytes = file_content.encode('utf-8')
+	try:
+		# Create a BytesIO object to work with the binary content
+		content_stream = BytesIO(file_content_bytes)
+
+        # Open the .docx file using zipfile
+		with zipfile.ZipFile(content_stream) as docx:
+            # Find and extract the document.xml file (contains text)
+			doc_xml_content = docx.read('word/document.xml')
+
+            # Text extraction            
+			root = etree.fromstring(doc_xml_content)
+			text_content = ''.join(root.itertext())
+
+            # Return the extracted text
+			return text_content
+	except Exception as e:
+        # Handle exceptions
+		print(f"Error: {str(e)}")
+		return ""
