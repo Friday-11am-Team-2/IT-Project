@@ -75,6 +75,9 @@ def create_profile(request):
         profile = Profile(name=new_profile_name, user=request.user)
         profile.save()
 
+        # Set the newly created profile as the selected
+        request.session['profile_cur'] = profile
+
         # Return the newly created profile data as JSON
         data = {
             'id': profile.id,
@@ -161,7 +164,11 @@ def delete_profile(request):
         profile_id = request.POST.get("profile_id")
         try:
             profile = Profile.objects.get(id=profile_id, user=request.user)
+            if request.session.get('profile_cur') == profile:
+                # If the profile being deleted is also selected, then deselect it
+                request.session.pop('profile_cur')
             profile.delete()
+
             return JsonResponse({"message": "Profile deleted successfully"})
         except Profile.DoesNotExist:
             return JsonResponse({"error": "Profile not found"}, status=404)

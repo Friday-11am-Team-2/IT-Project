@@ -86,7 +86,7 @@
                 <p>Select a profile to add the documents to, or create a new one</p>
                 <div class="dropdown">
                     <button class="btn btn-lg dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                        aria-expanded="false" id="curr-profile-name" {% if profile_id %} data-profile-id="{{ profile_id }}" {% endif %}"> {{ profile_name }} </button>
+                        aria-expanded="false" id="curr-profile-name" {% if profile_id %} data-profile-id="{{ profile_id }}" {% endif %}"> None </button>
                     <ul class="dropdown-menu" id="profile-list">
                         {% for profile in profiles %}
                         <li>
