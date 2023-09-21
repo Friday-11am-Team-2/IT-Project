@@ -41,9 +41,9 @@ def convert_file(file_name, file_content):
 import docx2txt
 
 def convert_docx_to_txt(file_content):
-    doc = docx2txt.process("word1.docx")
-    file = open("text1", 'w', encoding="utf-8")
-    file.write(doc)
-    file.close()
-    
-    return ""
+	# doc = docx2txt.process("word1.docx")
+	fp = open("test", 'w', encoding="utf-8")
+	fp.write(file_content)
+	fp.close()
+	
+	return ""
