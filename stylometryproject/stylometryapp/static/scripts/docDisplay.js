@@ -67,9 +67,14 @@ $(document).ready(function() {
         updateProfileDisplay(selectedProfileId);
     });
 
-    // Initialize the display with 'None' when the page loads
-    $('#curr-profile-name').text(' None ');
-    $('#profile-files-list').empty().append('<li>No Documents</li>');
+    // If a currently select profile is included, initialize with those values
+    if ($('#curr-profile-name').data('profile-id')) {
+        updateProfileDisplay($('#curr-profile-name').data('profile-id'))
+    } else {
+        // Otherwise initialize the display with 'None' when the page loads
+        $('#curr-profile-name').text(' None ');
+        $('#profile-files-list').empty().append('<li>No Documents</li>');
+    }
 });
 
 
