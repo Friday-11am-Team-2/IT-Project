@@ -13,7 +13,7 @@ from stylometry import StyloNet
 
 from .forms import DocumentForm
 from .models import *
-from .utils import getStyloNet
+from .utils import getStyloNet, convert_file
 
 # TO DO - remove CSRF decorators
 def home_page_view(request):
