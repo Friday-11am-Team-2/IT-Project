@@ -1,10 +1,7 @@
 from django.conf import settings
 from stylometry import StyloNet
 import os
-import docx2txt
-import zipfile
-from io import BytesIO
-from lxml import etree
+
 
 ### Stylometry Model Utils ###
 stylometry_model: StyloNet|None = None
@@ -38,29 +35,33 @@ def convert_file(file_name, file_content):
 		# unsupported file type
 		print(f"Unsupported file type: {file_name}")
 		# TO DO: deal with unsupported file type if they somehow got passed in
-	
+	#print(converted_content)
 	return converted_content
 
 
 def convert_docx_to_txt(file_content):
 	return ""
-	file_content_bytes = file_content.encode('utf-8')
-	try:
-		# Create a BytesIO object to work with the binary content
-		content_stream = BytesIO(file_content_bytes)
+	# import docx2txt
+	# import zipfile
+	# from io import BytesIO
+	# from lxml import etree
+	# try:
+	# 	# Create a BytesIO object to work with the binary content
+	# 	content_stream = BytesIO(file_content)
 
-        # Open the .docx file using zipfile
-		with zipfile.ZipFile(content_stream) as docx:
-            # Find and extract the document.xml file (contains text)
-			doc_xml_content = docx.read('word/document.xml')
+    #     # Open the .docx file using zipfile
+	# 	with zipfile.ZipFile(content_stream) as docx:
+    #         # Find and extract the document.xml file (contains text)
+	# 		doc_xml_content = docx.read('word/document.xml')
 
-            # Text extraction            
-			root = etree.fromstring(doc_xml_content)
-			text_content = ''.join(root.itertext())
+    #         # Text extraction            
+	# 		root = etree.fromstring(doc_xml_content)
+	# 		text_content = ''.join(root.itertext())
 
-            # Return the extracted text
-			return text_content
-	except Exception as e:
-        # Handle exceptions
-		print(f"Error: {str(e)}")
-		return ""
+    #         # Return the extracted text
+	# 		return text_content
+		
+	# except Exception as e:
+    #     # Handle exceptions
+	# 	print(f"Error: {str(e)}")
+	# 	return ""
