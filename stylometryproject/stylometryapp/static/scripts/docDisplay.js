@@ -69,6 +69,7 @@ $(document).ready(function() {
 
     // If a currently select profile is included, initialize with those values
     if ($('#curr-profile-name').data('profile-id')) {
+        uniqueCurrentProfileID = $('#curr-profile-name').data('profile-id')
         updateProfileDisplay($('#curr-profile-name').data('profile-id'))
     } else {
         // Otherwise initialize the display with 'None' when the page loads

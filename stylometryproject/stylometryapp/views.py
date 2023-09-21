@@ -110,7 +110,6 @@ def get_documents(request, profile_id):
 
         # Set this as the selected profile (assume getting docs mean's selecting)
         request.session['profile_cur'] = profile
-        if __debug__ and profile: print(f"Selecting profile {profile.name} = {profile_id}")
 
         return JsonResponse(documents_data, safe=False)
     except Profile.DoesNotExist:
