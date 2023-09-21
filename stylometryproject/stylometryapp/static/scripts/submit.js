@@ -11,7 +11,7 @@ if (submitButton) {
 
         const dataToSend = {
             profile_id: profileID, // Add the profile ID to the JSON data
-            file_names: fileNamesArray,
+            file_names: fileNamesArray.map(item => item.name), // Extract the 'name' property from each object in fileNamesArray
             file_contents: fileContentArray,
         };
 
