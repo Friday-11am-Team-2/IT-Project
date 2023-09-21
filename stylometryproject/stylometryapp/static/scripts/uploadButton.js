@@ -50,7 +50,10 @@ fileInput.addEventListener("change", () => {
                 listItem.remove();
 
                 // Update the number of files selected
-                numOfFiles.textContent = `${fileNamesArray.length} Files Selected`;
+                if (fileNamesArray.length == 1)
+                    numOfFiles.textContent = `${fileNamesArray.length} File Selected`;
+                else
+                    numOfFiles.textContent = `${fileNamesArray.length} Files Selected`;
             }
         });
 
@@ -73,7 +76,10 @@ fileInput.addEventListener("change", () => {
             // See file name & file content here
             // console.log(`File "${fileName}" content: ${fileContent}`);
 
-            numOfFiles.textContent = `${fileNamesArray.length} Files Selected`;
+            if (fileNamesArray.length == 1)
+                numOfFiles.textContent = `${fileNamesArray.length} File Selected`;
+            else
+                numOfFiles.textContent = `${fileNamesArray.length} Files Selected`;
         };
 
 

@@ -18,6 +18,10 @@ body {
     list-style-type: none;
 }
 
+#files-list li {
+    padding-top: 3px;
+}
+
 #uploaded-file-list-box {
     margin: 5% 0 0 0;
     background-color: #F0E2B6;

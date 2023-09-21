@@ -17,7 +17,10 @@ fileInput.addEventListener("change", () => {
 
 
     fileList.innerHTML = "";
-    numOfFiles.textContent = `${fileInput.files.length} Files Selected`;
+    if (fileInput.files.length != 0) {
+        numOfFiles.textContent = `File Selected`;
+    }
+
     fileNamesArray.length = 0;
     fileContentArray.length = 0;
 
@@ -28,7 +31,7 @@ fileInput.addEventListener("change", () => {
         let fileName = file.name;
         // let fileSize = (file.size / 1024).toFixed(1);
 
-        listItem.innerHTML = `<p>${fileName}</p>`;
+        listItem.innerText = `${fileName}`;
 
         //if (fileSize >= 1024) {
         //    fileSize = (fileSize / 1024).toFixed(1);
