@@ -35,11 +35,15 @@ fileInput.addEventListener("change", () => {
 
         // add button to listItem to delete
         let deleteButtonCopy = document.querySelector(".edit.delete-profile").cloneNode(true);
+
+        deleteButtonCopy["itemID"] = nextListItemId++;
+        console.dir(deleteButtonCopy);
+
         deleteButtonCopy.addEventListener("click", (e) => {
-            const itemId = e.target.dataset.itemID;
+            const itemID = deleteButtonCopy.itemID;
 
             // Find the index of the item in the array using its unique identifier
-            const index = fileNamesArray.findIndex((item) => item.itemId === itemId);
+            const index = fileNamesArray.findIndex((item) => item.itemID === itemID);
 
             if (index !== -1) {
                 // Remove the corresponding file name and file content from the arrays
@@ -57,18 +61,14 @@ fileInput.addEventListener("change", () => {
             }
         });
 
-        deleteButtonCopy.dataset.itemId = nextListItemId;
-        nextListItemId++;
-
         fileContainer.append(deleteButtonCopy);
         listItem.append(fileContainer);
-        // console.dir(listItem);
         fileList.appendChild(listItem);
 
         // Read the file content and add it to the arrays
         reader.onload = (event) => {
             const fileContent = event.target.result;
-            fileNamesArray.push({ itemID: deleteButtonCopy.dataset.itemID, name: fileName });
+            fileNamesArray.push({ itemID: deleteButtonCopy.itemID, name: fileName });
 
 
             fileContentArray.push(fileContent);
