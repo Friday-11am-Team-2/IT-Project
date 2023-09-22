@@ -13,7 +13,7 @@ from stylometry import StyloNet
 
 from .forms import DocumentForm
 from .models import *
-from .utils import getStyloNet
+from .utils import getStyloNet, convert_file
 
 # TO DO - remove CSRF decorators
 def home_page_view(request):
@@ -30,8 +30,19 @@ def about_page_view(request):
 def profile_page_view(request):
     """ Renders the profile page """
     current_user = request.user
+
     profiles = Profile.objects.filter(user=current_user)
-    return render(request, 'profile.html', {'profiles': profiles})
+
+    # Grab currently select profile from session, "None" otherwise
+    cur_profile = request.session.get('profile_cur', None)
+    cur_profile_name = cur_profile.name if cur_profile else "None"
+    cur_profile_id = cur_profile.id if cur_profile else None
+
+    return render(request, 'profile.html', {
+        'profiles': profiles,
+        'profile_name': cur_profile_name,
+        'profile_id': cur_profile_id
+    })
 
 
 @login_required
@@ -39,7 +50,17 @@ def verify_page_view(request):
     """ Renders the verify page """
     current_user = request.user
     profiles = Profile.objects.filter(user=current_user)
-    return render(request, 'verify.html', {'profiles': profiles})
+
+    # Grab currently select profile from session, "None" otherwise
+    cur_profile = request.session.get('profile_cur', None)
+    cur_profile_name = cur_profile.name if cur_profile else "None"
+    cur_profile_id = cur_profile.id if cur_profile else None
+
+    return render(request, 'verify.html', {
+        'profiles': profiles,
+        'profile_name': cur_profile_name,
+        'profile_id' : cur_profile_id
+    })
 
 
 @login_required
@@ -86,6 +107,11 @@ def get_documents(request, profile_id):
         profile = Profile.objects.get(pk=profile_id, user=request.user)
         documents = Document.objects.filter(profile=profile)
         documents_data = [{'id': document.id, 'title': document.title} for document in documents]
+
+        # Set this as the selected profile (assume getting docs mean's selecting)
+        request.session['profile_cur'] = profile
+        if __debug__ and profile: print(f"Selecting profile {profile.name} = {profile_id}")
+
         return JsonResponse(documents_data, safe=False)
     except Profile.DoesNotExist:
         return JsonResponse([], safe=False)
@@ -161,7 +187,7 @@ def edit_profile(request, profile_id):
             return JsonResponse({"error": "Profile not found"}, status=404)
     else:
         return JsonResponse({"error": "Invalid request"}, status=400)
-    
+
 
 @login_required
 @csrf_exempt
