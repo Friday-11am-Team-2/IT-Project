@@ -6,6 +6,13 @@
     <div class="row align-items-center" style="min-height: 90vh">
       <div class="col-md-6 offset-md-3" id="login-block">
         <h1 style="text-align: center; width: 87%; margin-bottom: 20px;">Login</h1>
+        <!-- {% if form.non_field_errors %}
+        {% for error in form.non_field_errors %}
+        <p>
+          {{ error|escape }}
+        </p>
+        {% endfor %}
+        {% endif %} -->
         <form method="post" action="{% url 'login' %}">
           {% csrf_token %}
           <div class="form-group">
@@ -27,11 +34,14 @@
             </svg>
           </div>
           {% if form.non_field_errors %}
-          {% for error in form.non_field_errors %}
-          <p style="font-size: 13px;">
-            {{ error|escape }}
-          </p>
-          {% endfor %}
+          <div class="alert alert-warning alert-dismissible fade show" role="alert" id="login-error">
+            {% for error in form.non_field_errors %}
+            <p>
+              {{ error|escape }}
+            </p>
+            {% endfor %}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
           {% endif %}
           <button type="submit" class="btn btn-lg" id="log-in-btn">Sign in</button>
 
