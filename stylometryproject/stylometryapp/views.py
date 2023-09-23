@@ -54,7 +54,7 @@ def verify_page_view(request):
     # Grab currently select profile from session, "None" otherwise
     cur_profile = request.session.get('profile_cur', None)
     cur_profile_name = cur_profile.name if cur_profile else "None"
-    cur_profile_id = cur_profile.id if cur_profile else None
+    cur_profile_id = cur_profile.id if cur_profile else -1
 
     return render(request, 'verify.html', {
         'profiles': profiles,
@@ -74,6 +74,9 @@ def create_profile(request):
         # Create a new profile
         profile = Profile(name=new_profile_name, user=request.user)
         profile.save()
+
+        # Set the newly created profile as the selected
+        request.session['profile_cur'] = profile
 
         # Return the newly created profile data as JSON
         data = {
@@ -110,7 +113,6 @@ def get_documents(request, profile_id):
 
         # Set this as the selected profile (assume getting docs mean's selecting)
         request.session['profile_cur'] = profile
-        if __debug__ and profile: print(f"Selecting profile {profile.name} = {profile_id}")
 
         return JsonResponse(documents_data, safe=False)
     except Profile.DoesNotExist:
@@ -162,7 +164,11 @@ def delete_profile(request):
         profile_id = request.POST.get("profile_id")
         try:
             profile = Profile.objects.get(id=profile_id, user=request.user)
+            if request.session.get('profile_cur') == profile:
+                # If the profile being deleted is also selected, then deselect it
+                request.session.pop('profile_cur')
             profile.delete()
+
             return JsonResponse({"message": "Profile deleted successfully"})
         except Profile.DoesNotExist:
             return JsonResponse({"error": "Profile not found"}, status=404)
