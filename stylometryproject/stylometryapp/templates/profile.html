@@ -59,11 +59,16 @@
 
             <!-- Select Profile -->
             <div class="col-md-4">
-                <h2 class="display-5">Select Profile</h2>
+                <h2 class="display-5"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-1-circle-fill" viewBox="0 0 16 16">
+                        <path
+                            d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0ZM9.283 4.002H7.971L6.072 5.385v1.271l1.834-1.318h.065V12h1.312V4.002Z" />
+                    </svg>Select Profile</h2>
                 <p>Select a profile to add the documents to, or create a new one</p>
                 <div class="dropdown">
                     <button class="btn btn-lg dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                        aria-expanded="false" id="curr-profile-name" data-profile-id="{{ profile_id }}"> {{ profile_name }} </button>
+                        aria-expanded="false" id="curr-profile-name" data-profile-id="{{ profile_id }}"> {{ profile_name
+                        }} </button>
                     <ul class="dropdown-menu" id="profile-list">
                         {% for profile in profiles %}
                         <li>
@@ -116,7 +121,11 @@
 
             <!-- Upload File -->
             <div class="col-md-4">
-                <h2 class="display-5">Upload Documents</h2>
+                <h2 class="display-5"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-2-circle-fill" viewBox="0 0 16 16">
+                        <path
+                            d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0ZM6.646 6.24c0-.691.493-1.306 1.336-1.306.756 0 1.313.492 1.313 1.236 0 .697-.469 1.23-.902 1.705l-2.971 3.293V12h5.344v-1.107H7.268v-.077l1.974-2.22.096-.107c.688-.763 1.287-1.428 1.287-2.43 0-1.266-1.031-2.215-2.613-2.215-1.758 0-2.637 1.19-2.637 2.402v.065h1.271v-.07Z" />
+                    </svg>Upload Documents</h2>
                 <p>Upload Documents to add to a profile</p>
                 <!-- Restrict file type to .txt -->
                 <input type="file" id="upload" name="file-upload" accept=".txt" multiple />
@@ -129,12 +138,14 @@
                 <div class="row" id="uploaded-file-list-box">
                     <ul id="files-list"></ul>
                 </div>
-                <div id="num-of-files">No Files Chosen</div>
-                <input class="btn btn-large" id="submit-button" type="button" value="Submit Documents">
+                <div id="num-of-files">0 Files Chosen</div>
+                <div class=" row justify-content-center" id="submit-container">
+                    <input class="btn btn-large" id="submit-button" type="button" value="Submit Documents">
+                </div>
             </div>
 
 
-            
+
 
         </div>
 

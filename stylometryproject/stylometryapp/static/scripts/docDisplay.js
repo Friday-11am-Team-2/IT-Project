@@ -13,6 +13,13 @@ function updateProfileDisplay(profileId) {
             $('#curr-profile-name').text(' ' + data.name + ' ');
             $('#display-curr-profile-name').text(' ' + 'Profile: ' + data.name + ' ');
             uniqueCurrentProfileName = data.name;
+
+            $('#current-files').text(' ' + 'Files in Profile: ' + data.name + ' ');
+
+            // band-aid solution, breaks if someone actually makes a profile called 'None'
+            if (data.name !== "None") {
+                displayCurrentFiles();
+            }
         },
         error: function () {
             alert('Error fetching profile name');
@@ -35,7 +42,7 @@ function updateProfileDisplay(profileId) {
                     var deleteButton = $('<button>X</button>');
                     deleteButton.data('documentId', data[i].id);
                     deleteButton.addClass('delete-document-button');
-                    deleteButton.attr('style', 'background-color: #ff0000; color: #ffffff; width: 20px; height: 20px; line-height: 10px; text-align: center; font-size: 15px; padding: 0;  border: 2px solid #ff0000; float: right');
+                    deleteButton.attr('style', 'background-color: #ff0000; color: #ffffff; width: 18px; height: 18px; line-height: 10px; text-align: center; font-size: 15px; padding: 0;  border: 2px solid #ff0000; float: right; margin-top: 3px;');
                     listItem.append(deleteButton);
 
                     // Append the document
@@ -52,6 +59,8 @@ function updateProfileDisplay(profileId) {
             alert('Error fetching documents');
         }
     });
+
+
 }
 
 $(document).ready(function () {
@@ -71,6 +80,9 @@ $(document).ready(function () {
     if ($('#curr-profile-name').data('profile-id') > 0) {
         uniqueCurrentProfileID = $('#curr-profile-name').data('profile-id')
         updateProfileDisplay($('#curr-profile-name').data('profile-id'))
+
+        // this should be 0 after all profiles are deleted, but it's not
+        // console.log(uniqueCurrentProfileID)
     } else {
         // Otherwise initialize the display with 'None' when the page loads
         $('#curr-profile-name').text(' None ');
@@ -98,3 +110,10 @@ $('#profile-files-list').on('click', '.delete-document-button', function (event)
         }
     });
 });
+
+function displayCurrentFiles() {
+    console.log("here");
+    let displayDocs = document.querySelector("#current-docs");
+    if (displayDocs)
+        displayDocs.classList.remove("none");
+}
