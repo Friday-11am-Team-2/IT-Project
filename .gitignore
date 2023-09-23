@@ -5,6 +5,7 @@ env
 
 # Database
 stylometryproject/db.sqlite3
+db.sqlite3
 
 # PAN14_Code Ignores
 PAN14_Model_Code/nltk_data
