@@ -13,7 +13,7 @@ from stylometry import StyloNet
 
 from .forms import DocumentForm
 from .models import *
-from .utils import getStyloNet
+from .utils import getStyloNet, convert_file
 
 # TO DO - remove CSRF decorators
 def home_page_view(request):
@@ -54,7 +54,7 @@ def verify_page_view(request):
     # Grab currently select profile from session, "None" otherwise
     cur_profile = request.session.get('profile_cur', None)
     cur_profile_name = cur_profile.name if cur_profile else "None"
-    cur_profile_id = cur_profile.id if cur_profile else None
+    cur_profile_id = cur_profile.id if cur_profile else -1
 
     return render(request, 'verify.html', {
         'profiles': profiles,

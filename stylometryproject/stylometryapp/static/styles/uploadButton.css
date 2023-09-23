@@ -1,6 +1,7 @@
 body {
-    width:100%;
+    width: 100%;
 }
+
 #curr-profile-list-box {
     background-color: #FCEEC0;
     width: 80%;
@@ -15,6 +16,10 @@ body {
 
 #files-list {
     list-style-type: none;
+}
+
+#files-list li {
+    padding-top: 3px;
 }
 
 #uploaded-file-list-box {

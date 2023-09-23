@@ -49,10 +49,10 @@ svg {
     transform: translateY(-0.25em);
 }
 
-p {
-    margin-top: 10px;
+.bottom p {
     text-align: center;
     width: 87%;
+    font-weight: normal;
 }
 
 p a {
@@ -63,4 +63,23 @@ p a {
 
 .bottom {
     margin-top: 20px;
+}
+
+p {
+    font-size: 0.90em;
+    width: 87%;
+    font-weight: 700;
+    text-align: center;
+}
+
+#login-error {
+    width: 87%;
+    padding-bottom: 2.5px;
+}
+
+#register-error {
+    width: 60%;
+    padding-bottom: 1px;
+    padding-top: 12px;
+    margin-left: 15%;
 }

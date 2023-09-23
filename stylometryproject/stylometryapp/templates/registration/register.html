@@ -27,11 +27,16 @@
             </svg>
             {% endif %}
           </div>
-          {% if field.errors %} {% for error in field.errors %}
-          <p style="font-size: 13px;">
-            {{ error|escape }}
-          </p>
-          {% endfor %} {% endif %} {% endfor %}
+          {% if field.errors %}
+          <div class="alert alert-warning alert-dismissible fade show" role="alert" id="register-error">
+            {% for error in field.errors %}
+            <p>
+              {{ error|escape }}
+            </p>
+            {% endfor %}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+          {% endif %} {% endfor %}
           <button type="submit" class="btn btn-lg" id="sign-up-btn">Register</button>
 
           <div class="bottom">
