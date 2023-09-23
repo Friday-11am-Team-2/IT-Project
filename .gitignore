@@ -1,7 +1,6 @@
 .vscode
 .venv
 __pycache__
-nltk_data
 env
 
 # Database
@@ -10,8 +9,8 @@ stylometryproject/db.sqlite3
 # PAN14_Code Ignores
 PAN14_Model_Code/nltk_data
 PAN14_Model_Code/model_weights
-!PAN14_Model_Code/model_weights/.keep
 PAN14_Model_Code/Word2Vec.model
+PAN14_Model_Code/models
 
 # JetBrains IDE Ignores
 .idea/inspectionProfiles/profiles_settings.xml
