@@ -30,7 +30,7 @@ def get_stylonet() -> StyloNet:
 
 def stylonet_preload() -> None:
 	"""Spawn a separate thread to preload the model"""
-	preload = threading.Thread(target=get_stylonet())
+	preload = threading.Thread(target=get_stylonet)
 	preload.start()
 
 # File type prosessing (only accepts txt, docx)
