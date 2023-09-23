@@ -100,6 +100,19 @@
                 </div>
             </div>
 
+            <!-- Current Profile -->
+            <div class="col-md-4">
+                <h2 class="display-5">Current Profile</h2>
+
+                <div class="row" style="background-color: #F0E2B6; width: 80%; margin: 5% 0 0 0;">
+                    <p id="display-curr-profile-name">Profile: None</p>
+                </div>
+                <div class="row" id="curr-profile-list-box">
+                    <ul id="profile-files-list">
+                        <!-- Documents will be displayed here -->
+                    </ul>
+                </div>
+            </div>
 
             <!-- Upload File -->
             <div class="col-md-4">
@@ -116,25 +129,12 @@
                 <div class="row" id="uploaded-file-list-box">
                     <ul id="files-list"></ul>
                 </div>
-
                 <div id="num-of-files">No Files Chosen</div>
-            </div>
-
-
-            <!-- Submit Profile -->
-            <div class="col-md-4">
-                <h2 class="display-5">Current Profile</h2>
-
-                <div class="row" style="background-color: #F0E2B6; width: 80%; margin: 5% 0 0 0;">
-                    <p id="display-curr-profile-name">Profile: None</p>
-                </div>
-                <div class="row" id="curr-profile-list-box">
-                    <ul id="profile-files-list">
-                        <!-- Documents will be displayed here -->
-                    </ul>
-                </div>
                 <input class="btn btn-large" id="submit-button" type="button" value="Submit Documents">
             </div>
+
+
+            
 
         </div>
 
@@ -154,7 +154,7 @@
                         <div class="mb-3">
                             <label for="newProfileName" class="form-label">Profile Name:</label>
                             <input type="text" class="form-control" id="newProfileName" name="newProfileName"
-                                maxlength="20" required>
+                                maxlength="20" minlength="2" required>
                             <label for="newProfileName" class="form-label">(Max Characters 20)</label>
                         </div>
                     </form>
