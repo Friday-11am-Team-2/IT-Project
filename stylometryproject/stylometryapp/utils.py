@@ -12,7 +12,7 @@ def getStyloNet() -> StyloNet:
 
 	# Initialize if not already, otherwise just return existing
 	if stylometry_model is None:
-		stylometry_model = StyloNet(settings.STYLOMETRY_DIR, settings.STYLOMETRY_MATCH_THRESHOLD)
+		stylometry_model = StyloNet(settings.STYLOMETRY_PROFILE)
 		print(f"Initialized Stylometry Model at {id(stylometry_model)}")
 
 	return stylometry_model

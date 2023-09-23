@@ -18,8 +18,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # Stylometry Model Settings
-STYLOMETRY_DIR = "model_storage"  # As a sub-directory of BASE_DIR
-STYLOMETRY_MATCH_THRESHOLD = 0.5  # The threshold for whether verifed documents pass/fail
+STYLOMETRY_PROFILE = "example_profile"
+#STYLOMETRY_PROFILE_BASE = "stylometry_models"
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
