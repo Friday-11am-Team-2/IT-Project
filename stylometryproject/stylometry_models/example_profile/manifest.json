@@ -1,0 +1,9 @@
+{
+    "name": "example_profile",
+    "embedding_dim": 323,
+    "ckpts": "model_weights/cp.ckpt",
+    "word_vector_size": 300,
+    "word2vec": "word2vec.model",
+    "nltk_data": "nltk_data",
+    "valid_threshold": 0.5
+}
