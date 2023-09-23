@@ -1,6 +1,5 @@
 // Javascript for verification button (ONLY ON VERIFY)
 document.addEventListener("DOMContentLoaded", () => {
-    console.log("loading")
     const runVerificationButton = document.getElementById("verify-button");
 
     let previousProfileID = 0;
