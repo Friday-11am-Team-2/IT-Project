@@ -56,7 +56,6 @@ class StyloNet:
 
         self.valid_threshold = manifest.get("valid_threshold", 0.5)
         embedding_dim = (manifest.get('embedding_dim',323),) if type(manifest.get('embedding_dim', 323)) is int else tuple(manifest.get('embedding_dim', 323))
-        self.vector_length = manifest.get("word_vector_size", 300)
 
         nltk_path = os.path.join(profile_path, manifest.get("nltk_data", "nltk_data"))
         w2v_save = os.path.join(profile_path, manifest.get("word2vec", "word2vec.model"))
@@ -74,8 +73,8 @@ class StyloNet:
 
     def _vectorize(self,text : dict):
         vectors = {
-            'known': get_vectors(text['known'], self.word2vec, self.vector_length),
-            'unknown': get_vectors(text['unknown'], self.word2vec, self.vector_length)
+            'known': get_vectors(text['known'], self.word2vec),
+            'unknown': get_vectors(text['unknown'], self.word2vec)
         }
         return vectors
 
@@ -313,7 +312,7 @@ def preprocess_text(text: list|str) -> list[str]:
 
     return tokens
 
-def convert_text_to_vector(texts : list, model: gensim.models.Word2Vec, w2v_vector_size = 300) -> list:
+def convert_text_to_vector(texts : list, model: gensim.models.Word2Vec) -> list:
     """
     Text vectorizing function from PAN14_Data_Demo.ipynb
     Convert a list of texts into their corresponding word2vec vectors
@@ -326,7 +325,7 @@ def convert_text_to_vector(texts : list, model: gensim.models.Word2Vec, w2v_vect
         if word_count != 0:
             vector /= word_count
         else:
-          vector = np.zeros(w2v_vector_size)
+          vector = np.zeros(model.vector_size)
         vectors.append(vector)
     return vectors
 
@@ -401,11 +400,11 @@ def calculate_style_vector(texts):
 
     return vector / word_count if word_count else vector
 
-def get_vectors(texts: list, w2v_model: gensim.models.Word2Vec, vector_size:int = 300) -> list:
+def get_vectors(texts: list, w2v_model: gensim.models.Word2Vec) -> list:
     """get_vectors from PAN14_Data_Demo.ipynb"""
     res = []
     for text in texts:
-        w2v_vec = np.mean(convert_text_to_vector(text, w2v_model, vector_size), axis=0)
+        w2v_vec = np.mean(convert_text_to_vector(text, w2v_model), axis=0)
         style_vec = calculate_style_vector(text)
         res.append(np.concatenate((w2v_vec, style_vec), axis=None))
         # res.append(w2v_vec)
