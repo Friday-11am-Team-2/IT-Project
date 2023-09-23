@@ -9,12 +9,19 @@ function updateProfileDisplay(profileId) {
     $.ajax({
         url: '/get_profile_name/' + profileId + '/',
         method: 'GET',
-        success: function(data) {
+        success: function (data) {
             $('#curr-profile-name').text(' ' + data.name + ' ');
-            $('#display-curr-profile-name').text(' ' + data.name + ' ');
+            $('#display-curr-profile-name').text(' ' + 'Profile: ' + data.name + ' ');
             uniqueCurrentProfileName = data.name;
+
+            $('#current-files').text(' ' + 'Files in Profile: ' + data.name + ' ');
+
+            // band-aid solution, breaks if someone actually makes a profile called 'None'
+            if (data.name !== "None") {
+                displayCurrentFiles();
+            }
         },
-        error: function() {
+        error: function () {
             alert('Error fetching profile name');
         }
     });
@@ -23,7 +30,7 @@ function updateProfileDisplay(profileId) {
     $.ajax({
         url: '/get_documents/' + profileId + '/',
         method: 'GET',
-        success: function(data) {
+        success: function (data) {
             if (data.length > 0) {
                 // Iterate through the documents
                 $('#profile-files-list').empty();
@@ -33,9 +40,9 @@ function updateProfileDisplay(profileId) {
 
                     // Add delete button to list (for the document)
                     var deleteButton = $('<button>X</button>');
-                    deleteButton.data('documentId', data[i].id); 
+                    deleteButton.data('documentId', data[i].id);
                     deleteButton.addClass('delete-document-button');
-                    deleteButton.attr('style', 'background-color: #ff0000; color: #ffffff; width: 20px; height: 20px; line-height: 10px; text-align: center; font-size: 15px; padding: 0;  border: 2px solid #ff0000; float: right');
+                    deleteButton.attr('style', 'background-color: #ff0000; color: #ffffff; width: 18px; height: 18px; line-height: 10px; text-align: center; font-size: 15px; padding: 0;  border: 2px solid #ff0000; float: right; margin-top: 3px;');
                     listItem.append(deleteButton);
 
                     // Append the document
@@ -46,19 +53,21 @@ function updateProfileDisplay(profileId) {
                 // Display 'No Documents' if there are no documents
                 $('#profile-files-list').empty().append('<li>No Documents</li>');
             }
-    
+
         },
-        error: function() {
+        error: function () {
             alert('Error fetching documents');
         }
     });
+
+
 }
 
-$(document).ready(function() {
+$(document).ready(function () {
     // Attach a click event handler to the profile dropdown items
-    $('.profile-item').on('click', function(event) {
+    $('.profile-item').on('click', function (event) {
         event.preventDefault(); // Prevent the default link behavior
-        
+
         // Get the selected profile ID
         var selectedProfileId = $(this).data('profile-id');
         uniqueCurrentProfileID = selectedProfileId;
@@ -67,28 +76,44 @@ $(document).ready(function() {
         updateProfileDisplay(selectedProfileId);
     });
 
-    // Initialize the display with 'None' when the page loads
-    $('#curr-profile-name').text(' None ');
-    $('#profile-files-list').empty().append('<li>No Documents</li>');
+    // If a currently select profile is included, initialize with those values
+    if ($('#curr-profile-name').data('profile-id') > 0) {
+        uniqueCurrentProfileID = $('#curr-profile-name').data('profile-id')
+        updateProfileDisplay($('#curr-profile-name').data('profile-id'))
+
+        // this should be 0 after all profiles are deleted, but it's not
+        // console.log(uniqueCurrentProfileID)
+    } else {
+        // Otherwise initialize the display with 'None' when the page loads
+        $('#curr-profile-name').text(' None ');
+        $('#profile-files-list').empty().append('<li>No Documents</li>');
+    }
 });
 
 
 // Add a click event listener for delete buttons
-$('#profile-files-list').on('click', '.delete-document-button', function(event) {
+$('#profile-files-list').on('click', '.delete-document-button', function (event) {
     event.preventDefault();
     var documentId = $(this).data('documentId');
     var listItem = $(this).closest('li'); // Get the parent list item
 
     // Send an AJAX request to delete the document by its ID
     $.ajax({
-        url: '/delete_document/' + documentId + '/', 
+        url: '/delete_document/' + documentId + '/',
         method: 'DELETE',
-        success: function() {
+        success: function () {
             // Remove the list item as document was deleted from back-end
             listItem.remove();
         },
-        error: function() {
+        error: function () {
             alert('Error deleting document');
         }
     });
 });
+
+function displayCurrentFiles() {
+    console.log("here");
+    let displayDocs = document.querySelector("#current-docs");
+    if (displayDocs)
+        displayDocs.classList.remove("none");
+}

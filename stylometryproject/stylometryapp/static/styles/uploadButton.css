@@ -1,3 +1,7 @@
+body {
+    width: 100%;
+}
+
 #curr-profile-list-box {
     background-color: #FCEEC0;
     width: 80%;
@@ -14,11 +18,22 @@
     list-style-type: none;
 }
 
+#files-list li {
+    padding-top: 3px;
+}
+
+#profile-files-list-box{
+    background-color: #FCEEC0;
+    width: 80%;
+    margin: 0 0 5% 0;
+    height: 290px;
+}
+
 #uploaded-file-list-box {
     margin: 5% 0 0 0;
     background-color: #F0E2B6;
     overflow-y: scroll;
-    height: 400px;
+    height: 325px;
     width: 80%;
 }
 

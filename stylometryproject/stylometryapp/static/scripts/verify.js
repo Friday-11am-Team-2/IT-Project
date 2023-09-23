@@ -1,6 +1,5 @@
 // Javascript for verification button (ONLY ON VERIFY)
 document.addEventListener("DOMContentLoaded", () => {
-    console.log("loading")
     const runVerificationButton = document.getElementById("verify-button");
 
     let previousProfileID = 0;
@@ -23,14 +22,11 @@ document.addEventListener("DOMContentLoaded", () => {
         runVerificationButton.addEventListener("click", (event) => {
             event.preventDefault();
 
-            console.log("hello")
+            // Set a flag in local storage to indicate that the button has been clicked
+            localStorage.setItem('buttonClicked', true);
 
-            // Check if the button has already been clicked
-            const buttonClicked = localStorage.getItem('buttonClicked');
-            if (buttonClicked) {
-                alert("Button has already been clicked once.");
-                return;
-            }
+            // Disable the button after clicking
+            runVerificationButton.disabled = true;
 
             // Get profile ID from docDisplay
             const profileID = uniqueCurrentProfileID;
@@ -108,12 +104,6 @@ document.addEventListener("DOMContentLoaded", () => {
                         });
                     }
                     document.getElementById("verification-results").appendChild(newField);
-
-                    // Set a flag in local storage to indicate that the button has been clicked
-                    localStorage.setItem('buttonClicked', true);
-
-                    // Disable the button after clicking
-                    runVerificationButton.disabled = true;
                 })
                 .catch((error) => {
                     console.log(error.message)

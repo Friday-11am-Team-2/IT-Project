@@ -8,6 +8,7 @@ numpy==1.24.3
 scikit-learn
 networkx
 tqdm
+matplotlib
 
 # Django requiments
 Django

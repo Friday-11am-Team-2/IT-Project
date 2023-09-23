@@ -9,11 +9,11 @@ from django.contrib.auth.decorators import login_required
 
 import json
 import random
-from Stylometry import StyloNet
+from stylometry import StyloNet
 
 from .forms import DocumentForm
 from .models import *
-from .utils import getStyloNet
+from .utils import get_stylonet, convert_file
 
 # TO DO - remove CSRF decorators
 def home_page_view(request):
@@ -30,8 +30,19 @@ def about_page_view(request):
 def profile_page_view(request):
     """ Renders the profile page """
     current_user = request.user
+
     profiles = Profile.objects.filter(user=current_user)
-    return render(request, 'profile.html', {'profiles': profiles})
+
+    # Grab currently select profile from session, "None" otherwise
+    cur_profile = request.session.get('profile_cur', None)
+    cur_profile_name = cur_profile.name if cur_profile else "None"
+    cur_profile_id = cur_profile.id if cur_profile else None
+
+    return render(request, 'profile.html', {
+        'profiles': profiles,
+        'profile_name': cur_profile_name,
+        'profile_id': cur_profile_id
+    })
 
 
 @login_required
@@ -39,7 +50,17 @@ def verify_page_view(request):
     """ Renders the verify page """
     current_user = request.user
     profiles = Profile.objects.filter(user=current_user)
-    return render(request, 'verify.html', {'profiles': profiles})
+
+    # Grab currently select profile from session, "None" otherwise
+    cur_profile = request.session.get('profile_cur', None)
+    cur_profile_name = cur_profile.name if cur_profile else "None"
+    cur_profile_id = cur_profile.id if cur_profile else -1
+
+    return render(request, 'verify.html', {
+        'profiles': profiles,
+        'profile_name': cur_profile_name,
+        'profile_id' : cur_profile_id
+    })
 
 
 @login_required
@@ -53,6 +74,9 @@ def create_profile(request):
         # Create a new profile
         profile = Profile(name=new_profile_name, user=request.user)
         profile.save()
+
+        # Set the newly created profile as the selected
+        request.session['profile_cur'] = profile
 
         # Return the newly created profile data as JSON
         data = {
@@ -86,6 +110,10 @@ def get_documents(request, profile_id):
         profile = Profile.objects.get(pk=profile_id, user=request.user)
         documents = Document.objects.filter(profile=profile)
         documents_data = [{'id': document.id, 'title': document.title} for document in documents]
+
+        # Set this as the selected profile (assume getting docs mean's selecting)
+        request.session['profile_cur'] = profile
+
         return JsonResponse(documents_data, safe=False)
     except Profile.DoesNotExist:
         return JsonResponse([], safe=False)
@@ -136,7 +164,11 @@ def delete_profile(request):
         profile_id = request.POST.get("profile_id")
         try:
             profile = Profile.objects.get(id=profile_id, user=request.user)
+            if request.session.get('profile_cur') == profile:
+                # If the profile being deleted is also selected, then deselect it
+                request.session.pop('profile_cur')
             profile.delete()
+
             return JsonResponse({"message": "Profile deleted successfully"})
         except Profile.DoesNotExist:
             return JsonResponse({"error": "Profile not found"}, status=404)
@@ -161,7 +193,7 @@ def edit_profile(request, profile_id):
             return JsonResponse({"error": "Profile not found"}, status=404)
     else:
         return JsonResponse({"error": "Invalid request"}, status=400)
-    
+
 
 @login_required
 @csrf_exempt
@@ -211,7 +243,7 @@ def run_verification(request):
                 'unknown': [ text ]
             }
 
-            model = getStyloNet()
+            model = get_stylonet()
 
             value = round(model.score(text_data), 3)
 
