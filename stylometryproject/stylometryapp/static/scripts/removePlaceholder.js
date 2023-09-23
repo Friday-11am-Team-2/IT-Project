@@ -1,4 +1,4 @@
-let placeholder = document.querySelector("#curr-profile-name");
+let placeholder = document.querySelector("#curr-profile");
 let docList = document.querySelector("#profile-list");
 
 let profileAdded = false;
