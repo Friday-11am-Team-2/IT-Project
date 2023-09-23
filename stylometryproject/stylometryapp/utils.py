@@ -1,21 +1,37 @@
 from django.conf import settings
-from stylometry import StyloNet
 import os
+import threading
+from stylometry import StyloNet
 
 
 ### Stylometry Model Utils ###
-stylometry_model: StyloNet|None = None
+stylometry_model = None
 
-def getStyloNet() -> StyloNet:
+def get_stylonet() -> StyloNet:
 	"""Initialize or return the existing instance of the StyloNet object"""
 	global stylometry_model
 
 	# Initialize if not already, otherwise just return existing
 	if stylometry_model is None:
-		stylometry_model = StyloNet(settings.STYLOMETRY_PROFILE)
+		try:
+			profile_base = settings.STYLOMETRY_PROFILE_DIR
+		except AttributeError:
+			profile_base = "stylometry_models"
+		
+		try:
+			profile = settings.STYLOMETRY_PROFILE
+		except AttributeError:
+			profile = os.listdir(profile_base)[0]
+
+		stylometry_model = StyloNet(profile, profile_base)
 		print(f"Initialized Stylometry Model at {id(stylometry_model)}")
 
 	return stylometry_model
+
+def stylonet_preload() -> None:
+	"""Spawn a separate thread to preload the model"""
+	preload = threading.Thread(target=get_stylonet())
+	preload.start()
 
 # File type prosessing (only accepts txt, docx)
 def convert_file(file_name, file_content):             

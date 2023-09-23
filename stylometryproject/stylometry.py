@@ -3,9 +3,6 @@
 
 ### Required imports ###
 import os
-#import math
-#import glob
-#import pickle
 import json
 import string
 
@@ -25,35 +22,10 @@ if __debug__: ver(nltk)
 if not __debug__: os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 import tensorflow as tf
-#from tensorflow import keras
-#from tensorflow.keras import layers
-#from tensorflow.keras.layers import Dense, Dropout
-#from tensorflow.keras.models import Sequential
-#from tensorflow.keras.optimizers import Adam
-#from tensorflow.keras.optimizers.schedules import PolynomialDecay
-#from tensorflow.keras.callbacks import EarlyStopping
 if __debug__: ver(tf)
 
 import gensim
-#from gensim.models import Word2Vec
-#from gensim.models.doc2vec import Doc2Vec, TaggedDocument
-#from gensim.test.utils import common_texts
 if __debug__: ver(gensim)
-
-#import sklearn
-#from sklearn.metrics import f1_score, accuracy_score, roc_auc_score
-#from sklearn.model_selection import train_test_split, GridSearchCV
-#from sklearn.preprocessing import MinMaxScaler, StandardScaler
-#from sklearn.metrics.pairwise import cosine_similarity
-#from sklearn.feature_extraction.text import TfidfVectorizer
-#from sklearn.linear_model import LogisticRegression
-#from sklearn.cluster import KMeans
-#from sklearn.svm import SVC
-#from sklearn.model_selection import KFold
-#ver(sklearn)
-
-#import scipy
-#from scipy.spatial.distance import cosine
 
 
 ### Classes (for use outside the model) ###
