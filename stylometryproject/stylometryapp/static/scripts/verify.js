@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
             runVerificationButton.disabled = true;
 
             // Get profile ID from docDisplay
-            const profileID = uniqueCurrentProfileID;
+            const profileID = $('#curr-profile').data('profile-id');
             if (profileID <= 0) {
                 alert("Please select a profile first");
                 return;
@@ -65,12 +65,15 @@ document.addEventListener("DOMContentLoaded", () => {
                     // Handle the response data
                     console.log("Verification successful");
                     console.log("Result:", data.result);
+                    
+                    currentProfileId = $('#curr-profile').data('profile-id')
+                    currentProfileName =  $('#curr-profile').textContent
 
                     // Update previous
                     isNew = false;
                     if (previousProfileID !== profileID || previousFileName !== fileNamesArray[0]) {
                         previousProfileID = profileID;
-                        previousProfileName = uniqueCurrentProfileName;
+                        previousProfileName = currentProfileName;
                         previousFileName = fileNamesArray[0];
                         isNew = true;
                     }
@@ -78,7 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     // Update the <p> field within the "verification-results" div
                     const verificationResultsParagraph = document.querySelector("#verification-results h3");
                     if (verificationResultsParagraph) {
-                        verificationResultsParagraph.textContent = `${uniqueCurrentProfileName} vs ${fileNamesArray[0]}:`;
+                        verificationResultsParagraph.textContent = `${currentProfileName} vs ${fileNamesArray[0]}:`;
                     }
 
                     // Get Data Fields

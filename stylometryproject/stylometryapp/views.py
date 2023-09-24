@@ -36,7 +36,7 @@ def profile_page_view(request):
     # Grab currently select profile from session, "None" otherwise
     cur_profile = request.session.get('profile_cur', None)
     cur_profile_name = cur_profile.name if cur_profile else "None"
-    cur_profile_id = cur_profile.id if cur_profile else None
+    cur_profile_id = cur_profile.id if cur_profile else -1
 
     return render(request, 'profile.html', {
         'profiles': profiles,

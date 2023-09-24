@@ -1,6 +1,6 @@
 // Globally store the current profile ID and name (used in uploadButton.js)
-let uniqueCurrentProfileID = 0;
-let uniqueCurrentProfileName = "";
+//let uniqueCurrentProfileID = 0;
+//let uniqueCurrentProfileName = "";
 
 // Function to update the profile name and documents
 function updateProfileDisplay(profileId) {
@@ -10,9 +10,10 @@ function updateProfileDisplay(profileId) {
         url: '/get_profile_name/' + profileId + '/',
         method: 'GET',
         success: function (data) {
-            $('#curr-profile-name').text(' ' + data.name + ' ');
+            $('#curr-profile').text(' ' + data.name + ' ');
             $('#display-curr-profile-name').text(' ' + 'Profile: ' + data.name + ' ');
-            uniqueCurrentProfileName = data.name;
+            //uniqueCurrentProfileName = data.name;
+            $('#curr-profile').attr('data-profile-id', profileId)
 
             $('#current-files').text(' ' + 'Files in Profile: ' + data.name + ' ');
 
@@ -70,22 +71,22 @@ $(document).ready(function () {
 
         // Get the selected profile ID
         var selectedProfileId = $(this).data('profile-id');
-        uniqueCurrentProfileID = selectedProfileId;
+        //uniqueCurrentProfileID = selectedProfileId;
 
         // Update the profile name and documents based on the selected profile ID
         updateProfileDisplay(selectedProfileId);
     });
 
     // If a currently select profile is included, initialize with those values
-    if ($('#curr-profile-name').data('profile-id') > 0) {
-        uniqueCurrentProfileID = $('#curr-profile-name').data('profile-id')
-        updateProfileDisplay($('#curr-profile-name').data('profile-id'))
+    if ($('#curr-profile').data('profile-id') > 0) {
+        //uniqueCurrentProfileID = $('#curr-profile-name').data('profile-id')
+        updateProfileDisplay($('#curr-profile').data('profile-id'))
 
         // this should be 0 after all profiles are deleted, but it's not
         // console.log(uniqueCurrentProfileID)
     } else {
         // Otherwise initialize the display with 'None' when the page loads
-        $('#curr-profile-name').text(' None ');
+        $('#curr-profile').text(' None ');
         $('#profile-files-list').empty().append('<li>No Documents</li>');
     }
 });
