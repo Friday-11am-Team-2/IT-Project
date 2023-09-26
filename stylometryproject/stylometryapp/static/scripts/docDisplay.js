@@ -1,7 +1,3 @@
-// Globally store the current profile ID and name (used in uploadButton.js)
-//let uniqueCurrentProfileID = 0;
-//let uniqueCurrentProfileName = "";
-
 // Function to update the profile name and documents
 function updateProfileDisplay(profileId) {
 
@@ -12,8 +8,6 @@ function updateProfileDisplay(profileId) {
         success: function (data) {
             $('#curr-profile').text(' ' + data.name + ' ');
             $('#display-curr-profile-name').text(' ' + 'Profile: ' + data.name + ' ');
-            //uniqueCurrentProfileName = data.name;
-            $('#curr-profile').attr('data-profile-id', profileId)
 
             $('#current-files').text(' ' + 'Files in Profile: ' + data.name + ' ');
 
@@ -72,6 +66,7 @@ $(document).ready(function () {
         // Get the selected profile ID
         var selectedProfileId = $(this).data('profile-id');
         //uniqueCurrentProfileID = selectedProfileId;
+        $('#curr-profile').data('profile-id', selectedProfileId)
 
         // Update the profile name and documents based on the selected profile ID
         updateProfileDisplay(selectedProfileId);
@@ -113,7 +108,6 @@ $('#profile-files-list').on('click', '.delete-document-button', function (event)
 });
 
 function displayCurrentFiles() {
-    console.log("here");
     let displayDocs = document.querySelector("#current-docs");
     if (displayDocs)
         displayDocs.classList.remove("none");

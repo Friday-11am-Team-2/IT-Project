@@ -4,6 +4,7 @@ if (submitButton) {
     submitButton.addEventListener("click", () => {
         // Get profile ID from docDisplay
         const profileID = $('#curr-profile').data('profile-id');
+
         if (profileID <= 0) {
             alert("Please select a profile first");
             return;
