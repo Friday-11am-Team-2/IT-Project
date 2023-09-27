@@ -1,0 +1,157 @@
+body {
+    background-color: #fefae0;
+    font-family: 'Lato', sans-serif;
+}
+
+nav {
+    background-color: #dda15e;
+}
+
+#logo {
+    margin-right: 0.75rem;
+}
+
+.navbar-brand {
+    color: #283618;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+
+.nav-link {
+    color: #fefae0;
+    font-size: 1rem;
+    font-weight: 100;
+}
+
+.nav-link:hover {
+    color: #3a5a40;
+}
+
+section h1 {
+    margin: 0 auto;
+    padding-top: 5%;
+    text-align: center;
+    font-weight: 700;
+
+}
+
+h2 {
+    margin: 0 auto;
+    font-weight: 800;
+    font-weight: bold;
+}
+
+.lead {
+    text-align: center;
+    padding-top: 5%;
+    padding-bottom: 2.5%;
+    font-size: 1.5rem;
+}
+
+.btn {
+    background-color: #d88d4c;
+    font-size: 1.5rem;
+    letter-spacing: 1px;
+    transition: all 0.25s;
+    color: #faedcd;
+    letter-spacing: 1px;
+}
+
+.btn:hover {
+    color: #283618;
+    box-shadow: 0 0.6em 0.6em -0.4em #283618;
+    background-color: #fca311;
+    transform: translateY(-0.25em);
+}
+
+p {
+    font-size: 1.2em;
+    padding-top: 2.5%;
+}
+
+#verification-results {
+    border-left: 1px solid #283618;
+    padding-left: 2%;
+    height: 100vh;
+}
+
+#verify-button {
+    margin-top: 5%;
+    background-color: #d87016;
+    padding: 6% 8%;
+}
+
+.edit {
+    border: none;
+    background-color: transparent;
+    width: 30px;
+    height: 30px;
+    line-height: 20px;
+    text-align: center;
+    font-size: 25px;
+    padding: 0;
+    margin-left: 2px;
+}
+
+.none {
+    display: none;
+}
+
+h2 svg {
+    height: 25px;
+    width: 25px;
+    margin-right: 6px;
+}
+
+.display-5 {
+    font-size: 2.5rem;
+}
+
+.edit:hover {
+    box-shadow: 0 0.6em 0.6em -0.4em currentColor;
+    transform: translateY(-0.25em);
+    background-color: transparent;
+}
+
+#profile-files-list {
+    list-style-type: none;
+}
+
+.modal-content {
+    background-color: #fefae0;
+}
+
+#saveChanges,
+#addProfileBtn {
+    font-size: 1rem;
+    padding: 2%;
+}
+
+#submit-button {
+    padding: 5%;
+    width: 80%;
+    background-color: #d87016;
+
+}
+
+#submit-container {
+    width: 80%;
+}
+
+#verify-text {
+    font-weight: bold;
+    margin-top: auto;
+}
+
+#logout-btn,
+#login-btn {
+    color: #fefae0;
+    font-size: 1rem;
+    font-weight: 100;
+}
+
+#num-of-files {
+    margin-top: 2.5px;
+    margin-bottom: 4px;
+}
