@@ -2,6 +2,7 @@
 .venv
 __pycache__
 env
+.env
 
 # Database
 stylometryproject/db.sqlite3
@@ -22,3 +23,4 @@ PAN14_Model_Code/models
 .idea/vcs.xml
 .idea/workspace.xml
 
+stylometryproject/.env
