@@ -14,3 +14,11 @@ matplotlib
 Django
 djangorestframework
 django-cors-headers
+
+# Database
+psycopg2
+psycopg2-binary
+
+# Deployment
+python-dotenv
+python-decouple

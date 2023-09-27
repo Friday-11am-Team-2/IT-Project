@@ -30,8 +30,30 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
+
+    - name: Create env file
+      run: |
+        cd stylometryproject
+        touch .env
+        echo RDS_ENGINE=${RDS_ENGINE} >> .env
+        echo RDS_DB_NAME=${RDS_DB_NAME} >> .env
+        echo RDS_USERNAME=${RDS_USERNAME} >> .env
+        echo RDS_PASSWORD=${RDS_PASSWORD} >> .env
+        echo RDS_HOSTNAME=${RDS_HOSTNAME} >> .env
+        echo RDS_PORT=${RDS_PORT} >> .env
+        echo SECRET_KEY=${SECRET_KEY} >> .env
+        cat .env
+      env: 
+        RDS_ENGINE: ${{ secrets.RDS_ENGINE}} 
+        RDS_DB_NAME: ${{ secrets.RDS_DB_NAME }} 
+        RDS_USERNAME: ${{ secrets.RDS_USERNAME }}
+        RDS_PASSWORD: ${{ secrets.RDS_PASSWORD }}
+        RDS_HOSTNAME: ${{ secrets.RDS_HOSTNAME }}
+        RDS_PORT: ${{ secrets.RDS_PORT }}
+        SECRET_KEY: ${{ secrets.SECRET_KEY }}
       
     - name: Run Tests
       run: |
         cd stylometryproject
         python manage.py test
+      shell: bash
