@@ -6,6 +6,8 @@ __pycache__
 *.sqlite3
 
 .github/
+.git/
+.gitignore
 PAN14_Model_Code/
 confluence/
 .venv/

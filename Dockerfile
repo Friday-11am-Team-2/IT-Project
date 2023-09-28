@@ -20,5 +20,10 @@ CMD ["runserver", "0.0.0.0:8000", "--noreload"]
 
 
 # Commands
-# docker build -t stylometryproject .
-# docker run -p 8000:8000 stylometryproject
+# docker build -t stylometryproject:latest .
+# docker run -p 8000:8000 stylometryproject:latest 
+
+# docker login
+# docker tag stylometryproject:latest itprojectauthorguard/it-project:latest
+# docker push itprojectauthorguard/it-project:latest
+
