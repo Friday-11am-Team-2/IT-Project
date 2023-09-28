@@ -1,0 +1,15 @@
+__pycache__
+*.pyc
+*.pyo
+*.db
+*.log
+*.sqlite3
+
+.github/
+.git/
+.gitignore
+PAN14_Model_Code/
+confluence/
+.venv/
+.idea/
+venv/
