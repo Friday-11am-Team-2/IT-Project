@@ -1,0 +1,55 @@
+services:
+  authorguard:
+    image: stylometryproject
+    ports:
+     - 8000:8000
+    env_file:
+     - secrets/key.env
+     - secrets/database.env
+    profiles:
+     - remotedb
+
+  authorguard-local:
+    image: stylometryproject
+    ports:
+      - 8000:8000
+    environment:
+     - RDS_ENGINE="django.db.backends.postgresql_psycopg2"
+     - RDS_DB_NAME="stylometry_database"
+     - RDS_USERNAME="stylometry"
+     - RDS_PASSWORD="password"
+     - RDS_HOSTNAME="localhost"
+     - RDS_PORT="5432"
+    env_file:
+     - secrets/key.env
+    profiles:
+     - local
+    depends_on:
+     - postgres-db
+  
+  postgres-db:
+    image: postgres
+    restart: always
+    environment:
+     - POSTGRES_USER="stylometry"
+     - POSTGRES_PASSWORD="password"
+     - POSTGRES_DB="stylometry_database"
+    volumes:
+     - ./db:/var/lib/postgresql/data
+    ports:
+     - 5432:5432
+    profiles:
+     - local
+  
+  authorguard-sqlite:
+    build: stylometryproject
+    ports:
+     - 127.0.0.1:8000:8000
+    environment:
+     - DATABASE_TYPE=sqlite
+    env_file:
+     - secrets/key.env
+    profiles:
+     - test
+    volumes:
+      - stylometryproject/db.sqlite3:/stylometryproject/db.sqlite3
