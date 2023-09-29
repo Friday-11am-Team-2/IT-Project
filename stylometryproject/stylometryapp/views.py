@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, reverse
 from django.urls import reverse
 from django.http import JsonResponse, HttpResponseRedirect
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_protect
 
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
@@ -64,7 +64,7 @@ def verify_page_view(request):
 
 
 @login_required
-@csrf_exempt
+@csrf_protect
 def create_profile(request):
     """ Creates a new profile """
 
@@ -120,7 +120,7 @@ def get_documents(request, profile_id):
 
 
 @login_required
-@csrf_exempt 
+@csrf_protect
 def add_profile_docs(request):
     """ Adds documents to a profile """
 
@@ -156,7 +156,7 @@ def add_profile_docs(request):
 
 
 @login_required
-@csrf_exempt 
+@csrf_protect
 def delete_profile(request):
     """ Deletes a profile """
 
@@ -177,7 +177,7 @@ def delete_profile(request):
     
 
 @login_required
-@csrf_exempt 
+@csrf_protect
 def edit_profile(request, profile_id):
     """ Edits a profile's name """
 
@@ -196,7 +196,7 @@ def edit_profile(request, profile_id):
 
 
 @login_required
-@csrf_exempt
+@csrf_protect
 def delete_document(request, document_id):
     """ Deletes a document """
 
@@ -211,7 +211,7 @@ def delete_document(request, document_id):
 
 
 @login_required
-@csrf_exempt
+@csrf_protect
 def run_verification(request):
     """ Runs the verification algorithm """
 

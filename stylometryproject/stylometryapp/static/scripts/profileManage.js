@@ -1,6 +1,9 @@
 $(document).ready(function () {
     // Function to handle profile deletion
     $(".delete-profile").click(function (e) {
+
+        var csrftoken = $('input[name=csrfmiddlewaretoken]').val();
+
         console.log("delete profile clicked");
         e.preventDefault();
         
@@ -15,9 +18,11 @@ $(document).ready(function () {
             $.ajax({
                 type: "POST",
                 url: "/delete_profile/", 
+                headers: {
+                    'X-CSRFToken': csrftoken
+                },
                 data: {
                     profile_id: profileId,
-                    csrfmiddlewaretoken: '{{ csrf_token }}'  
                 },
                 success: function () {
                     // Refresh the page
@@ -51,6 +56,8 @@ $(document).ready(function () {
     $("#editProfileForm").submit(function (e) {
         e.preventDefault();
 
+        var csrftoken = $('input[name=csrfmiddlewaretoken]').val();
+
         // Serialize the form data
         var formData = $(this).serialize();
 
@@ -58,6 +65,9 @@ $(document).ready(function () {
         $.ajax({
             type: "POST",
             url: $(this).attr("action"),
+            headers: {
+                'X-CSRFToken': csrftoken
+            },
             data: formData,
             success: function (data) {
                 // Close the modal

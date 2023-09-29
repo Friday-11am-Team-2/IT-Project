@@ -9,9 +9,16 @@ $(document).ready(function() {
         // Perform AJAX request to create the new profile
         else{
             console.log("Yes");
+
+            // Get CSRF Token from the hidden input field
+            var csrftoken = $('input[name=csrfmiddlewaretoken]').val();
+
             $.ajax({
                 url: '/create_profile/',  // Update with your Django URL for creating profiles
                 method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrftoken
+                },
                 data: {
                     'name': newProfileName,
                     // TO DO? - any new profiles fields in the future go here
