@@ -112,10 +112,10 @@ match DATABASE_TYPE:
         DATABASES = {
             'default': {
                 'ENGINE': 'django.db.backends.postgresql_psycopg2',
-                'NAME': os.environ.get('RDS_DB_NAME', "stylometry_database"),
-                'USER': os.environ.get('RDS_USERNAME', "postgres"),
-                'PASSWORD': os.environ.get('RDS_PASSWORD', "password"),
-                'HOST': os.environ.get('RDS_HOSTNAME', "localhost"),
+                'NAME': os.environ.get('RDS_DB_NAME', 'stylometry_database'),
+                'USER': os.environ.get('RDS_USERNAME', 'postgres'),
+                'PASSWORD': os.environ.get('RDS_PASSWORD', 'password'),
+                'HOST': os.environ.get('RDS_HOSTNAME', 'localhost'),
                 'PORT': os.environ.get('RDS_PORT', '5432'),
             }
         }
