@@ -1,8 +1,10 @@
 services:
   authorguard:
     image: stylometryproject
+    network_mode: host
     ports:
      - 8000:8000
+    restart: on-failure
     env_file:
      - secrets/key.env
      - secrets/database.env
@@ -42,14 +44,14 @@ services:
      - local
   
   authorguard-sqlite:
-    build: stylometryproject
+    image: stylometryproject
+    network_mode: host
     ports:
-     - 127.0.0.1:8000:8000
+     - 8000:8000
+    restart: on-failure
     environment:
      - DATABASE_TYPE=sqlite
     env_file:
      - secrets/key.env
     profiles:
      - test
-    volumes:
-      - stylometryproject/db.sqlite3:/stylometryproject/db.sqlite3
