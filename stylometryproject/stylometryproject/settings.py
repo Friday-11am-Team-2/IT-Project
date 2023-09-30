@@ -17,8 +17,10 @@ import dotenv
 # Load environment variables from .env file
 if os.path.isfile(".env"):
     dotenv.load_dotenv()
-elif os.path.isfile("../secrets.env"):
-    dotenv.load_dotenv("../secrets.env")
+elif os.path.isdir("../secrets"):
+    for file in os.listdir("../secrets"):
+        if os.path.isfile(os.path.join("../secrets", file)):
+            dotenv.load_dotenv(os.path.join("../secrets", file))
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
