@@ -1,4 +1,3 @@
-// Function to update the profile name and documents
 function updateProfileDisplay(profileId) {
 
     // Fetch the selected profile's name using AJAX
@@ -89,13 +88,20 @@ $(document).ready(function () {
 
 // Add a click event listener for delete buttons
 $('#profile-files-list').on('click', '.delete-document-button', function (event) {
+    
     event.preventDefault();
+    var csrftoken = $('input[name=csrfmiddlewaretoken]').val();
+    console.log(csrftoken);
+
     var documentId = $(this).data('documentId');
     var listItem = $(this).closest('li'); // Get the parent list item
 
     // Send an AJAX request to delete the document by its ID
     $.ajax({
         url: '/delete_document/' + documentId + '/',
+        headers: {
+            'X-CSRFToken': csrftoken
+        },
         method: 'DELETE',
         success: function () {
             // Remove the list item as document was deleted from back-end

@@ -20,7 +20,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (runVerificationButton) {
         runVerificationButton.addEventListener("click", (event) => {
+
             event.preventDefault();
+            var csrftoken = $('input[name=csrfmiddlewaretoken]').val();
 
             // Set a flag in local storage to indicate that the button has been clicked
             localStorage.setItem('buttonClicked', true);
@@ -50,6 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
             fetch("/run_verify/", {
                 method: "POST",
                 headers: {
+                    "X-CSRFToken": csrftoken,
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify(dataToSend), // Send the modified data

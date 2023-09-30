@@ -1,7 +1,12 @@
 // Javascript for submit button (ONLY ON PROFILE)
+
 const submitButton = document.getElementById("submit-button");
 if (submitButton) {
     submitButton.addEventListener("click", () => {
+        
+        csrftoken = document.getElementsByName("csrfmiddlewaretoken")[0].value;
+        console.log(csrftoken);
+
         // Get profile ID from docDisplay
         const profileID = $('#curr-profile').data('profile-id');
 
@@ -22,10 +27,10 @@ if (submitButton) {
             return;
         }
 
-
         fetch("/add_profile_docs/", {
             method: "POST",
             headers: {
+                "X-CSRFToken": csrftoken,
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(dataToSend), // Send the modified data
