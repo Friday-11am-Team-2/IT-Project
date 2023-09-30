@@ -98,7 +98,7 @@ WSGI_APPLICATION = 'stylometryproject.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-DATABASE_TYPE = os.environ['DATABASE_TYPE'] if 'DATABASE_TYPE' in os.environ else "postgres"
+DATABASE_TYPE = os.environ['DATABASE_TYPE'] if 'DATABASE_TYPE' in os.environ else "postgresql"
 
 match DATABASE_TYPE:
     case "sqlite":
