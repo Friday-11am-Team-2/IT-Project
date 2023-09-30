@@ -98,4 +98,6 @@ There is also a docker `compose.yaml` file included.
 It contains two services `authorguard` and `authorguard-sqlite`, the latter being for local testing purposes only.
 Services can be run with `docker compose run [service name]` or `docker compose up` to run the default.
 
-Environment variables can be configured via the `secrets/database.env` and `secrets/key.env` files, or by hardcoding into the `compose.yaml` file under each service.
+Environment variables can be configured via the `env_file` or `environment` attributes in the `compose.yaml`
+By default it takes a file called `secrets.env` in the main folder.
+NOTE: syntax for docker env files is slightly more restrictive than normal, make sure there are no spaces either side of the '=' and remove quotation marks from around the variables.
