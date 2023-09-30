@@ -5,10 +5,10 @@ nltk==3.8.1
 numpy==1.24.3
 
 # Jupyter Notebook requirements (in addition to above)
-#scikit-learn
-#networkx
-#tqdm
-#matplotlib
+scikit-learn
+networkx
+tqdm
+matplotlib
 
 # Django requiments
 Django
