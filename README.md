@@ -78,4 +78,26 @@ The app uses Docker to easily create a highly flexible and easy to deploy web se
 3. Deploy to any hosting service that supports docker containers. (AWS, Heroku, etc.)
 
 
+#### Docker Usage
+A docker image can be build with the command: `docker build -t stylometryproject .` from the repository root
 
+The environment for the application can be configured via the file `stylometryproject/.env` or files under `secrets/`
+Configurable ENV variables:
+	DATABASE_TYPE = postgresql or sqlite (for testing purposes only)
+	For postgresql: (all have generic default values)
+		RDS_DB_NAME
+		RDS_USERNAME
+		RDS_PASSWORD
+		RDS_HOSTNAME
+		RDS_PORT
+	
+	Required by Django:
+	SECRET_KEY (generate with `django.core.management.utils.get_random_secret_key()`)
+
+There is also a docker `compose.yaml` file included.
+It contains two services `authorguard` and `authorguard-sqlite`, the latter being for local testing purposes only.
+Services can be run with `docker compose run [service name]` or `docker compose up` to run the default.
+
+Environment variables can be configured via the `env_file` or `environment` attributes in the `compose.yaml`
+By default it takes a file called `secrets.env` in the main folder.
+NOTE: syntax for docker env files is slightly more restrictive than normal, make sure there are no spaces either side of the '=' and remove quotation marks from around the variables.

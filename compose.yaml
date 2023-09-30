@@ -1,0 +1,30 @@
+services:
+  authorguard:
+    image: stylometryproject
+    network_mode: host
+    ports:
+     - 8000:8000
+    restart: on-failure
+    #environment:
+    # - DATABASE_TYPE=postgresql
+    # - RDS_DB_NAME=stylometry_database
+    # - RDS_USERNAME=stylometry
+    # - RDS_PASSWORD=password
+    # - RDS_HOSTNAME=localhost
+    # - RDS_PORT=5432
+    # - SECRET_KEY=[django secret key]
+    env_file:
+     - secrets.env
+  
+  authorguard-sqlite:
+    image: stylometryproject
+    network_mode: host
+    ports:
+     - 8000:8000
+    restart: on-failure
+    environment:
+     - DATABASE_TYPE=sqlite
+    env_file:
+     - secrets.env
+    profiles:
+     - test

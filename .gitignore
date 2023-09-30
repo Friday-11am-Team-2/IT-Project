@@ -3,6 +3,8 @@
 __pycache__
 env
 .env
+secrets.env
+secrets/
 
 # Database
 stylometryproject/db.sqlite3
