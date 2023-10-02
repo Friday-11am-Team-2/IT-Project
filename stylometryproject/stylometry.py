@@ -28,7 +28,7 @@ import gensim
 if __debug__: ver(gensim)
 
 
-### Classes (for use outside the model) ###
+### Classes (for use outside the module) ###
 class StyloNet:
     """Contains the whole stylometry model, functions score, score_multi, predict and predict_multi
         can be called to run the stylometry model on a text.
