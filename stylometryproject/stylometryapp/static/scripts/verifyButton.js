@@ -12,6 +12,7 @@ const fileContentArray = [];
 // For the upload in the verify page
 fileInput.addEventListener("change", () => {
     // make verify clickable again
+    
     localStorage.removeItem('buttonClicked');
     runVerificationButton.disabled = false;
 
@@ -49,6 +50,7 @@ fileInput.addEventListener("change", () => {
             fileContentArray.push(fileContent);
 
             // See file name & file content here
+            console.log("hi!");
             // console.log(`File "${fileName}" content: ${fileContent}`);
         };
 
@@ -66,6 +68,7 @@ let lastElementID = null;
 for (let option of profileDropdownOptions) {
     option.addEventListener("click", () => {
         let id = option.getAttribute("data-profile-id");
+        console.log(id);
         if (id != lastElementID) {
             // different option clicked so update
             lastElementID = id;
@@ -75,3 +78,10 @@ for (let option of profileDropdownOptions) {
         }
     })
 }
+
+// Add a click event listener for delete buttons
+$('#profile-files-list').on('click', '.delete-document-button', function (event) {
+    console.log("del successful!");
+    localStorage.removeItem('buttonClicked');
+    runVerificationButton.disabled = false;
+});
