@@ -50,7 +50,6 @@ fileInput.addEventListener("change", () => {
             fileContentArray.push(fileContent);
 
             // See file name & file content here
-            console.log("hi!");
             // console.log(`File "${fileName}" content: ${fileContent}`);
         };
 
