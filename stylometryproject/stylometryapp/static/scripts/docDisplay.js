@@ -77,7 +77,8 @@ $(document).ready(function () {
         updateProfileDisplay($('#curr-profile').data('profile-id'))
 
         // this should be 0 after all profiles are deleted, but it's not
-        // console.log(uniqueCurrentProfileID)
+        // STILL A BUG
+        console.log($('#curr-profile').data('profile-id'))
     } else {
         // Otherwise initialize the display with 'None' when the page loads
         $('#curr-profile').text(' None ');
@@ -88,7 +89,7 @@ $(document).ready(function () {
 
 // Add a click event listener for delete buttons
 $('#profile-files-list').on('click', '.delete-document-button', function (event) {
-    
+
     event.preventDefault();
     var csrftoken = $('input[name=csrfmiddlewaretoken]').val();
     console.log(csrftoken);
