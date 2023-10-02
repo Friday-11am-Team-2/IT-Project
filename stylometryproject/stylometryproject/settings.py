@@ -17,6 +17,8 @@ import dotenv
 # Load environment variables from .env file
 if os.path.isfile(".env"):
     dotenv.load_dotenv()
+elif os.path.isfile("../secrets.env"):
+    dotenv.load_dotenv(os.path.join("../secrets.env"))
 elif os.path.isdir("../secrets"):
     for file in os.listdir("../secrets"):
         if os.path.isfile(os.path.join("../secrets", file)):
