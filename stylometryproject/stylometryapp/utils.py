@@ -84,24 +84,27 @@ def convert_docx_to_txt(file_content):
 	# 	return ""
 
 # Current profile selection safety and sanity checker
-def safe_profile_select(request: HttpRequest, profile:Profile = None) -> Profile|None:
-    """Allows querying and selection of current profile based on a request
-    Returns the currently selected Profile or None, but only if it
-    exists, is a valid profile and belongs to the user asking for it"""
+def safe_profile_select(request: HttpRequest, profile_id:int = None) -> Profile|None:
+	"""Allows querying and selection of current profile based on a request
+	Returns the currently selected Profile or None, but only if it
+	exists, is a valid profile and belongs to the user asking for it"""
 
-    # Set the profile to operate on
-    profile = request.session.get('profile_cur') if not profile else profile
-    if not isinstance(profile, Profile): return None  # No valid reference to a current profile anywhere
+	# Early exit when not selection exists
+	if 'selected_profile' not in request.session and not profile_id:
+		return None
 
-    # Catch when a profile doesn't exist or doesn't belong to the user
-    if not Profile.objects.filter(user=request.user, id=profile.id).exists():
-        profile = None
-    
-    # No profile? Remove the session variable
-    if profile:
-        request.session['profile_cur'] = profile
-    else:
-        if 'profile_cur' in request.session:
-            request.session.pop('profile_cur')
-    
-    return profile  # Will be None if profile doesn't pass
+	# When profile object is passed instead
+	if isinstance(profile_id, Profile): profile_id = profile_id.id
+
+	try:
+		if not profile_id: profile_id = request.session['selected_profile']
+
+		profile = Profile.objects.get(user=request.user, id=profile_id)
+		request.session['selected_profile'] = profile_id
+
+		# Return the valid selected profile
+		return profile
+	except (Profile.DoesNotExist, AttributeError):
+		# Cleanup and return empty-handed
+		request.session.pop('selected_profile')
+		return None

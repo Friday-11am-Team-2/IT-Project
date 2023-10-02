@@ -170,10 +170,11 @@ def delete_profile(request):
             profile = Profile.objects.get(id=profile_id, user=request.user)
             profile.delete()
 
-            # Clear selected profile var if that profile just got deleted
-            if 'profile_cur' in request.session:
-                if profile.id == request.session['profile_cur'].id:
-                    request.session.pop('profile_cur')
+            # Clear selected profile against the deleted one
+            if 'selected_profile' in request.session:
+                if profile.id == request.session['selected_profile']:
+                    # Remove if they're the same
+                    request.session.pop('selected_profile')
 
             return JsonResponse({"message": "Profile deleted successfully"})
         except Profile.DoesNotExist:
