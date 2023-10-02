@@ -68,7 +68,6 @@ let lastElementID = null;
 for (let option of profileDropdownOptions) {
     option.addEventListener("click", () => {
         let id = option.getAttribute("data-profile-id");
-        console.log(id);
         if (id != lastElementID) {
             // different option clicked so update
             lastElementID = id;
@@ -81,7 +80,6 @@ for (let option of profileDropdownOptions) {
 
 // Add a click event listener for delete buttons
 $('#profile-files-list').on('click', '.delete-document-button', function (event) {
-    console.log("del successful!");
     localStorage.removeItem('buttonClicked');
     runVerificationButton.disabled = false;
 });
