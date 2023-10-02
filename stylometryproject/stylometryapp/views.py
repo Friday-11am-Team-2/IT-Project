@@ -13,7 +13,10 @@ from stylometry import StyloNet
 
 from .forms import DocumentForm
 from .models import *
-from .utils import get_stylonet, convert_file
+from .utils import stylonet_preload, get_stylonet, convert_file, safe_profile_select
+
+# Dispatch preloader thread now that application has loaded up
+stylonet_preload()
 
 # TO DO - remove CSRF decorators
 def home_page_view(request):
