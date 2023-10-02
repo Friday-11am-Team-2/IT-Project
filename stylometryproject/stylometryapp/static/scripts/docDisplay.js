@@ -6,9 +6,7 @@ function updateProfileDisplay(profileId) {
         method: 'GET',
         success: function (data) {
             $('#curr-profile').text(' ' + data.name + ' ');
-            $('#display-curr-profile-name').text(' ' + 'Profile: ' + data.name + ' ');
-
-            $('#current-files').text(' ' + 'Files in Profile: ' + data.name + ' ');
+            $('#display-curr-profile-name').text(' ' + 'Files in Profile: ' + data.name + ' ');
 
             // band-aid solution, breaks if someone actually makes a profile called 'None'
             if (data.name !== "None") {
@@ -60,6 +58,7 @@ function updateProfileDisplay(profileId) {
 $(document).ready(function () {
     // Attach a click event handler to the profile dropdown items
     $('.profile-item').on('click', function (event) {
+        console.log("clicked button")
         event.preventDefault(); // Prevent the default link behavior
 
         // Get the selected profile ID
@@ -81,8 +80,9 @@ $(document).ready(function () {
         console.log($('#curr-profile').data('profile-id'))
     } else {
         // Otherwise initialize the display with 'None' when the page loads
+        console.log("current ID is none");
         $('#curr-profile').text(' None ');
-        $('#profile-files-list').empty().append('<li>No Documents</li>');
+        // $('#profile-files-list').empty().append('<li>No Documents</li>');
     }
 });
 
