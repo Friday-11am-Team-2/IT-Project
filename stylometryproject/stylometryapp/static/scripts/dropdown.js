@@ -28,7 +28,7 @@ $(document).ready(function () {
                     var listItem = $('<li><a class="profile-item" href="#" data-profile-id="' + data.id + '">' + data.name + '</a></li>');
 
                     // Find the "New Profile" list item and insert the new item before it
-                    $('#profile-list li:last').before(listItem);;
+                    $('#profile-list li:last').before(listItem);
 
                     // Clear the modal form and close the modal
                     $('#newProfileName').val('');
