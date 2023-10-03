@@ -8,10 +8,8 @@ function updateProfileDisplay(profileId) {
             $('#curr-profile').text(' ' + data.name + ' ');
             $('#display-curr-profile-name').text(' ' + 'Files in Profile: ' + data.name + ' ');
 
-            // band-aid solution, breaks if someone actually makes a profile called 'None'
-            if (data.name !== "None") {
-                displayCurrentFiles();
-            }
+            displayCurrentFiles();
+
         },
         error: function () {
             alert('Error fetching profile name');
@@ -74,10 +72,6 @@ $(document).ready(function () {
     if ($('#curr-profile').data('profile-id') > 0) {
         //uniqueCurrentProfileID = $('#curr-profile-name').data('profile-id')
         updateProfileDisplay($('#curr-profile').data('profile-id'))
-
-        // this should be 0 after all profiles are deleted, but it's not
-        // STILL A BUG
-        console.log($('#curr-profile').data('profile-id'))
     } else {
         // Otherwise initialize the display with 'None' when the page loads
         console.log("current ID is none");
@@ -97,6 +91,8 @@ $('#profile-files-list').on('click', '.delete-document-button', function (event)
     var documentId = $(this).data('documentId');
     var listItem = $(this).closest('li'); // Get the parent list item
 
+    const listParent = document.querySelector("#profile-files-list");
+
     // Send an AJAX request to delete the document by its ID
     $.ajax({
         url: '/delete_document/' + documentId + '/',
@@ -107,6 +103,9 @@ $('#profile-files-list').on('click', '.delete-document-button', function (event)
         success: function () {
             // Remove the list item as document was deleted from back-end
             listItem.remove();
+            if (listParent.children.length < 1) {
+                $('#profile-files-list').append('<li>No Documents</li>');
+            }
         },
         error: function () {
             alert('Error deleting document');
