@@ -13,7 +13,10 @@ from stylometry import StyloNet
 
 from .forms import DocumentForm
 from .models import *
-from .utils import get_stylonet, convert_file
+from .utils import stylonet_preload, get_stylonet, convert_file, safe_profile_select
+
+# Dispatch preloader thread now that application has loaded up
+stylonet_preload()
 
 # TO DO - remove CSRF decorators
 def home_page_view(request):
@@ -34,7 +37,7 @@ def profile_page_view(request):
     profiles = Profile.objects.filter(user=current_user)
 
     # Grab currently select profile from session, "None" otherwise
-    cur_profile = request.session.get('profile_cur', None)
+    cur_profile = safe_profile_select(request)
     cur_profile_name = cur_profile.name if cur_profile else "None"
     cur_profile_id = cur_profile.id if cur_profile else -1
 
@@ -52,11 +55,7 @@ def verify_page_view(request):
     profiles = Profile.objects.filter(user=current_user)
 
     # Grab currently select profile from session, "None" otherwise
-    cur_profile = request.session.get('profile_cur', None)
-    if 'profile_cur' in request.session and Profile.objects.filter(user=current_user, id=cur_profile.id).exists():
-        cur_profile = request.session.get('profile_cur')
-    else:
-        cur_profile = None
+    cur_profile = safe_profile_select(request)
 
     cur_profile_name = cur_profile.name if cur_profile else "None"
     cur_profile_id = cur_profile.id if cur_profile else -1
@@ -81,7 +80,7 @@ def create_profile(request):
         profile.save()
 
         # Set the newly created profile as the selected
-        request.session['profile_cur'] = profile
+        safe_profile_select(request, profile)
 
         # Return the newly created profile data as JSON
         data = {
@@ -117,7 +116,7 @@ def get_documents(request, profile_id):
         documents_data = [{'id': document.id, 'title': document.title} for document in documents]
 
         # Set this as the selected profile (assume getting docs mean's selecting)
-        request.session['profile_cur'] = profile
+        safe_profile_select(request, profile)
 
         return JsonResponse(documents_data, safe=False)
     except Profile.DoesNotExist:
@@ -169,10 +168,13 @@ def delete_profile(request):
         profile_id = request.POST.get("profile_id")
         try:
             profile = Profile.objects.get(id=profile_id, user=request.user)
-            if request.session.get('profile_cur') == profile:
-                # If the profile being deleted is also selected, then deselect it
-                request.session.pop('profile_cur')
             profile.delete()
+
+            # Clear selected profile against the deleted one
+            if 'selected_profile' in request.session:
+                if profile.id == request.session['selected_profile']:
+                    # Remove if they're the same
+                    request.session.pop('selected_profile')
 
             return JsonResponse({"message": "Profile deleted successfully"})
         except Profile.DoesNotExist:
