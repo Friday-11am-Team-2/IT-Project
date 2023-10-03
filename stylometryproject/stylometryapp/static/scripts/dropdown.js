@@ -4,7 +4,7 @@ $(document).ready(function() {
         // Get the new profile name from the modal form
         var newProfileName = $('#newProfileName').val();
         if (newProfileName.length < 1){
-            alert("Profile Names Must Not Be Empty!");
+            alert("Profile Name Must Not Be Empty!");
         }
         // Perform AJAX request to create the new profile
         else{
