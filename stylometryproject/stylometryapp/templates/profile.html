@@ -29,7 +29,7 @@
 
 
 
-    
+
     <title>Manage Profiles</title>
 </head>
 
@@ -68,7 +68,8 @@
                 <p>Select a profile to add the documents to, or create a new one</p>
                 <div class="dropdown">
                     <button class="btn btn-lg dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                        aria-expanded="false" id="curr-profile" data-profile-id="{{ profile_id }}"> {{ profile_name }} </button>
+                        aria-expanded="false" id="curr-profile" data-profile-id="{{ profile_id }}"> {{ profile_name }}
+                    </button>
                     <ul class="dropdown-menu" id="profile-list">
                         {% for profile in profiles %}
                         <li>
@@ -110,7 +111,7 @@
                 <h2 class="display-5">Current Profile</h2>
 
                 <div class="row" style="background-color: #F0E2B6; width: 80%; margin: 5% 0 0 0;">
-                    <p id="display-curr-profile-name">Profile: None</p>
+                    <p id="display-curr-profile-name">No Profile Selected</p>
                 </div>
                 <div class="row" id="curr-profile-list-box">
                     <ul id="profile-files-list">

@@ -6,18 +6,19 @@ $(document).ready(function () {
 
         console.log("delete profile clicked");
         e.preventDefault();
-        
+
         // Get the profile ID from the data attribute
         var profileId = $(this).data("profile-id");
 
+
         // Prompt the user for confirmation
         var confirmDelete = confirm("Are you sure you want to delete this profile?");
-        
+
         if (confirmDelete) {
             // Send an AJAX request to delete the profile
             $.ajax({
                 type: "POST",
-                url: "/delete_profile/", 
+                url: "/delete_profile/",
                 headers: {
                     'X-CSRFToken': csrftoken
                 },
@@ -25,7 +26,9 @@ $(document).ready(function () {
                     profile_id: profileId,
                 },
                 success: function () {
-                    // Refresh the page
+                    // change selected ID to -1 "None"
+                    // $('#curr-profile').data('profile-id', -1);
+                    // console.log(`changed id to ${$('#curr-profile').data('profile-id')}`)
                     location.reload();
                 }
             });

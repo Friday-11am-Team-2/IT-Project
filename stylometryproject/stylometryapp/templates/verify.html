@@ -24,6 +24,7 @@
     <link rel="stylesheet" href="{% static 'styles/app.css' %}">
     <link rel="stylesheet" href="{% static 'styles/uploadbutton.css' %}">
     <link rel="stylesheet" href="{% static 'styles/dropdown.css' %}">
+    <link rel="stylesheet" href="{% static 'styles/loadingSpinner.css' %}">
     <link rel="icon" type="image/png" href="../static/images/Favicon.png" />
 
     <title>Verify Documents</title>
@@ -81,7 +82,7 @@
                 </div>
                 <div class="none" id="current-docs">
                     <div class="row" style="background-color: #F0E2B6; width: 80%; margin: 5% 0 0 0;">
-                        <p id="current-files">Files in Profile: </p>
+                        <p id="display-curr-profile-name">Files in Profile: </p>
                     </div>
                     <div class="row" id="profile-files-list-box">
                         <ul id="profile-files-list">
@@ -132,6 +133,7 @@
                 <p class="lead" id="verify-text" style="margin-bottom: 0; padding-bottom: 0;">
                     Run verification test to see results
                 </p>
+                <div class="loader none">Loading...</div>
                 <div class="text-center" style="font-size: 0.75rem; margin-top: 0;">
                     The results may not be accurate in 100% of the cases.
                 </div>

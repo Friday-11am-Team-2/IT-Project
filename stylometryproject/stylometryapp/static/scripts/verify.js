@@ -1,6 +1,8 @@
 // Javascript for verification button (ONLY ON VERIFY)
 document.addEventListener("DOMContentLoaded", () => {
     const runVerificationButton = document.getElementById("verify-button");
+    const verifyTextPlaceholder = document.getElementById("verify-text");
+    const loadingSpinner = document.querySelector(".loader");
 
     let previousProfileID = 0;
     let previousProfileName = "";
@@ -42,6 +44,21 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
+            // loading animation
+            verifyTextPlaceholder.classList.add("none");
+
+            const verificationResults = document.getElementById("verification-results");
+            const values = verificationResults.querySelectorAll("p");
+
+            // Iterate through the "Value" fields and remove them
+            values.forEach((field) => {
+                if (field.textContent.startsWith("Value: ")) {
+                    field.remove();
+                }
+            });
+            loadingSpinner.classList.toggle("none");
+
+
             // Send the data
             const dataToSend = {
                 profile_id: profileID, // Add the profile ID to the JSON data
@@ -65,12 +82,15 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
                 })
                 .then((data) => {
+                    // remove loader
+                    loadingSpinner.classList.toggle("none");
+
                     // Handle the response data
                     console.log("Verification successful");
                     console.log("Result:", data.result);
-                    
+
                     currentProfileId = $('#curr-profile').data('profile-id')
-                    currentProfileName =  $('#curr-profile').textContent
+                    currentProfileName = $('#curr-profile').textContent
 
                     // Update previous
                     isNew = false;
@@ -112,6 +132,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     document.getElementById("verification-results").appendChild(newField);
                 })
                 .catch((error) => {
+                    // Hide the loading message when there's an error
+                    loadingSpinner.classList.toggle("none");
+
                     console.log(error.message)
                     alert(error.message);
                 });

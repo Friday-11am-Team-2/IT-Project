@@ -6,14 +6,10 @@ function updateProfileDisplay(profileId) {
         method: 'GET',
         success: function (data) {
             $('#curr-profile').text(' ' + data.name + ' ');
-            $('#display-curr-profile-name').text(' ' + 'Profile: ' + data.name + ' ');
+            $('#display-curr-profile-name').text(' ' + 'Files in Profile: ' + data.name + ' ');
 
-            $('#current-files').text(' ' + 'Files in Profile: ' + data.name + ' ');
+            displayCurrentFiles();
 
-            // band-aid solution, breaks if someone actually makes a profile called 'None'
-            if (data.name !== "None") {
-                displayCurrentFiles();
-            }
         },
         error: function () {
             alert('Error fetching profile name');
@@ -60,6 +56,7 @@ function updateProfileDisplay(profileId) {
 $(document).ready(function () {
     // Attach a click event handler to the profile dropdown items
     $('.profile-item').on('click', function (event) {
+        console.log("clicked button")
         event.preventDefault(); // Prevent the default link behavior
 
         // Get the selected profile ID
@@ -75,26 +72,26 @@ $(document).ready(function () {
     if ($('#curr-profile').data('profile-id') > 0) {
         //uniqueCurrentProfileID = $('#curr-profile-name').data('profile-id')
         updateProfileDisplay($('#curr-profile').data('profile-id'))
-
-        // this should be 0 after all profiles are deleted, but it's not
-        // console.log(uniqueCurrentProfileID)
     } else {
         // Otherwise initialize the display with 'None' when the page loads
+        console.log("current ID is none");
         $('#curr-profile').text(' None ');
-        $('#profile-files-list').empty().append('<li>No Documents</li>');
+        // $('#profile-files-list').empty().append('<li>No Documents</li>');
     }
 });
 
 
 // Add a click event listener for delete buttons
 $('#profile-files-list').on('click', '.delete-document-button', function (event) {
-    
+
     event.preventDefault();
     var csrftoken = $('input[name=csrfmiddlewaretoken]').val();
     console.log(csrftoken);
 
     var documentId = $(this).data('documentId');
     var listItem = $(this).closest('li'); // Get the parent list item
+
+    const listParent = document.querySelector("#profile-files-list");
 
     // Send an AJAX request to delete the document by its ID
     $.ajax({
@@ -106,6 +103,9 @@ $('#profile-files-list').on('click', '.delete-document-button', function (event)
         success: function () {
             // Remove the list item as document was deleted from back-end
             listItem.remove();
+            if (listParent.children.length < 1) {
+                $('#profile-files-list').append('<li>No Documents</li>');
+            }
         },
         error: function () {
             alert('Error deleting document');
