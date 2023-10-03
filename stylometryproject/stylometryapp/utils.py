@@ -2,7 +2,8 @@ from django.conf import settings
 import os
 import threading
 from stylometry import StyloNet
-
+from django.http import HttpRequest
+from .models import Profile
 
 ### Stylometry Model Utils ###
 stylometry_model = None
@@ -81,3 +82,29 @@ def convert_docx_to_txt(file_content):
     #     # Handle exceptions
 	# 	print(f"Error: {str(e)}")
 	# 	return ""
+
+# Current profile selection safety and sanity checker
+def safe_profile_select(request: HttpRequest, profile_id:int = None) -> Profile|None:
+	"""Allows querying and selection of current profile based on a request
+	Returns the currently selected Profile or None, but only if it
+	exists, is a valid profile and belongs to the user asking for it"""
+
+	# Early exit when not selection exists
+	if 'selected_profile' not in request.session and not profile_id:
+		return None
+
+	# When profile object is passed instead
+	if isinstance(profile_id, Profile): profile_id = profile_id.id
+
+	try:
+		if not profile_id: profile_id = request.session['selected_profile']
+
+		profile = Profile.objects.get(user=request.user, id=profile_id)
+		request.session['selected_profile'] = profile_id
+
+		# Return the valid selected profile
+		return profile
+	except (Profile.DoesNotExist, AttributeError):
+		# Cleanup and return empty-handed
+		request.session.pop('selected_profile')
+		return None
