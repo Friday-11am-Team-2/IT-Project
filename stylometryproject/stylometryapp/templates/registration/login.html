@@ -15,6 +15,7 @@
         {% endif %} -->
         <form method="post" action="{% url 'login' %}">
           {% csrf_token %}
+          <input type="hidden" name="next" value="{{ next }}" /> <!--- Hidden field to pass redirect -->
           <div class="form-group">
             <input type="text" name="username" class="form-control" placeholder="Username" maxlength="150"
               id="id_username" required />
