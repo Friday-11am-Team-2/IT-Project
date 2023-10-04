@@ -3,6 +3,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const runVerificationButton = document.getElementById("verify-button");
     const verifyTextPlaceholder = document.getElementById("verify-text");
     const loadingSpinner = document.querySelector(".loader");
+    const resultsBox = document.querySelector(".results-box");
+    const passIcon = document.getElementById("pass-icon");
+    const failIcon = document.getElementById("fail-icon");
+    const resultsMsg = document.getElementById("results-message");
 
     let previousProfileID = 0;
     let previousProfileName = "";
@@ -22,6 +26,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (runVerificationButton) {
         runVerificationButton.addEventListener("click", (event) => {
+
+            // Hide the display of results when run verification is clicked
+            resultsBox.style.display = "none";
+            passIcon.style.display = "none";
+            failIcon.style.display = "none";
 
             event.preventDefault();
             var csrftoken = $('input[name=csrfmiddlewaretoken]').val();
@@ -47,15 +56,16 @@ document.addEventListener("DOMContentLoaded", () => {
             // loading animation
             verifyTextPlaceholder.classList.add("none");
 
-            const verificationResults = document.getElementById("verification-results");
-            const values = verificationResults.querySelectorAll("p");
+            // Redundant code
+            //const verificationResults = document.getElementById("verification-results");
+            //const values = verificationResults.querySelectorAll("p");
+            // Iterate through the "Value" fields and remove them (no longer needed)
+            //values.forEach((field) => {
+            //    if (field.textContent.startsWith("Value: ")) {
+            //        field.remove();
+            //    }
+            //});
 
-            // Iterate through the "Value" fields and remove them
-            values.forEach((field) => {
-                if (field.textContent.startsWith("Value: ")) {
-                    field.remove();
-                }
-            });
             loadingSpinner.classList.toggle("none");
 
 
@@ -107,29 +117,48 @@ document.addEventListener("DOMContentLoaded", () => {
                         verificationResultsParagraph.textContent = `${currentProfileName} vs ${fileNamesArray[0]}:`;
                     }
 
-                    // Get Data Fields
-                    const resultValue = document.createElement("strong");
-                    resultValue.textContent = data.result;
+                    // Set the result text display as appropriate
+                    let resultValue = data.result;
+                    if (resultValue>0.5){
+                        resultsMsg.textContent="Pass!";
+                        passIcon.style.display = "block";
+                    }else{
+                        resultsMsg.textContent="Fail!";
+                        failIcon.style.display = "block";
+                    }
+                    resultsBox.style.display = "block";
+                    console.log("Diplaying Results!");
 
-                    const newField = document.createElement("p");
-                    newField.appendChild(document.createTextNode("Value: "));
-                    newField.appendChild(resultValue);
 
 
-                    // Check if 'isNew' is true
-                    if (isNew) {
-                        // If 'isNew' is true, clear previous "Value" fields
-                        const verificationResultsDiv = document.getElementById("verification-results");
-                        const valueFields = verificationResultsDiv.querySelectorAll("p");
+
+
+                    // Get Data Fields(redundant)
+                    //const results = document.createElement("strong");
+                    //results.textContent = finalResult;
+                    //const newField = document.createElement("p");
+                    //newField.appendChild(document.createTextNode("Value: "));
+                    //newField.appendChild(results);
+
+                    
+                    
+                    
+
+
+                    // Check if 'isNew' is true (redundant)
+                    //if (isNew) {
+                    //    // If 'isNew' is true, clear previous "Value" fields
+                    //    const verificationResultsDiv = document.getElementById("verification-results");
+                    //    const valueFields = verificationResultsDiv.querySelectorAll("p");
 
                         // Iterate through the "Value" fields and remove them
-                        valueFields.forEach((field) => {
-                            if (field.textContent.startsWith("Value: ")) {
-                                field.remove();
-                            }
-                        });
-                    }
-                    document.getElementById("verification-results").appendChild(newField);
+                        //valueFields.forEach((field) => {
+                        //    if (field.textContent.startsWith("Value: ")) {
+                        //        field.remove();
+                        //    }
+                        //});
+                    //}
+                    //document.getElementById("verification-results").appendChild(newField);
                 })
                 .catch((error) => {
                     // Hide the loading message when there's an error
