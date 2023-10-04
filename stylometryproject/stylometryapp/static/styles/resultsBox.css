@@ -1,0 +1,12 @@
+.results-box {
+    margin-top: 15%;
+    display: none;
+}
+
+#fail-icon{
+    display: none;
+}
+
+#pass-icon{
+    display: none;
+}

@@ -25,7 +25,8 @@
     <link rel="stylesheet" href="{% static 'styles/uploadbutton.css' %}">
     <link rel="stylesheet" href="{% static 'styles/dropdown.css' %}">
     <link rel="stylesheet" href="{% static 'styles/loadingSpinner.css' %}">
-    <link rel="icon" type="image/png" href="../static/images/Favicon.png" />
+    <link rel="stylesheet" href="{% static 'styles/resultsBox.css' %}">
+    <link rel="icon" type="image/png" href="{% static 'images/Favicon.png' %}"/>
 
     <title>Verify Documents</title>
 </head>
@@ -133,10 +134,26 @@
                 <p class="lead" id="verify-text" style="margin-bottom: 0; padding-bottom: 0;">
                     Run verification test to see results
                 </p>
-                <div class="loader none">Loading...</div>
                 <div class="text-center" style="font-size: 0.75rem; margin-top: 0;">
                     The results may not be accurate in 100% of the cases.
                 </div>
+                <div class="loader none">Loading...</div>
+                <div class="results-box col align-items-center">
+                    <div class="row results-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="225" height="225" fill="#008000" class="bi bi-check-circle-fill" viewBox="0 0 16 16" id = "pass-icon">
+                            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="225" height="225" fill="#FF0000" class="bi bi-x-circle-fill results-icon" viewBox="0 0 16 16" id = "fail-icon">
+                            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-center" id="results-message"></h1>
+                    </div>
+                </div>
+
+                
+                
             </div>
 
         </div>
