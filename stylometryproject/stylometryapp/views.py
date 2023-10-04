@@ -252,10 +252,15 @@ def run_verification(request):
 
             model = get_stylonet()
 
-            value = round(model.score(text_data), 3)
+            result, score = model.predict(text_data)
+            score = round(score, 3)
 
             # Return a success response
-            return JsonResponse({"message": "Verification Successful", "result": str(value)}, status=201)
+            return JsonResponse({
+                    "message": "Verification Successful",
+                    "result": True if result else False,
+                    "score": str(score)
+                }, status=201)
         
 
         except Exception as e:
