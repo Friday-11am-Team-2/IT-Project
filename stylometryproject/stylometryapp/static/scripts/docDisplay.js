@@ -29,11 +29,16 @@ function updateProfileDisplay(profileId) {
                     var listItem = $('<li>' + data[i].title + '</li>');
 
                     // Add delete button to list (for the document)
-                    var deleteButton = $('<button>X</button>');
-                    deleteButton.data('documentId', data[i].id);
-                    deleteButton.addClass('delete-document-button');
-                    deleteButton.attr('style', 'background-color: #ff0000; color: #ffffff; width: 18px; height: 18px; line-height: 10px; text-align: center; font-size: 15px; padding: 0;  border: 2px solid #ff0000; float: right; margin-top: 3px;');
-                    listItem.append(deleteButton);
+                    let deleteButtonCopy = document.querySelector(".edit.delete-profile").cloneNode(true);
+                    // deleteButtonCopy.addEventListener("click", (e) => {
+                    // var deleteButton = $('<button>X</button>');
+                    deleteButtonCopy.setAttribute("data-documentID", data[i].id);
+                    deleteButtonCopy.classList.add('delete-document-button');
+                    deleteButtonCopy.classList.remove('delete-profile');
+                    deleteButtonCopy.classList.remove('none');
+                    console.dir(deleteButtonCopy);
+                    // deleteButtonCopy.setAttribute('style', 'float: right;');
+                    listItem.append(deleteButtonCopy);
 
                     // Append the document
                     $('#profile-files-list').append(listItem);
@@ -71,6 +76,7 @@ $(document).ready(function () {
     // If a currently select profile is included, initialize with those values
     if ($('#curr-profile').data('profile-id') > 0) {
         //uniqueCurrentProfileID = $('#curr-profile-name').data('profile-id')
+        console.log("here");
         updateProfileDisplay($('#curr-profile').data('profile-id'))
     } else {
         // Otherwise initialize the display with 'None' when the page loads
@@ -88,29 +94,34 @@ $('#profile-files-list').on('click', '.delete-document-button', function (event)
     var csrftoken = $('input[name=csrfmiddlewaretoken]').val();
     console.log(csrftoken);
 
-    var documentId = $(this).data('documentId');
+    var documentId = $(this).data('documentid');
     var listItem = $(this).closest('li'); // Get the parent list item
 
     const listParent = document.querySelector("#profile-files-list");
 
-    // Send an AJAX request to delete the document by its ID
-    $.ajax({
-        url: '/delete_document/' + documentId + '/',
-        headers: {
-            'X-CSRFToken': csrftoken
-        },
-        method: 'DELETE',
-        success: function () {
-            // Remove the list item as document was deleted from back-end
-            listItem.remove();
-            if (listParent.children.length < 1) {
-                $('#profile-files-list').append('<li>No Documents</li>');
+    // Prompt the user for confirmation
+    var confirmDelete = confirm("Are you sure you want to delete this document from the stored profile?");
+
+    if (confirmDelete) {
+        // Send an AJAX request to delete the document by its ID
+        $.ajax({
+            url: '/delete_document/' + documentId + '/',
+            headers: {
+                'X-CSRFToken': csrftoken
+            },
+            method: 'DELETE',
+            success: function () {
+                // Remove the list item as document was deleted from back-end
+                listItem.remove();
+                if (listParent.children.length < 1) {
+                    $('#profile-files-list').append('<li>No Documents</li>');
+                }
+            },
+            error: function () {
+                alert('Error deleting document');
             }
-        },
-        error: function () {
-            alert('Error deleting document');
-        }
-    });
+        });
+    }
 });
 
 function displayCurrentFiles() {

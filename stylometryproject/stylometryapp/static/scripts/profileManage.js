@@ -1,4 +1,22 @@
 $(document).ready(function () {
+    // check if a profile was deleted earlier
+    // Get the query parameters from the current URL
+    const urlParams = new URLSearchParams(window.location.search);
+
+    // Check if the 'profileDeleted' query parameter exists and is set to 'true'
+    if (urlParams.has('profileDeleted') && urlParams.get('profileDeleted') === 'true') {
+        $("#profile-deleted-alert").removeClass("none");
+        console.dir($("#profile-deleted-alert"));
+        $("#profile-deleted-alert").fadeTo(1500, 500).slideUp(300, function () {
+            $("#profile-deleted-alert").slideUp(300);
+        });
+
+        // Remove the 'profileDeleted' query parameter from the URL
+        urlParams.delete('profileDeleted');
+        const newURL = urlParams.toString() ? `${window.location.pathname}?${urlParams.toString()}` : window.location.pathname;
+        history.replaceState({}, document.title, newURL);
+    }
+
     // Function to handle profile deletion
     $(".delete-profile").click(function (e) {
 
@@ -29,7 +47,10 @@ $(document).ready(function () {
                     // change selected ID to -1 "None"
                     // $('#curr-profile').data('profile-id', -1);
                     // console.log(`changed id to ${$('#curr-profile').data('profile-id')}`)
-                    location.reload();
+                    const currentURL = window.location.href;
+                    const newURL = `${currentURL}?profileDeleted=true`;
+                    window.location.href = newURL;
+                    // location.reload();
                 }
             });
         }

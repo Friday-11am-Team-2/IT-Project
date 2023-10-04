@@ -87,15 +87,28 @@ p {
     background-color: transparent;
     width: 30px;
     height: 30px;
-    line-height: 20px;
+    line-height: 7px;
     text-align: center;
     font-size: 25px;
     padding: 0;
-    margin-left: 2px;
+    margin-left: 3px;
+}
+
+#profile-deleted-alert {
+    padding: 2% 0%;
+    width: 60%;
+    margin-top: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#profile-deleted-alert svg {
+    margin-right: 5px;
 }
 
 .none {
-    display: none;
+    display: none !important;
 }
 
 h2 svg {
@@ -116,6 +129,11 @@ h2 svg {
 
 #profile-files-list {
     list-style-type: none;
+}
+
+#profile-files-list li {
+    display: flex;
+    justify-content: space-between;
 }
 
 .modal-content {
