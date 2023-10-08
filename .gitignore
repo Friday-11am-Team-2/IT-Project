@@ -26,3 +26,5 @@ PAN14_Model_Code/models
 .idea/workspace.xml
 
 stylometryproject/.env
+Dockerrun.aws.json
+dockercfg

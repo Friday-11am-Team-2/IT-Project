@@ -1,4 +1,3 @@
-// Function to update the profile name and documents
 function updateProfileDisplay(profileId) {
 
     // Fetch the selected profile's name using AJAX
@@ -7,14 +6,10 @@ function updateProfileDisplay(profileId) {
         method: 'GET',
         success: function (data) {
             $('#curr-profile').text(' ' + data.name + ' ');
-            $('#display-curr-profile-name').text(' ' + 'Profile: ' + data.name + ' ');
+            $('#display-curr-profile-name').text(' ' + 'Files in Profile: ' + data.name + ' ');
 
-            $('#current-files').text(' ' + 'Files in Profile: ' + data.name + ' ');
+            displayCurrentFiles();
 
-            // band-aid solution, breaks if someone actually makes a profile called 'None'
-            if (data.name !== "None") {
-                displayCurrentFiles();
-            }
         },
         error: function () {
             alert('Error fetching profile name');
@@ -34,11 +29,16 @@ function updateProfileDisplay(profileId) {
                     var listItem = $('<li>' + data[i].title + '</li>');
 
                     // Add delete button to list (for the document)
-                    var deleteButton = $('<button>X</button>');
-                    deleteButton.data('documentId', data[i].id);
-                    deleteButton.addClass('delete-document-button');
-                    deleteButton.attr('style', 'background-color: #ff0000; color: #ffffff; width: 18px; height: 18px; line-height: 10px; text-align: center; font-size: 15px; padding: 0;  border: 2px solid #ff0000; float: right; margin-top: 3px;');
-                    listItem.append(deleteButton);
+                    let deleteButtonCopy = document.querySelector(".edit.delete-profile").cloneNode(true);
+                    // deleteButtonCopy.addEventListener("click", (e) => {
+                    // var deleteButton = $('<button>X</button>');
+                    deleteButtonCopy.setAttribute("data-documentID", data[i].id);
+                    deleteButtonCopy.classList.add('delete-document-button');
+                    deleteButtonCopy.classList.remove('delete-profile');
+                    deleteButtonCopy.classList.remove('none');
+                    console.dir(deleteButtonCopy);
+                    // deleteButtonCopy.setAttribute('style', 'float: right;');
+                    listItem.append(deleteButtonCopy);
 
                     // Append the document
                     $('#profile-files-list').append(listItem);
@@ -61,6 +61,7 @@ function updateProfileDisplay(profileId) {
 $(document).ready(function () {
     // Attach a click event handler to the profile dropdown items
     $('.profile-item').on('click', function (event) {
+        console.log("clicked button")
         event.preventDefault(); // Prevent the default link behavior
 
         // Get the selected profile ID
@@ -75,36 +76,52 @@ $(document).ready(function () {
     // If a currently select profile is included, initialize with those values
     if ($('#curr-profile').data('profile-id') > 0) {
         //uniqueCurrentProfileID = $('#curr-profile-name').data('profile-id')
+        console.log("here");
         updateProfileDisplay($('#curr-profile').data('profile-id'))
-
-        // this should be 0 after all profiles are deleted, but it's not
-        // console.log(uniqueCurrentProfileID)
     } else {
         // Otherwise initialize the display with 'None' when the page loads
+        console.log("current ID is none");
         $('#curr-profile').text(' None ');
-        $('#profile-files-list').empty().append('<li>No Documents</li>');
+        // $('#profile-files-list').empty().append('<li>No Documents</li>');
     }
 });
 
 
 // Add a click event listener for delete buttons
 $('#profile-files-list').on('click', '.delete-document-button', function (event) {
+
     event.preventDefault();
-    var documentId = $(this).data('documentId');
+    var csrftoken = $('input[name=csrfmiddlewaretoken]').val();
+    console.log(csrftoken);
+
+    var documentId = $(this).data('documentid');
     var listItem = $(this).closest('li'); // Get the parent list item
 
-    // Send an AJAX request to delete the document by its ID
-    $.ajax({
-        url: '/delete_document/' + documentId + '/',
-        method: 'DELETE',
-        success: function () {
-            // Remove the list item as document was deleted from back-end
-            listItem.remove();
-        },
-        error: function () {
-            alert('Error deleting document');
-        }
-    });
+    const listParent = document.querySelector("#profile-files-list");
+
+    // Prompt the user for confirmation
+    var confirmDelete = confirm("Are you sure you want to delete this document from the stored profile?");
+
+    if (confirmDelete) {
+        // Send an AJAX request to delete the document by its ID
+        $.ajax({
+            url: '/delete_document/' + documentId + '/',
+            headers: {
+                'X-CSRFToken': csrftoken
+            },
+            method: 'DELETE',
+            success: function () {
+                // Remove the list item as document was deleted from back-end
+                listItem.remove();
+                if (listParent.children.length < 1) {
+                    $('#profile-files-list').append('<li>No Documents</li>');
+                }
+            },
+            error: function () {
+                alert('Error deleting document');
+            }
+        });
+    }
 });
 
 function displayCurrentFiles() {

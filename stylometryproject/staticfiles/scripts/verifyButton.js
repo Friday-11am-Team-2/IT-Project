@@ -12,6 +12,7 @@ const fileContentArray = [];
 // For the upload in the verify page
 fileInput.addEventListener("change", () => {
     // make verify clickable again
+    
     localStorage.removeItem('buttonClicked');
     runVerificationButton.disabled = false;
 
@@ -75,3 +76,9 @@ for (let option of profileDropdownOptions) {
         }
     })
 }
+
+// Add a click event listener for delete buttons
+$('#profile-files-list').on('click', '.delete-document-button', function (event) {
+    localStorage.removeItem('buttonClicked');
+    runVerificationButton.disabled = false;
+});
