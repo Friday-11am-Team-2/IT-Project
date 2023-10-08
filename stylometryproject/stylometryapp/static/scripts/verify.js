@@ -8,6 +8,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const failIcon = document.getElementById("fail-icon");
     const resultsMsg = document.getElementById("results-message");
 
+    const analyticsTable = document.getElementById("analytics-table");
+    const analyticsTableBody = document.getElementById("analytics-table-body");
+
     let previousProfileID = 0;
     let previousProfileName = "";
     let previousFileName = "";
@@ -31,6 +34,12 @@ document.addEventListener("DOMContentLoaded", () => {
             resultsBox.style.display = "none";
             passIcon.style.display = "none";
             failIcon.style.display = "none";
+
+            analyticsTable.style.display = "none";
+            while (analyticsTableBody.firstChild) {
+                // Clear the table contents
+                analyticsTableBody.removeChild(analyticsTableBody.lastChild);
+            }
 
             event.preventDefault();
             var csrftoken = $('input[name=csrfmiddlewaretoken]').val();
@@ -130,8 +139,33 @@ document.addEventListener("DOMContentLoaded", () => {
                     console.log("Diplaying Results!");
 
 
+                    // Display analytics
+                    function generate_row(name, f1, f2, f3) {
+                        var table_row = document.createElement("tr")
 
+                        var heading = document.createElement("th")
+                        heading.textContent = name
+                        table_row.appendChild(heading)
 
+                        var field = document.createElement("td")
+                        field.textContent = f1
+                        table_row.appendChild(field)
+
+                        field = document.createElement("td")
+                        field.textContent = f2
+                        table_row.appendChild(field)
+
+                        field = document.createElement("td")
+                        field.textContent = f3
+                        table_row.appendChild(field)
+                        
+                        return table_row
+                    }
+
+                    analyticsTableBody.appendChild(generate_row("Known", data.k_rare_words, data.k_long_words, data.k_sent_len))
+                    analyticsTableBody.appendChild(generate_row("Unknown", data.u_rare_words, data.u_long_words, data.u_sent_len))
+
+                    analyticsTable.style.display = "block"
 
                     // Get Data Fields(redundant)
                     //const results = document.createElement("strong");
