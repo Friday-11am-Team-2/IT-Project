@@ -175,6 +175,34 @@ def unwrap(var):
     while is_array(var) and len(var) == 1: var = var[0]
     return var
 
+def flatten(var:list) -> str:
+    if isinstance(var, str): return var
+
+    res = ""
+    for i in var:
+        nextstr = f'{i}\n' if isinstance(i, str) else flatten(i)
+        res = res + nextstr if res else nextstr
+
+
+    return res.strip()
+            
+def strip_text(data: list|str, split=False) -> list[str]:
+    """Strip whitespace from text data and format by separating lines"""
+    if type(data) is list: data = flatten(data)
+    if type(data) is str: data = data.splitlines()
+
+    text = []
+    for line in data:
+        # Flatten any more than 1D arrays of strings/chars
+        cleaned = line.strip().lstrip("\ufeff")
+        if len(cleaned) == 0: continue
+        text.append(cleaned)
+    
+    if not split: text = '\n'.join(text)
+
+    return text
+
+
 ### Model Definition ###
 class SiameseNet(tf.keras.Model):
     """SiameseNet model declaration from PAN14_data_demo.ipynb"""
@@ -267,20 +295,6 @@ def loadW2v(path:str) -> gensim.models.Word2Vec:
     return gensim.models.Word2Vec.load(path)
 
 ### Text Processing ###
-def strip_text(data: list|str) -> list[str]:
-    """Strip whitespace from text data line-by-line"""
-    if type(data) is str: data = data.splitlines()
-
-    text = []
-    for line in data:
-        # Flatten any more than 1D arrays of strings/chars
-        if type(line) is not str: line = str(line)
-
-        cleaned = line.strip().lstrip("\ufeff")
-        text.append(cleaned)
-
-    return text
-
 def preprocess_text(text: list|str) -> list[str]:
     """
     Text preprocessor from PAN14_Data_Demo.ipnyb
