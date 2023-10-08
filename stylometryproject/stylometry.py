@@ -140,9 +140,11 @@ class StyloNet:
 
         return results
 
-    def predict(self, texts: dict) -> bool:
+    def predict(self, texts: dict) -> tuple[bool,float]:
         """Calculate score and return a prediction based on the predetermined threshold, returns a boolean result"""
-        return self.score(texts) >= self.valid_threshold
+        score = self.score(texts)
+        result = score >= self.valid_threshold
+        return (result, score)
 
     def predict_batch(self, texts: list|dict) -> list[bool]|dict:
         """Run predict over a list/dict of texts and return the result with a boolean result"""

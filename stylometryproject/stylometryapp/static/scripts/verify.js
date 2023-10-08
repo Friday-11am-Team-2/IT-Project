@@ -97,7 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     // Handle the response data
                     console.log("Verification successful");
-                    console.log("Result:", data.result);
+                    console.log("Result:", data.score);
 
                     currentProfileId = $('#curr-profile').data('profile-id')
                     currentProfileName = $('#curr-profile').textContent
@@ -119,7 +119,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     // Set the result text display as appropriate
                     let resultValue = data.result;
-                    if (resultValue>0.5){
+                    if (resultValue){
                         resultsMsg.textContent="Pass!";
                         passIcon.style.display = "block";
                     }else{
