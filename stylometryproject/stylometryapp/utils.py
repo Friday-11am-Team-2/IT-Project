@@ -4,6 +4,11 @@ import threading
 from stylometry import StyloNet
 from django.http import HttpRequest
 from .models import Profile
+# file type handling
+import base64
+import io
+from docx import Document
+import PyPDF2
 
 ### Stylometry Model Utils ###
 stylometry_model = None
@@ -34,54 +39,58 @@ def stylonet_preload() -> None:
 	preload = threading.Thread(target=get_stylonet)
 	preload.start()
 
-# File type prosessing (only accepts txt, docx)
+# File type prosessing
 def convert_file(file_name, file_content):             
-
+	#print("convert_file")
 	file_extension = os.path.splitext(file_name)[1].lower()
+	file_content = base64.b64decode(file_content)
 	converted_content = ""
 
 	if file_extension == '.txt':
 		# leave .txt files as is
-		converted_content = file_content
 		print("txt to txt")
+		converted_content = file_content.decode("utf-8")
 	elif file_extension == '.docx':
-		# convert .docx to .txt
-		converted_content = convert_docx_to_txt(file_content)
+		# .docx to text
 		print("docx to txt")
+		converted_content = convert_docx_to_txt(file_content)
+	elif file_extension == '.pdf':
+		# .pdf to text
+		print("pdf to txt")
+		converted_content = convert_pdf_to_txt(file_content)
 	else:
 		# unsupported file type
-		print(f"Unsupported file type: {file_name}")
-		# TO DO: deal with unsupported file type if they somehow got passed in
-	#print(converted_content)
+		print("Unsupported file type: " + file_name)
+		# TO DO: popup on JS side if unsupported file type passed in?
+	#print("converted content: " + converted_content)
 	return converted_content
 
+def convert_docx_to_txt(content):
+	try:
+		# create word document from encoded string
+		doc = Document(io.BytesIO(content))
+		# extract and return text
+		text = ""
+		for para in doc.paragraphs:
+			text += para.text
+		return text
+	except Exception as e:
+		print("Error during DOCX conversion:", str(e))
+		return ""
 
-def convert_docx_to_txt(file_content):
-	return ""
-	# import docx2txt
-	# import zipfile
-	# from io import BytesIO
-	# from lxml import etree
-	# try:
-	# 	# Create a BytesIO object to work with the binary content
-	# 	content_stream = BytesIO(file_content)
+def convert_pdf_to_txt(content):
+	try:
+		# create pdf from encoded string
+		pdf_file = io.BytesIO(content)
+		reader = PyPDF2.PdfReader(pdf_file)
+		text = ""
+		for page_num in range(len(reader.pages)):
+			text += reader.pages[page_num].extract_text()
+		return text
+	except Exception as e:
+		print("Error during PDF conversion:", str(e))
+		return ""
 
-    #     # Open the .docx file using zipfile
-	# 	with zipfile.ZipFile(content_stream) as docx:
-    #         # Find and extract the document.xml file (contains text)
-	# 		doc_xml_content = docx.read('word/document.xml')
-
-    #         # Text extraction            
-	# 		root = etree.fromstring(doc_xml_content)
-	# 		text_content = ''.join(root.itertext())
-
-    #         # Return the extracted text
-	# 		return text_content
-		
-	# except Exception as e:
-    #     # Handle exceptions
-	# 	print(f"Error: {str(e)}")
-	# 	return ""
 
 # Current profile selection safety and sanity checker
 def safe_profile_select(request: HttpRequest, profile_id:int = None) -> Profile|None:

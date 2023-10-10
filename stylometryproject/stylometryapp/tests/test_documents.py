@@ -5,6 +5,7 @@ from django.http import JsonResponse
 
 from ..models import *
 from ..views import *
+import base64
 
 class DocumentManageTestCase(TestCase):
     """Test Case for Adding and Deleting a Document"""
@@ -25,14 +26,15 @@ class DocumentManageTestCase(TestCase):
 
 
     def test_add_document(self):
-        """ Test Adding a Document """
+        """ Test Adding a Document """  
 
         # Create Profile (tested elsewhere, so just manually create in DB)
         profile = Profile.objects.create(user=self.user, name='Test Profile Name')
 
         # Create Data to Send
         file_names = ["test_doc.txt"]
-        file_contents = ["Sample Text Content"]
+        text_content = "Sample Text Content"
+        file_contents = [base64.b64encode(text_content.encode()).decode('utf-8')]
         data_to_send = {
             'profile_id': profile.id, 
             'file_names': file_names, 
@@ -49,7 +51,7 @@ class DocumentManageTestCase(TestCase):
             document = Document.objects.filter(title=file_names[i]).first()
             self.assertIsNotNone(document)
             self.assertEqual(document.title, file_names[i])
-            self.assertEqual(document.text, file_contents[i])
+            self.assertEqual(document.text, text_content)
 
 
     def test_delete_document(self):

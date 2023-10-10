@@ -138,10 +138,9 @@ def add_profile_docs(request):
             names = data.get("file_names")
             texts = data.get("file_contents")
 
-            # Handle file type conversion (TO DO: upload seems to corrupt docx files)
-            # for i in range(len(names)):
-            #     print(i)
-            #     texts[i] = convert_file(names[i], texts[i])
+            # Handle file type conversion
+            for i in range(len(names)):
+                texts[i] = convert_file(names[i], texts[i])
 
             # Check if the profile exists (you can add more error handling here)
             profile = Profile.objects.get(pk=profile_id, user=request.user)
@@ -232,8 +231,8 @@ def run_verification(request):
             name = data.get("file_names")
             text = data.get("file_contents")
 
-            # Handle file type conversion (TO DO: upload seems to corrupt docx files)
-            # text[0] = convert_file(name[0], text[0])
+            # Handle file type conversion
+            text[0] = convert_file(name[0], text[0])
             
             # Check if the profile exists (you can add more error handling here)
             profile = Profile.objects.get(pk=profile_id, user=request.user)
