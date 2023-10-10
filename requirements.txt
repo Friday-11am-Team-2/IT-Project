@@ -15,6 +15,10 @@ Django
 djangorestframework
 django-cors-headers
 
+# File type handling
+python-docx
+PyPDF2
+
 # Database
 #psycopg2
 psycopg2-binary

@@ -7,8 +7,8 @@ from .models import Profile
 # file type handling
 import base64
 import io
-from docx import Document # pip install python-docx
-import PyPDF2 # pip install PyPDF2
+from docx import Document
+import PyPDF2
 
 ### Stylometry Model Utils ###
 stylometry_model = None
