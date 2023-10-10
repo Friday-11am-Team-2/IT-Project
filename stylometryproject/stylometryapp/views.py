@@ -14,7 +14,6 @@ from stylometry import StyloNet, analyze_sentence_lengths, analyze_words, strip_
 from .forms import DocumentForm
 from .models import *
 from .utils import stylonet_preload, get_stylonet, convert_file, safe_profile_select
-import base64
 
 # Dispatch preloader thread now that application has loaded up
 stylonet_preload()
@@ -139,11 +138,9 @@ def add_profile_docs(request):
             names = data.get("file_names")
             texts = data.get("file_contents")
 
-            # Handle file type conversion (TO DO: upload seems to corrupt docx files)
+            # Handle file type conversion
             for i in range(len(names)):
-                print(i)
-                #print(texts[i])
-                texts[i] = convert_file(names[i], base64.b64decode(texts[i]))
+                texts[i] = convert_file(names[i], texts[i])
 
             # Check if the profile exists (you can add more error handling here)
             profile = Profile.objects.get(pk=profile_id, user=request.user)
@@ -234,8 +231,8 @@ def run_verification(request):
             name = data.get("file_names")
             text = data.get("file_contents")
 
-            # Handle file type conversion (TO DO: upload seems to corrupt docx files)
-            # text[0] = convert_file(name[0], text[0])
+            # Handle file type conversion
+            text[0] = convert_file(name[0], text[0])
             
             # Check if the profile exists (you can add more error handling here)
             profile = Profile.objects.get(pk=profile_id, user=request.user)

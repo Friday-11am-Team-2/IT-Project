@@ -5,9 +5,10 @@ from stylometry import StyloNet
 from django.http import HttpRequest
 from .models import Profile
 # file type handling
+import base64
 import io
-from docx import Document
-import PyPDF2
+from docx import Document # pip install python-docx
+import PyPDF2 # pip install PyPDF2
 
 ### Stylometry Model Utils ###
 stylometry_model = None
@@ -40,8 +41,9 @@ def stylonet_preload() -> None:
 
 # File type prosessing
 def convert_file(file_name, file_content):             
-	print("convert_file")
+	#print("convert_file")
 	file_extension = os.path.splitext(file_name)[1].lower()
+	file_content = base64.b64decode(file_content)
 	converted_content = ""
 
 	if file_extension == '.txt':
@@ -58,9 +60,9 @@ def convert_file(file_name, file_content):
 		converted_content = convert_pdf_to_txt(file_content)
 	else:
 		# unsupported file type
-		print(f"Unsupported file type: {file_name}")
-		# TO DO: deal with unsupported file type if they somehow got passed in
-	print("converted content: " + converted_content)
+		print("Unsupported file type: " + file_name)
+		# TO DO: popup on JS side if unsupported file type passed in?
+	#print("converted content: " + converted_content)
 	return converted_content
 
 def convert_docx_to_txt(content):
@@ -68,7 +70,7 @@ def convert_docx_to_txt(content):
 		# create word document from encoded string
 		doc = Document(io.BytesIO(content))
 		# extract and return text
-		text = "\n"
+		text = ""
 		for para in doc.paragraphs:
 			text += para.text
 		return text

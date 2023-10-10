@@ -42,11 +42,10 @@ fileInput.addEventListener("change", () => {
 
         // Read the file content and add it to the arrays
         reader.onload = (event) => {
-            const fileContent = event.target.result;
+            // encode file content (decode in file type handling)
+            const fileContent = btoa(String.fromCharCode(...new Uint8Array(event.target.result)));
             fileNamesArray.push(fileName);
 
-
-            // TO DO - ADD TREATMENT FOR FILE TYPES (either restrict to .txt/add more)
             fileContentArray.push(fileContent);
 
             // See file name & file content here
@@ -54,9 +53,9 @@ fileInput.addEventListener("change", () => {
         };
 
 
-
-        // Read the file as text
-        reader.readAsText(file);
+        // Read file as byte string
+        //reader.readAsText(file);
+        reader.readAsArrayBuffer(file);
     }
 
 
