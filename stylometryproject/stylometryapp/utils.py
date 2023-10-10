@@ -4,6 +4,10 @@ import threading
 from stylometry import StyloNet
 from django.http import HttpRequest
 from .models import Profile
+# file type handling
+import io
+from docx import Document
+import PyPDF2
 
 ### Stylometry Model Utils ###
 stylometry_model = None
@@ -42,46 +46,41 @@ def convert_file(file_name, file_content):
 
 	if file_extension == '.txt':
 		# leave .txt files as is
-		converted_content = file_content
+		converted_content = file_content.decode("utf-8")
 		print("txt to txt")
 	elif file_extension == '.docx':
-		# convert .docx to .txt
+		# .docx to text
 		converted_content = convert_docx_to_txt(file_content)
 		print("docx to txt")
+	elif file_extension == '.pdf':
+		# .pdf to text
+		converted_content = convert_pdf_to_txt(file_content)
+		print("pdf to txt")
 	else:
 		# unsupported file type
 		print(f"Unsupported file type: {file_name}")
 		# TO DO: deal with unsupported file type if they somehow got passed in
-	#print(converted_content)
+	print("converted content: " + converted_content)
 	return converted_content
 
+def convert_docx_to_txt(content):
+	# create word document from encoded string
+	doc = Document(io.BytesIO(content))
+	# extract and return text
+	text = "\n"
+	for para in doc.paragraphs:
+		text += para.text
+	return text
+	#return "\n".join([para.text for para in doc.paragraphs])
 
-def convert_docx_to_txt(file_content):
-	return ""
-	# import docx2txt
-	# import zipfile
-	# from io import BytesIO
-	# from lxml import etree
-	# try:
-	# 	# Create a BytesIO object to work with the binary content
-	# 	content_stream = BytesIO(file_content)
-
-    #     # Open the .docx file using zipfile
-	# 	with zipfile.ZipFile(content_stream) as docx:
-    #         # Find and extract the document.xml file (contains text)
-	# 		doc_xml_content = docx.read('word/document.xml')
-
-    #         # Text extraction            
-	# 		root = etree.fromstring(doc_xml_content)
-	# 		text_content = ''.join(root.itertext())
-
-    #         # Return the extracted text
-	# 		return text_content
-		
-	# except Exception as e:
-    #     # Handle exceptions
-	# 	print(f"Error: {str(e)}")
-	# 	return ""
+def convert_pdf_to_txt(content):
+	# create pdf from encoded string
+	pdf_file = io.BytesIO(content)
+	reader = PyPDF2.PdfFileReader(pdf_file)
+	text = ""
+	for page_num in range(reader.numPages):
+		text += reader.getPage(page_num).extractText()
+	return text
 
 # Current profile selection safety and sanity checker
 def safe_profile_select(request: HttpRequest, profile_id:int = None) -> Profile|None:
