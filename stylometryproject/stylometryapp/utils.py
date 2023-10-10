@@ -38,24 +38,24 @@ def stylonet_preload() -> None:
 	preload = threading.Thread(target=get_stylonet)
 	preload.start()
 
-# File type prosessing (only accepts txt, docx)
+# File type prosessing
 def convert_file(file_name, file_content):             
-
+	print("convert_file")
 	file_extension = os.path.splitext(file_name)[1].lower()
 	converted_content = ""
 
 	if file_extension == '.txt':
 		# leave .txt files as is
-		converted_content = file_content.decode("utf-8")
 		print("txt to txt")
+		converted_content = file_content.decode("utf-8")
 	elif file_extension == '.docx':
 		# .docx to text
-		converted_content = convert_docx_to_txt(file_content)
 		print("docx to txt")
+		converted_content = convert_docx_to_txt(file_content)
 	elif file_extension == '.pdf':
 		# .pdf to text
-		converted_content = convert_pdf_to_txt(file_content)
 		print("pdf to txt")
+		converted_content = convert_pdf_to_txt(file_content)
 	else:
 		# unsupported file type
 		print(f"Unsupported file type: {file_name}")
@@ -64,23 +64,31 @@ def convert_file(file_name, file_content):
 	return converted_content
 
 def convert_docx_to_txt(content):
-	# create word document from encoded string
-	doc = Document(io.BytesIO(content))
-	# extract and return text
-	text = "\n"
-	for para in doc.paragraphs:
-		text += para.text
-	return text
-	#return "\n".join([para.text for para in doc.paragraphs])
+	try:
+		# create word document from encoded string
+		doc = Document(io.BytesIO(content))
+		# extract and return text
+		text = "\n"
+		for para in doc.paragraphs:
+			text += para.text
+		return text
+	except Exception as e:
+		print("Error during DOCX conversion:", str(e))
+		return ""
 
 def convert_pdf_to_txt(content):
-	# create pdf from encoded string
-	pdf_file = io.BytesIO(content)
-	reader = PyPDF2.PdfFileReader(pdf_file)
-	text = ""
-	for page_num in range(reader.numPages):
-		text += reader.getPage(page_num).extractText()
-	return text
+	try:
+		# create pdf from encoded string
+		pdf_file = io.BytesIO(content)
+		reader = PyPDF2.PdfReader(pdf_file)
+		text = ""
+		for page_num in range(len(reader.pages)):
+			text += reader.pages[page_num].extract_text()
+		return text
+	except Exception as e:
+		print("Error during PDF conversion:", str(e))
+		return ""
+
 
 # Current profile selection safety and sanity checker
 def safe_profile_select(request: HttpRequest, profile_id:int = None) -> Profile|None:

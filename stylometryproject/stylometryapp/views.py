@@ -142,7 +142,7 @@ def add_profile_docs(request):
             # Handle file type conversion (TO DO: upload seems to corrupt docx files)
             for i in range(len(names)):
                 print(i)
-                print(texts[i])
+                #print(texts[i])
                 texts[i] = convert_file(names[i], base64.b64decode(texts[i]))
 
             # Check if the profile exists (you can add more error handling here)
