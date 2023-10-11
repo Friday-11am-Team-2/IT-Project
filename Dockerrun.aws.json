@@ -1,0 +1,17 @@
+{
+    "AWSEBDockerrunVersion":"1",
+    "Authentication": {
+        "Bucket": "docker-login-bucket-authorguard",
+        "Key": "dockercfg"
+    },
+    "Image":{
+        "Name":"itprojectauthorguard/it-project:latest",
+        "Update": "true"
+    },
+    "Ports":[
+        {
+            "ContainerPort":8000,
+            "HostPort":8000
+        }
+    ]
+}
