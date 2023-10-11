@@ -42,7 +42,6 @@ jobs:
         echo RDS_HOSTNAME=${RDS_HOSTNAME} >> .env
         echo RDS_PORT=${RDS_PORT} >> .env
         echo SECRET_KEY=${SECRET_KEY} >> .env
-        cat .env
       env: 
         RDS_ENGINE: ${{ secrets.RDS_ENGINE}} 
         RDS_DB_NAME: ${{ secrets.RDS_DB_NAME }} 
