@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, reverse
 from django.urls import reverse
 from django.http import JsonResponse, HttpResponseRedirect
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_protect
 
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
@@ -9,11 +9,14 @@ from django.contrib.auth.decorators import login_required
 
 import json
 import random
-from stylometry import StyloNet
+from stylometry import StyloNet, analyze_sentence_lengths, analyze_words, strip_text
 
 from .forms import DocumentForm
 from .models import *
-from .utils import get_stylonet, convert_file
+from .utils import stylonet_preload, get_stylonet, convert_file, safe_profile_select
+
+# Dispatch preloader thread now that application has loaded up
+stylonet_preload()
 
 # TO DO - remove CSRF decorators
 def home_page_view(request):
@@ -34,9 +37,9 @@ def profile_page_view(request):
     profiles = Profile.objects.filter(user=current_user)
 
     # Grab currently select profile from session, "None" otherwise
-    cur_profile = request.session.get('profile_cur', None)
+    cur_profile = safe_profile_select(request)
     cur_profile_name = cur_profile.name if cur_profile else "None"
-    cur_profile_id = cur_profile.id if cur_profile else None
+    cur_profile_id = cur_profile.id if cur_profile else -1
 
     return render(request, 'profile.html', {
         'profiles': profiles,
@@ -52,7 +55,8 @@ def verify_page_view(request):
     profiles = Profile.objects.filter(user=current_user)
 
     # Grab currently select profile from session, "None" otherwise
-    cur_profile = request.session.get('profile_cur', None)
+    cur_profile = safe_profile_select(request)
+
     cur_profile_name = cur_profile.name if cur_profile else "None"
     cur_profile_id = cur_profile.id if cur_profile else -1
 
@@ -64,7 +68,7 @@ def verify_page_view(request):
 
 
 @login_required
-@csrf_exempt
+@csrf_protect
 def create_profile(request):
     """ Creates a new profile """
 
@@ -76,7 +80,7 @@ def create_profile(request):
         profile.save()
 
         # Set the newly created profile as the selected
-        request.session['profile_cur'] = profile
+        safe_profile_select(request, profile)
 
         # Return the newly created profile data as JSON
         data = {
@@ -112,7 +116,7 @@ def get_documents(request, profile_id):
         documents_data = [{'id': document.id, 'title': document.title} for document in documents]
 
         # Set this as the selected profile (assume getting docs mean's selecting)
-        request.session['profile_cur'] = profile
+        safe_profile_select(request, profile)
 
         return JsonResponse(documents_data, safe=False)
     except Profile.DoesNotExist:
@@ -120,7 +124,7 @@ def get_documents(request, profile_id):
 
 
 @login_required
-@csrf_exempt 
+@csrf_protect
 def add_profile_docs(request):
     """ Adds documents to a profile """
 
@@ -134,10 +138,9 @@ def add_profile_docs(request):
             names = data.get("file_names")
             texts = data.get("file_contents")
 
-            # Handle file type conversion (TO DO: upload seems to corrupt docx files)
-            # for i in range(len(names)):
-            #     print(i)
-            #     texts[i] = convert_file(names[i], texts[i])
+            # Handle file type conversion
+            for i in range(len(names)):
+                texts[i] = convert_file(names[i], texts[i])
 
             # Check if the profile exists (you can add more error handling here)
             profile = Profile.objects.get(pk=profile_id, user=request.user)
@@ -156,7 +159,7 @@ def add_profile_docs(request):
 
 
 @login_required
-@csrf_exempt 
+@csrf_protect
 def delete_profile(request):
     """ Deletes a profile """
 
@@ -164,10 +167,13 @@ def delete_profile(request):
         profile_id = request.POST.get("profile_id")
         try:
             profile = Profile.objects.get(id=profile_id, user=request.user)
-            if request.session.get('profile_cur') == profile:
-                # If the profile being deleted is also selected, then deselect it
-                request.session.pop('profile_cur')
             profile.delete()
+
+            # Clear selected profile against the deleted one
+            if 'selected_profile' in request.session:
+                if profile.id == request.session['selected_profile']:
+                    # Remove if they're the same
+                    request.session.pop('selected_profile')
 
             return JsonResponse({"message": "Profile deleted successfully"})
         except Profile.DoesNotExist:
@@ -177,7 +183,7 @@ def delete_profile(request):
     
 
 @login_required
-@csrf_exempt 
+@csrf_protect
 def edit_profile(request, profile_id):
     """ Edits a profile's name """
 
@@ -196,7 +202,7 @@ def edit_profile(request, profile_id):
 
 
 @login_required
-@csrf_exempt
+@csrf_protect
 def delete_document(request, document_id):
     """ Deletes a document """
 
@@ -211,7 +217,7 @@ def delete_document(request, document_id):
 
 
 @login_required
-@csrf_exempt
+@csrf_protect
 def run_verification(request):
     """ Runs the verification algorithm """
 
@@ -225,8 +231,8 @@ def run_verification(request):
             name = data.get("file_names")
             text = data.get("file_contents")
 
-            # Handle file type conversion (TO DO: upload seems to corrupt docx files)
-            # text[0] = convert_file(name[0], text[0])
+            # Handle file type conversion
+            text[0] = convert_file(name[0], text[0])
             
             # Check if the profile exists (you can add more error handling here)
             profile = Profile.objects.get(pk=profile_id, user=request.user)
@@ -245,16 +251,33 @@ def run_verification(request):
 
             model = get_stylonet()
 
-            value = round(model.score(text_data), 3)
+            result, score = model.predict(text_data)
+            score = round(score, 3)
+
+            # Generate Style Analytics
+            known_word_data = analyze_words([strip_text(text) for text in text_data['known']])
+            unknown_word_data = analyze_words([strip_text(text) for text in text_data['unknown']])
+
+            known_sentence_data = analyze_sentence_lengths(strip_text(text_data['known'], True))
+            unknown_sentence_data = analyze_sentence_lengths(strip_text(text_data['unknown'], True))
 
             # Return a success response
-            return JsonResponse({"message": "Verification Successful", "result": str(value)}, status=201)
+            return JsonResponse({
+                    "message": "Verification Successful",
+                    "result": True if result else False,   # Doesn't work otherwise, don't ask me why
+                    "score": str(score),
+                    "k_rare_words": str(known_word_data[0]),
+                    "u_rare_words": str(unknown_word_data[0]),
+                    "k_long_words": str(known_word_data[1]),
+                    "u_long_words": str(unknown_word_data[1]),
+                    "k_sent_len": str(round(known_sentence_data[3], 1)),
+                    "u_sent_len": str(round(unknown_sentence_data[3], 1)),
+                }, status=201)
         
 
         except Exception as e:
             # Handle exceptions and return an error response
             return JsonResponse({"error": str(e)}, status=400)
-        
 
 def register(request):
     """User Registration"""

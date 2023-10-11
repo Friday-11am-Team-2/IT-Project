@@ -28,7 +28,7 @@ import gensim
 if __debug__: ver(gensim)
 
 
-### Classes (for use outside the model) ###
+### Classes (for use outside the module) ###
 class StyloNet:
     """Contains the whole stylometry model, functions score, score_multi, predict and predict_multi
         can be called to run the stylometry model on a text.
@@ -140,9 +140,11 @@ class StyloNet:
 
         return results
 
-    def predict(self, texts: dict) -> bool:
+    def predict(self, texts: dict) -> tuple[bool,float]:
         """Calculate score and return a prediction based on the predetermined threshold, returns a boolean result"""
-        return self.score(texts) >= self.valid_threshold
+        score = self.score(texts)
+        result = score >= self.valid_threshold
+        return (result, score)
 
     def predict_batch(self, texts: list|dict) -> list[bool]|dict:
         """Run predict over a list/dict of texts and return the result with a boolean result"""
@@ -172,6 +174,34 @@ def unwrap(var):
     is_array = lambda var : isinstance(var, (list, tuple, set, np.ndarray))
     while is_array(var) and len(var) == 1: var = var[0]
     return var
+
+def flatten(var:list) -> str:
+    if isinstance(var, str): return var
+
+    res = ""
+    for i in var:
+        nextstr = f'{i}\n' if isinstance(i, str) else flatten(i)
+        res = res + nextstr if res else nextstr
+
+
+    return res.strip()
+            
+def strip_text(data: list|str, split=False) -> list[str]:
+    """Strip whitespace from text data and format by separating lines"""
+    if type(data) is list: data = flatten(data)
+    if type(data) is str: data = data.splitlines()
+
+    text = []
+    for line in data:
+        # Flatten any more than 1D arrays of strings/chars
+        cleaned = line.strip().lstrip("\ufeff")
+        if len(cleaned) == 0: continue
+        text.append(cleaned)
+    
+    if not split: text = '\n'.join(text)
+
+    return text
+
 
 ### Model Definition ###
 class SiameseNet(tf.keras.Model):
@@ -265,20 +295,6 @@ def loadW2v(path:str) -> gensim.models.Word2Vec:
     return gensim.models.Word2Vec.load(path)
 
 ### Text Processing ###
-def strip_text(data: list|str) -> list[str]:
-    """Strip whitespace from text data line-by-line"""
-    if type(data) is str: data = data.splitlines()
-
-    text = []
-    for line in data:
-        # Flatten any more than 1D arrays of strings/chars
-        if type(line) is not str: line = str(line)
-
-        cleaned = line.strip().lstrip("\ufeff")
-        text.append(cleaned)
-
-    return text
-
 def preprocess_text(text: list|str) -> list[str]:
     """
     Text preprocessor from PAN14_Data_Demo.ipnyb

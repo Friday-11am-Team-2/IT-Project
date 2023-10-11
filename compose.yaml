@@ -1,0 +1,38 @@
+services:
+
+  # production version, tweak environment/env_file to include environment variables
+  # run with: `docker compose up`
+  authorguard:
+    build: .
+    image: stylometryproject
+    network_mode: host
+    ports:
+     - 8000:8000
+    restart: on-failure
+    #environment:
+    # - DATABASE_TYPE=postgresql
+    # - RDS_DB_NAME=stylometry_database
+    # - RDS_USERNAME=stylometry
+    # - RDS_PASSWORD=password
+    # - RDS_HOSTNAME=localhost
+    # - RDS_PORT=5432
+    # - SECRET_KEY=[django secret key]
+    env_file:
+     - secrets.env
+  
+  # testing build, generates a temporary sqlite database
+  # which is deleted on close!
+  # run with: `docker compose run --rm authorguard-sqlite`
+  authorguard-sqlite:
+    build: .
+    image: stylometryproject
+    command: sh -c "python manage.py migrate && exec python manage.py runserver --noreload"
+    network_mode: host
+    ports:
+     - 8000:8000
+    environment:
+     - DATABASE_TYPE=sqlite
+    env_file:
+     - secrets.env
+    profiles:
+     - test

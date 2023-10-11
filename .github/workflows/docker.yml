@@ -1,0 +1,77 @@
+name: Docker Hub & AWS EB Deployment
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Latest Repo
+        uses: actions/checkout@master
+      
+      - name: Create env file
+        run: |
+          cd stylometryproject
+          touch .env
+          echo RDS_ENGINE=${RDS_ENGINE} >> .env
+          echo RDS_DB_NAME=${RDS_DB_NAME} >> .env
+          echo RDS_USERNAME=${RDS_USERNAME} >> .env
+          echo RDS_PASSWORD=${RDS_PASSWORD} >> .env
+          echo RDS_HOSTNAME=${RDS_HOSTNAME} >> .env
+          echo RDS_PORT=${RDS_PORT} >> .env
+          echo SECRET_KEY=${SECRET_KEY} >> .env
+          cd ..
+        env: 
+          RDS_ENGINE: ${{ secrets.RDS_ENGINE}} 
+          RDS_DB_NAME: ${{ secrets.RDS_DB_NAME }} 
+          RDS_USERNAME: ${{ secrets.RDS_USERNAME }}
+          RDS_PASSWORD: ${{ secrets.RDS_PASSWORD }}
+          RDS_HOSTNAME: ${{ secrets.RDS_HOSTNAME }}
+          RDS_PORT: ${{ secrets.RDS_PORT }}
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: Dockerfile
+          push: true
+          tags: itprojectauthorguard/it-project:latest
+
+      - name: Get Timestamp
+        uses: gerred/actions/current-time@master
+        id: current-time
+
+      - name: Run String Replace
+        uses: frabert/replace-string-action@master
+        id: format-time
+        with:
+          pattern: '[:\.]+'
+          string: "${{ steps.current-time.outputs.time }}"
+          replace-with: '-'
+          flags: 'g'
+
+      - name: Generate Deployment Package
+        run: zip -r deploy.zip * -x "**node_modules**"
+  
+      - name: Deploy to EB
+        uses: einaregilsson/beanstalk-deploy@v16
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          application_name: AuthorGuard
+          environment_name: Authorguard-env
+          version_label: "docker-app-${{ steps.format-time.outputs.replaced }}"
+          region: ap-southeast-2
+          deployment_package: deploy.zip

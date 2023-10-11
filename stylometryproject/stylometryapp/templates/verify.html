@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 {% load static %}
+{% csrf_token %}
 
 <head>
     <meta charset="UTF-8">
@@ -23,7 +24,9 @@
     <link rel="stylesheet" href="{% static 'styles/app.css' %}">
     <link rel="stylesheet" href="{% static 'styles/uploadbutton.css' %}">
     <link rel="stylesheet" href="{% static 'styles/dropdown.css' %}">
-    <link rel="icon" type="image/png" href="../static/images/Favicon.png" />
+    <link rel="stylesheet" href="{% static 'styles/loadingSpinner.css' %}">
+    <link rel="stylesheet" href="{% static 'styles/resultsBox.css' %}">
+    <link rel="icon" type="image/png" href="{% static 'images/Favicon.png' %}"/>
 
     <title>Verify Documents</title>
 </head>
@@ -63,7 +66,7 @@
                 <p>Select a profile to run the comparison tool on</p>
                 <div class="dropdown">
                     <button class="btn btn-large dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                        aria-expanded="false" id="curr-profile-name" data-profile-id="{{ profile_id }}"> {{ profile_name
+                        aria-expanded="false" id="curr-profile" data-profile-id="{{ profile_id }}"> {{ profile_name
                         }} </button>
                     <ul class="dropdown-menu" id="profile-list">
                         <li style="padding: 7px" id="no-files"> -- ADD A PROFILE FIRST --</li>
@@ -80,13 +83,20 @@
                 </div>
                 <div class="none" id="current-docs">
                     <div class="row" style="background-color: #F0E2B6; width: 80%; margin: 5% 0 0 0;">
-                        <p id="current-files">Files in Profile: </p>
+                        <p id="display-curr-profile-name">Files in Profile: </p>
                     </div>
                     <div class="row" id="profile-files-list-box">
                         <ul id="profile-files-list">
                             <!-- Documents will be displayed here -->
                         </ul>
                     </div>
+                    <button class="edit delete-profile btn btn-danger btn-sm ml-auto none"
+                        data-profile-id="{{ profile.id }}" style="color: #ae2012;"><svg
+                            xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                            class="bi bi-trash3" viewBox="0 0 16 16">
+                            <path
+                                d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z" />
+                        </svg></button>
                 </div>
             </div>
 
@@ -99,7 +109,7 @@
                     </svg>Upload Document</h2>
                 <p>Upload a document for comparision with a profile</p>
                 <!-- Restrict file type to .txt -->
-                <input type="file" id="upload" name="file-upload" accept=".txt">
+                <input type="file" id="upload" name="file-upload" accept=".txt, .docx, .pdf">
                 <label class="upload-label" for="upload">
                     <i class="fa-solid fa-circle-arrow-up"></i>
                     &nbsp;Upload&nbsp;Document
@@ -128,7 +138,37 @@
                         <path
                             d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0Zm-8.082.414c.92 0 1.535.54 1.541 1.318.012.791-.615 1.36-1.588 1.354-.861-.006-1.482-.469-1.54-1.066H5.104c.047 1.177 1.05 2.144 2.754 2.144 1.653 0 2.954-.937 2.93-2.396-.023-1.278-1.031-1.846-1.734-1.916v-.07c.597-.1 1.505-.739 1.482-1.876-.03-1.177-1.043-2.074-2.637-2.062-1.675.006-2.59.984-2.625 2.12h1.248c.036-.556.557-1.054 1.348-1.054.785 0 1.348.486 1.348 1.195.006.715-.563 1.237-1.342 1.237h-.838v1.072h.879Z" />
                     </svg>Verification Results</h2>
-                <p class="lead" id="verify-text">Run verification test to see results</p>
+                <p class="lead" id="verify-text" style="margin-bottom: 0; padding-bottom: 0;">
+                    Run verification test to see results
+                </p>
+                <div class="text-center" style="font-size: 0.75rem; margin-top: 0;">
+                    The results may not be accurate in 100% of the cases.
+                </div>
+                <div class="loader none">Loading...</div>
+                <div class="results-box col align-items-center" style="display: None;">
+                    <div class="row results-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="225" height="225" fill="#008000" style="display: None;" class="bi bi-check-circle-fill" viewBox="0 0 16 16" id = "pass-icon">
+                            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="225" height="225" fill="#FF0000" style="display: None;" class="bi bi-x-circle-fill results-icon" viewBox="0 0 16 16" id = "fail-icon">
+                            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-center" id="results-message"></h1>
+                    </div>
+                </div>
+                <table id="analytics-table" class="analytics-table" style="display: None;">
+                    <thead>
+                        <th/>
+                        <th>Rare Words</th>
+                        <th>Long Words</th>
+                        <th>Sentence Length</th>
+                    </thead>
+                    <tbody id="analytics-table-body"/>
+                </table>
+                
+                
             </div>
 
         </div>
@@ -146,7 +186,7 @@
     <script src="{% static 'scripts/verifyButton.js'%}"></script>
     <script src="{% static 'scripts/verify.js'%}"></script>
     <script src="{% static 'scripts/docDisplay.js'%}"></script>
-    <script src="{% static 'scripts/removePlaceholder.js'%}"></script>
+    <script src="{% static 'scripts/removePlaceholder.js' %}"></script>
 
 
 </body>

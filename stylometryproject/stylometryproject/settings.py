@@ -12,6 +12,17 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
+import dotenv
+
+# Load environment variables from .env file
+if os.path.isfile(".env"):
+    dotenv.load_dotenv()
+elif os.path.isfile("../secrets.env"):
+    dotenv.load_dotenv("../secrets.env")
+elif os.path.isdir("../secrets"):
+    for file in os.listdir("../secrets"):
+        if os.path.isfile(os.path.join("../secrets", file)):
+            dotenv.load_dotenv(os.path.join("../secrets", file))
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -19,18 +30,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Stylometry Model Settings
 STYLOMETRY_PROFILE = "example_profile"
-#STYLOMETRY_PROFILE_BASE = "stylometry_models"
+#STYLOMETRY_PROFILE_DIR = "stylometry_models"
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-($0=pgug)a#rq5&c$+%_v)62r929n(89#3vudy@75r&*_8isxy'
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -91,13 +102,27 @@ WSGI_APPLICATION = 'stylometryproject.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
+DATABASE_TYPE = os.environ['DATABASE_TYPE'] if 'DATABASE_TYPE' in os.environ else "postgresql"
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+match DATABASE_TYPE:
+    case "sqlite":
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.sqlite3',
+                'NAME': 'db.sqlite3'
+            }
+        }
+    case _: #aka. postgresql
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.postgresql_psycopg2',
+                'NAME': os.environ.get('RDS_DB_NAME', 'stylometry_database'),
+                'USER': os.environ.get('RDS_USERNAME', 'postgres'),
+                'PASSWORD': os.environ.get('RDS_PASSWORD', 'password'),
+                'HOST': os.environ.get('RDS_HOSTNAME', 'localhost'),
+                'PORT': os.environ.get('RDS_PORT', '5432'),
+            }
+        }
 
 
 # Password validation
@@ -135,6 +160,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

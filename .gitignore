@@ -2,6 +2,9 @@
 .venv
 __pycache__
 env
+.env
+secrets.env
+secrets/
 
 # Database
 stylometryproject/db.sqlite3
@@ -22,3 +25,6 @@ PAN14_Model_Code/models
 .idea/vcs.xml
 .idea/workspace.xml
 
+stylometryproject/.env
+Dockerrun.aws.json
+dockercfg

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 {% load static %}
+{% csrf_token %}
 
 <head>
     <meta charset="UTF-8">
@@ -23,7 +24,7 @@
     <link rel="stylesheet" href="{% static 'styles/app.css' %}">
     <link rel="stylesheet" href="{% static 'styles/uploadbutton.css' %}">
     <link rel="stylesheet" href="{% static 'styles/dropdown.css' %}">
-    <link rel="icon" type="image/png" href="../static/images/Favicon.png" />
+    <link rel="icon" type="image/png" href="{% static 'images/Favicon.png' %}"/>
 
 
 
@@ -67,8 +68,8 @@
                 <p>Select a profile to add the documents to, or create a new one</p>
                 <div class="dropdown">
                     <button class="btn btn-lg dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                        aria-expanded="false" id="curr-profile-name" data-profile-id="{{ profile_id }}"> {{ profile_name
-                        }} </button>
+                        aria-expanded="false" id="curr-profile" data-profile-id="{{ profile_id }}"> {{ profile_name }}
+                    </button>
                     <ul class="dropdown-menu" id="profile-list">
                         {% for profile in profiles %}
                         <li>
@@ -103,6 +104,18 @@
                                 </svg> New Profile</a></li>
                     </ul>
                 </div>
+
+                <!-- ADD ALERT HERE -->
+                <div class="alert alert-success none" role="alert" id="profile-deleted-alert">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-check2-circle" viewBox="0 0 16 16">
+                        <path
+                            d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0z" />
+                        <path
+                            d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l7-7z" />
+                    </svg>
+                    Profile deleted successfully!
+                </div>
             </div>
 
             <!-- Current Profile -->
@@ -110,12 +123,17 @@
                 <h2 class="display-5">Current Profile</h2>
 
                 <div class="row" style="background-color: #F0E2B6; width: 80%; margin: 5% 0 0 0;">
-                    <p id="display-curr-profile-name">Profile: None</p>
+                    <p id="display-curr-profile-name">No Profile Selected</p>
                 </div>
                 <div class="row" id="curr-profile-list-box">
                     <ul id="profile-files-list">
                         <!-- Documents will be displayed here -->
                     </ul>
+                </div>
+                <div style="font-size: 0.75rem; margin-top: 0; width: 80%;">
+                    By using this service, you agree to allow the storage of the
+                    files submitted until the files are deleted for the purposes
+                    of authorship verification.
                 </div>
             </div>
 
@@ -128,7 +146,7 @@
                     </svg>Upload Documents</h2>
                 <p>Upload Documents to add to a profile</p>
                 <!-- Restrict file type to .txt -->
-                <input type="file" id="upload" name="file-upload" accept=".txt" multiple />
+                <input type="file" id="upload" name="file-upload" accept=".txt, .docx, .pdf" multiple />
                 <label for="upload" class="upload-label">
                     <i class="fa-solid fa-circle-arrow-up"></i>
                     &nbsp;Upload&nbsp;Documents

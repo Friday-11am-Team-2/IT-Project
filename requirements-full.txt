@@ -1,0 +1,28 @@
+# Stylometry Library dependencies
+tensorflow==2.13.0
+gensim==4.3.2
+nltk==3.8.1
+numpy==1.24.3
+
+# Jupyter Notebook requirements (in addition to above)
+scikit-learn
+networkx
+tqdm
+matplotlib
+
+# Django requiments
+Django
+djangorestframework
+django-cors-headers
+
+# File type handling
+python-docx
+PyPDF2
+
+# Database
+#psycopg2
+psycopg2-binary
+
+# Deployment
+python-dotenv
+python-decouple
