@@ -8,9 +8,19 @@ const fileNamesArray = [];
 const fileContentArray = [];
 
 let nextListItemId = 1; // Initialize a unique identifier for list items
+const FILE_SIZE_LIMIT = 2048;  // in KB
 
 // Javascript for upload button to accept multiple files & uploads
 fileInput.addEventListener("change", () => {
+
+    // Stops upload if there exists a file that would be too large
+    for (const file of fileInput.files) {
+        let fileSize = (file.size / 1024).toFixed(2);
+        if (fileSize>FILE_SIZE_LIMIT){
+            alert("All uploaded files must be 2MB or less in size!");
+            return;
+        }
+    }
 
     // For each file selected, create a list item and add it to the list
     for (const file of fileInput.files) {
