@@ -18,7 +18,7 @@ fileInput.addEventListener("change", () => {
     for (const file of fileInput.files) {
         let fileSize = (file.size / 1024).toFixed(2);
         if (fileSize>FILE_SIZE_LIMIT){
-            alert("All uploaded files must be 2MB or less in size!");
+            alert("All uploaded files must be 10MB or less in size!");
             return;
         }
     }
