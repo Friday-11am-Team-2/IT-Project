@@ -8,21 +8,19 @@ const runVerificationButton = document.getElementById("verify-button");
 // Define arrays to store file names and file content
 const fileNamesArray = [];
 const fileContentArray = [];
-const FILE_SIZE_LIMIT =  10240;  // in KB
+const FILE_SIZE_LIMIT = 10240;  // in KB
 
 // For the upload in the verify page
 fileInput.addEventListener("change", () => {
-    // make verify clickable again
-
     // Stops upload if there exists a file that would be too large
     for (const file of fileInput.files) {
         let fileSize = (file.size / 1024).toFixed(2);
-        if (fileSize>FILE_SIZE_LIMIT){
+        if (fileSize > FILE_SIZE_LIMIT) {
             alert("All uploaded files must be 10MB or less in size!");
             return;
         }
     }
-    
+
     localStorage.removeItem('buttonClicked');
     runVerificationButton.disabled = false;
 
@@ -34,7 +32,7 @@ fileInput.addEventListener("change", () => {
 
     fileNamesArray.length = 0;
     fileContentArray.length = 0;
- 
+
 
     // For each file selected, create a list item and add it to the list
     for (const file of fileInput.files) {
@@ -72,8 +70,8 @@ fileInput.addEventListener("change", () => {
 
 });
 
+// making verify reclickable
 let lastElementID = null;
-
 for (let option of profileDropdownOptions) {
     option.addEventListener("click", () => {
         let id = option.getAttribute("data-profile-id");
