@@ -1,3 +1,5 @@
+# GitHub action adapted from workflow by Akash Singh 2021, accessible at https://akashsingh.blog/complete-guide-on-deploying-a-docker-application-react-to-aws-elastic-beanstalk-using-docker-hub-and-github-actions
+
 name: Docker Hub & AWS EB Deployment
 on:
   push:
@@ -70,8 +72,8 @@ jobs:
         with:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          application_name: AuthorGuard-IT
-          environment_name: AuthorGuard-IT-env
+          application_name: AuthorGuard-Demo
+          environment_name: AuthorGuard-Demo-env
           version_label: "docker-app-${{ steps.format-time.outputs.replaced }}"
           region: ap-southeast-2
           deployment_package: deploy.zip
