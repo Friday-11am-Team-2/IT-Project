@@ -8,7 +8,7 @@ const runVerificationButton = document.getElementById("verify-button");
 // Define arrays to store file names and file content
 const fileNamesArray = [];
 const fileContentArray = [];
-const FILE_SIZE_LIMIT = 2048;  // in KB
+const FILE_SIZE_LIMIT =  10240;  // in KB
 
 // For the upload in the verify page
 fileInput.addEventListener("change", () => {

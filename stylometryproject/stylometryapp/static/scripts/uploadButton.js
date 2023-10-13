@@ -8,7 +8,7 @@ const fileNamesArray = [];
 const fileContentArray = [];
 
 let nextListItemId = 1; // Initialize a unique identifier for list items
-const FILE_SIZE_LIMIT = 2048;  // in KB
+const FILE_SIZE_LIMIT =  10240;  // in KB
 
 // Javascript for upload button to accept multiple files & uploads
 fileInput.addEventListener("change", () => {
