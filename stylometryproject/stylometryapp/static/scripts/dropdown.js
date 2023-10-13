@@ -1,6 +1,9 @@
 $(document).ready(function () {
-    // Attach a click event handler to the "Add Profile" button
-    $('#addProfileBtn').on('click', function () {
+    // Attach a click event handler to the "Add Profile" Form
+    $('#addProfileForm').on('submit', function (event) {
+        event.preventDefault(); // Prevent default behaviour when form is submitted
+
+
         // Get the new profile name from the modal form
         var newProfileName = $('#newProfileName').val();
         if (newProfileName.length < 1) {
