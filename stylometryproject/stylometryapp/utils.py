@@ -69,10 +69,10 @@ def convert_docx_to_txt(content):
 	try:
 		# create word document from encoded string
 		doc = Document(io.BytesIO(content))
+	
 		# extract and return text
-		text = ""
-		for para in doc.paragraphs:
-			text += para.text
+		text = '\n'.join([para.text for para in doc.paragraphs])
+
 		return text
 	except Exception as e:
 		print("Error during DOCX conversion:", str(e))
@@ -83,10 +83,10 @@ def convert_pdf_to_txt(content):
 		# create pdf from encoded string
 		pdf_file = io.BytesIO(content)
 		reader = PyPDF2.PdfReader(pdf_file)
-		text = ""
-		for page_num in range(len(reader.pages)):
-			text += reader.pages[page_num].extract_text()
+	
+		text = '\n'.join(page.extract_text() for page in reader.pages)
 		return text
+
 	except Exception as e:
 		print("Error during PDF conversion:", str(e))
 		return ""
