@@ -162,6 +162,20 @@ class StyloNet:
 
         return results
 
+class TextAnalytics:
+
+    def __init__(text: str|list):
+        self.text = strip_text(text, True)
+
+    def rare_words_freq() -> float:
+        
+
+    def long_words_freq() -> float:
+        pass
+
+    def long_words_percentage() -> float:
+        pass
+
 ### Utility functions ###
 # Both imported from the original source code, or rewritten. Not intended for use outside the module.
 def setupNltk(path = f"{os.curdir}/nltk_data") -> None:
