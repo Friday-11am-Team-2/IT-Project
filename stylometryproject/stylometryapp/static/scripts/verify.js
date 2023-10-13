@@ -128,11 +128,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     // Set the result text display as appropriate
                     let resultValue = data.result;
-                    if (resultValue){
-                        resultsMsg.textContent="Pass!";
+                    if (resultValue) {
+                        resultsMsg.textContent = "Pass!";
                         passIcon.style.display = "block";
-                    }else{
-                        resultsMsg.textContent="Fail!";
+                    } else {
+                        resultsMsg.textContent = "Fail!";
                         failIcon.style.display = "block";
                     }
                     resultsBox.style.display = "block";
@@ -158,7 +158,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         field = document.createElement("td")
                         field.textContent = f3
                         table_row.appendChild(field)
-                        
+
                         return table_row
                     }
 
@@ -174,9 +174,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     //newField.appendChild(document.createTextNode("Value: "));
                     //newField.appendChild(results);
 
-                    
-                    
-                    
+
+
+
 
 
                     // Check if 'isNew' is true (redundant)
@@ -185,12 +185,12 @@ document.addEventListener("DOMContentLoaded", () => {
                     //    const verificationResultsDiv = document.getElementById("verification-results");
                     //    const valueFields = verificationResultsDiv.querySelectorAll("p");
 
-                        // Iterate through the "Value" fields and remove them
-                        //valueFields.forEach((field) => {
-                        //    if (field.textContent.startsWith("Value: ")) {
-                        //        field.remove();
-                        //    }
-                        //});
+                    // Iterate through the "Value" fields and remove them
+                    //valueFields.forEach((field) => {
+                    //    if (field.textContent.startsWith("Value: ")) {
+                    //        field.remove();
+                    //    }
+                    //});
                     //}
                     //document.getElementById("verification-results").appendChild(newField);
                 })
