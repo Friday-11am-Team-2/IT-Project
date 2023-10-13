@@ -8,9 +8,19 @@ const fileNamesArray = [];
 const fileContentArray = [];
 
 let nextListItemId = 1; // Initialize a unique identifier for list items
+const FILE_SIZE_LIMIT = 10240;  // in KB
 
 // Javascript for upload button to accept multiple files & uploads
 fileInput.addEventListener("change", () => {
+
+    // Stops upload if there exists a file that would be too large
+    for (const file of fileInput.files) {
+        let fileSize = (file.size / 1024).toFixed(2);
+        if (fileSize > FILE_SIZE_LIMIT) {
+            alert("All uploaded files must be 10MB or less in size!");
+            return;
+        }
+    }
 
     // For each file selected, create a list item and add it to the list
     for (const file of fileInput.files) {
@@ -92,3 +102,52 @@ fileInput.addEventListener("change", () => {
     }
 
 });
+
+
+// Javascript for submit button (ONLY ON PROFILE)
+const submitButton = document.getElementById("submit-button");
+if (submitButton) {
+    submitButton.addEventListener("click", () => {
+
+        csrftoken = document.getElementsByName("csrfmiddlewaretoken")[0].value;
+        console.log(csrftoken);
+
+        // Get profile ID from docDisplay
+        const profileID = $('#curr-profile').data('profile-id');
+
+        if (profileID <= 0) {
+            alert("Please select a profile first");
+            return;
+        }
+
+        const dataToSend = {
+            profile_id: profileID, // Add the profile ID to the JSON data
+            file_names: fileNamesArray.map(item => item.name), // Extract the 'name' property from each object in fileNamesArray
+            file_contents: fileContentArray,
+        };
+
+        // checking if there are any files to upload
+        if (dataToSend.file_names.length == 0) {
+            alert("Please add documents to upload to profile");
+            return;
+        }
+
+        fetch("/add_profile_docs/", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": csrftoken,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(dataToSend), // Send the modified data
+        })
+            .then((response) => {
+                if (response.ok) {
+                    // Reload page if successful
+                    location.reload('/profile/');
+                }
+            })
+            .catch((error) => {
+                // Handle errors
+            });
+    });
+}
