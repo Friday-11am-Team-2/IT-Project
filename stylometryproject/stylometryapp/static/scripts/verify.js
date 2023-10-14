@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const resultsBox = document.querySelector(".results-box");
     const passIcon = document.getElementById("pass-icon");
     const failIcon = document.getElementById("fail-icon");
+    const showModal = document.getElementById("show-modal");
     const resultsMsg = document.getElementById("results-message");
 
     const analyticsTable = document.getElementById("analytics-table");
@@ -35,11 +36,11 @@ document.addEventListener("DOMContentLoaded", () => {
             passIcon.style.display = "none";
             failIcon.style.display = "none";
 
-            analyticsTable.style.display = "none";
-            while (analyticsTableBody.firstChild) {
-                // Clear the table contents
-                analyticsTableBody.removeChild(analyticsTableBody.lastChild);
-            }
+            // analyticsTable.style.display = "none";
+            // while (analyticsTableBody.firstChild) {
+            //     // Clear the table contents
+            //     analyticsTableBody.removeChild(analyticsTableBody.lastChild);
+            // }
 
             event.preventDefault();
             var csrftoken = $('input[name=csrfmiddlewaretoken]').val();
@@ -64,6 +65,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // loading animation
             verifyTextPlaceholder.classList.add("none");
+            loadingSpinner.classList.toggle("none");
+
+            // don't show additional text until results loaded
+            showModal.classList.add("none");
 
             // Redundant code
             //const verificationResults = document.getElementById("verification-results");
@@ -74,8 +79,6 @@ document.addEventListener("DOMContentLoaded", () => {
             //        field.remove();
             //    }
             //});
-
-            loadingSpinner.classList.toggle("none");
 
 
             // Send the data
@@ -136,36 +139,40 @@ document.addEventListener("DOMContentLoaded", () => {
                         failIcon.style.display = "block";
                     }
                     resultsBox.style.display = "block";
+                    showModal.classList.remove("none");
                     console.log("Diplaying Results!");
+
+                    displayAnalytics(data);
+
 
 
                     // Display analytics
-                    function generate_row(name, f1, f2, f3) {
-                        var table_row = document.createElement("tr")
+                    // function generate_row(name, f1, f2, f3) {
+                    //     var table_row = document.createElement("tr")
 
-                        var heading = document.createElement("th")
-                        heading.textContent = name
-                        table_row.appendChild(heading)
+                    //     var heading = document.createElement("th")
+                    //     heading.textContent = name
+                    //     table_row.appendChild(heading)
 
-                        var field = document.createElement("td")
-                        field.textContent = f1
-                        table_row.appendChild(field)
+                    //     var field = document.createElement("td")
+                    //     field.textContent = f1
+                    //     table_row.appendChild(field)
 
-                        field = document.createElement("td")
-                        field.textContent = f2
-                        table_row.appendChild(field)
+                    //     field = document.createElement("td")
+                    //     field.textContent = f2
+                    //     table_row.appendChild(field)
 
-                        field = document.createElement("td")
-                        field.textContent = f3
-                        table_row.appendChild(field)
+                    //     field = document.createElement("td")
+                    //     field.textContent = f3
+                    //     table_row.appendChild(field)
 
-                        return table_row
-                    }
+                    //     return table_row
+                    // }
 
-                    analyticsTableBody.appendChild(generate_row("Known", data.k_rare_words, data.k_long_words, data.k_sent_len))
-                    analyticsTableBody.appendChild(generate_row("Unknown", data.u_rare_words, data.u_long_words, data.u_sent_len))
+                    // analyticsTableBody.appendChild(generate_row("Known", data.k_rare_words, data.k_long_words, data.k_sent_len))
+                    // analyticsTableBody.appendChild(generate_row("Unknown", data.u_rare_words, data.u_long_words, data.u_sent_len))
 
-                    analyticsTable.style.display = "block"
+                    // analyticsTable.style.display = "block"
 
                     // Get Data Fields(redundant)
                     //const results = document.createElement("strong");
@@ -202,5 +209,62 @@ document.addEventListener("DOMContentLoaded", () => {
                     alert(error.message);
                 });
         });
+
     }
 });
+
+function displayAnalytics(data) {
+    drawGraph(data.k_rare_words, data.u_rare_words, data.k_word_count, data.u_word_count, 'Rare', true);
+    drawGraph(data.k_long_words, data.u_long_words, data.k_word_count, data.u_word_count, 'Long', false);
+};
+
+function drawGraph(knownMetric, unknownMetric, knownCount, unknownCount, metric, legendBool) {
+    const dataset = [
+        { label: `${metric} Words (%)`, value: (knownMetric / knownCount) * 100 },
+        { label: `${metric} Words (%)`, value: (unknownMetric / unknownCount) * 100 }
+    ];
+
+    const options = {
+        indexAxis: 'y',
+        plugins: {
+            legend: {
+                display: legendBool
+            }
+        },
+
+        title: {
+            display: false,
+        },
+        scales: {
+            x: {
+                suggestedMin: 0,
+                suggestedMax: 100,
+            }
+        },
+        maintainAspectRatio: false,
+    };
+    const barWidth = 0.6;
+
+    const graph = document.getElementById(metric);
+    new Chart(graph, {
+        type: "bar",
+        data: {
+            labels: [`${metric} Words (%)`],
+            datasets: [
+                {
+                    label: "Known",
+                    data: [dataset[0].value],
+                    backgroundColor: 'blue',
+                    barPercentage: barWidth,
+                },
+                {
+                    label: "Unknown",
+                    data: [dataset[1].value],
+                    backgroundColor: 'red',
+                    barPercentage: barWidth,
+                }
+            ]
+        },
+        options: options,
+    });
+}

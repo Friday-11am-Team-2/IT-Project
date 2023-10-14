@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required
 
 import json
 import random
-from stylometry import StyloNet, analyze_sentence_lengths, analyze_words, strip_text
+from stylometry import StyloNet, analyze_sentence_lengths, analyze_words, strip_text, total_words
 
 from .forms import DocumentForm
 from .models import *
@@ -19,6 +19,8 @@ from .utils import stylonet_preload, get_stylonet, convert_file, safe_profile_se
 stylonet_preload()
 
 # TO DO - remove CSRF decorators
+
+
 def home_page_view(request):
     """ Renders the home page """
     return render(request, 'index.html')
@@ -63,7 +65,7 @@ def verify_page_view(request):
     return render(request, 'verify.html', {
         'profiles': profiles,
         'profile_name': cur_profile_name,
-        'profile_id' : cur_profile_id
+        'profile_id': cur_profile_id
     })
 
 
@@ -113,7 +115,8 @@ def get_documents(request, profile_id):
     try:
         profile = Profile.objects.get(pk=profile_id, user=request.user)
         documents = Document.objects.filter(profile=profile)
-        documents_data = [{'id': document.id, 'title': document.title} for document in documents]
+        documents_data = [{'id': document.id, 'title': document.title}
+                          for document in documents]
 
         # Set this as the selected profile (assume getting docs mean's selecting)
         safe_profile_select(request, profile)
@@ -147,11 +150,11 @@ def add_profile_docs(request):
 
             # Create and save ProfileDocument instances for each file
             for i in range(len(names)):
-                Document.objects.create(profile=profile, title=names[i], text=texts[i])
+                Document.objects.create(
+                    profile=profile, title=names[i], text=texts[i])
 
             # Return a success response
             return JsonResponse({"message": "Documents added successfully"}, status=201)
-        
 
         except Exception as e:
             # Handle exceptions and return an error response
@@ -180,7 +183,7 @@ def delete_profile(request):
             return JsonResponse({"error": "Profile not found"}, status=404)
     else:
         return JsonResponse({"error": "Invalid request"}, status=400)
-    
+
 
 @login_required
 @csrf_protect
@@ -233,7 +236,7 @@ def run_verification(request):
 
             # Handle file type conversion
             text[0] = convert_file(name[0], text[0])
-            
+
             # Check if the profile exists (you can add more error handling here)
             profile = Profile.objects.get(pk=profile_id, user=request.user)
 
@@ -242,11 +245,11 @@ def run_verification(request):
             if (len(documents) == 0):
                 print("No documents found for the profile")
                 return JsonResponse({"error": "No documents found for the profile"}, status=400)
-            
+
             # RUN ALGORITHM #
             text_data = {
-                'known': [ document.text for document in documents ],
-                'unknown': [ text ]
+                'known': [document.text for document in documents],
+                'unknown': [text]
             }
 
             model = get_stylonet()
@@ -255,29 +258,41 @@ def run_verification(request):
             score = round(score, 3)
 
             # Generate Style Analytics
-            known_word_data = analyze_words([strip_text(text) for text in text_data['known']])
-            unknown_word_data = analyze_words([strip_text(text) for text in text_data['unknown']])
+            known_word_data = analyze_words(
+                [strip_text(text) for text in text_data['known']])
+            unknown_word_data = analyze_words(
+                [strip_text(text) for text in text_data['unknown']])
 
-            known_sentence_data = analyze_sentence_lengths(strip_text(text_data['known'], True))
-            unknown_sentence_data = analyze_sentence_lengths(strip_text(text_data['unknown'], True))
+            known_word_count = total_words(
+                [strip_text(text) for text in text_data['known']])
+            unknown_word_count = total_words(
+                [strip_text(text) for text in text_data['unknown']])
+
+            known_sentence_data = analyze_sentence_lengths(
+                strip_text(text_data['known'], True))
+            unknown_sentence_data = analyze_sentence_lengths(
+                strip_text(text_data['unknown'], True))
 
             # Return a success response
             return JsonResponse({
-                    "message": "Verification Successful",
-                    "result": True if result else False,   # Doesn't work otherwise, don't ask me why
-                    "score": str(score),
-                    "k_rare_words": str(known_word_data[0]),
-                    "u_rare_words": str(unknown_word_data[0]),
-                    "k_long_words": str(known_word_data[1]),
-                    "u_long_words": str(unknown_word_data[1]),
-                    "k_sent_len": str(round(known_sentence_data[3], 1)),
-                    "u_sent_len": str(round(unknown_sentence_data[3], 1)),
-                }, status=201)
-        
+                "message": "Verification Successful",
+                # Doesn't work otherwise, don't ask me why
+                "result": True if result else False,
+                "score": str(score),
+                "k_rare_words": str(known_word_data[0]),
+                "u_rare_words": str(unknown_word_data[0]),
+                "k_word_count": str(known_word_count),
+                "u_word_count": str(unknown_word_count),
+                "k_long_words": str(known_word_data[1]),
+                "u_long_words": str(unknown_word_data[1]),
+                "k_sent_len": str(round(known_sentence_data[3], 1)),
+                "u_sent_len": str(round(unknown_sentence_data[3], 1)),
+            }, status=201)
 
         except Exception as e:
             # Handle exceptions and return an error response
             return JsonResponse({"error": str(e)}, status=400)
+
 
 def register(request):
     """User Registration"""
@@ -288,7 +303,7 @@ def register(request):
             form.save()
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password1')
-            user = authenticate(username = username, password = password)
+            user = authenticate(username=username, password=password)
             login(request, user)
             return redirect('/home/')
     else:

@@ -402,6 +402,18 @@ def analyze_words(texts):
 
     return [rare_count, long_count, count_over_avg, count_under_avg, count_avg, ttr]
 
+# helper function
+def total_words(texts):
+    words = []
+    stop_words = set(stopwords.words('english'))
+    lemmatizer = WordNetLemmatizer()
+    for text in texts:
+        tokenized = word_tokenize(text.lower())
+        processed = [lemmatizer.lemmatize(word) for word in tokenized if word not in stop_words]
+        words += processed
+
+    return len(words)
+
 def calculate_style_vector(texts):
     """
     calculate_style_vector from PAN14_Data_Demo.ipynb
