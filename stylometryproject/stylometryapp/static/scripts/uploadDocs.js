@@ -27,11 +27,7 @@ fileInput.addEventListener("change", () => {
         let reader = new FileReader();
         let listItem = document.createElement("li");
         let fileName = file.name;
-        let fileSize = (file.size / 1024).toFixed(1);
-
-        if (fileSize >= 1024) {
-            fileSize = (fileSize / 1024).toFixed(1);
-        }
+        let fileSize = (file.size / 1024).toFixed(2);
 
         // div to contain list content and button
         let fileContainer = document.createElement("div");
@@ -78,7 +74,19 @@ fileInput.addEventListener("change", () => {
         // Read the file content and add it to the arrays
         reader.onload = (event) => {
             // encode file content (decode in file type handling)
-            const fileContent = btoa(String.fromCharCode(...new Uint8Array(event.target.result)));
+            const uint8Array = new Uint8Array(event.target.result);
+            const chunkSize = 65536; // Choose an appropriate chunk size based on your data
+            const chunks = [];
+            
+            for (let i = 0; i < uint8Array.length; i += chunkSize) {
+              const chunk = uint8Array.subarray(i, i + chunkSize);
+              const chunkString = String.fromCharCode.apply(null, chunk);
+              chunks.push(chunkString);
+            }
+            
+            const fileContent = btoa(chunks.join(''));
+            console.log(fileContent.length);
+                                
 
             fileNamesArray.push({ itemID: deleteButtonCopy.itemID, name: fileName });
 
@@ -104,50 +112,61 @@ fileInput.addEventListener("change", () => {
 });
 
 
-// Javascript for submit button (ONLY ON PROFILE)
 const submitButton = document.getElementById("submit-button");
 if (submitButton) {
-    submitButton.addEventListener("click", () => {
+  submitButton.addEventListener("click", () => {
+    csrftoken = document.getElementsByName("csrfmiddlewaretoken")[0].value;
+    console.log(csrftoken);
 
-        csrftoken = document.getElementsByName("csrfmiddlewaretoken")[0].value;
-        console.log(csrftoken);
+    const profileID = $('#curr-profile').data('profile-id');
 
-        // Get profile ID from docDisplay
-        const profileID = $('#curr-profile').data('profile-id');
+    if (profileID <= 0) {
+      alert("Please select a profile first");
+      return;
+    }
 
-        if (profileID <= 0) {
-            alert("Please select a profile first");
-            return;
-        }
+    const totalDocuments = fileNamesArray.length;
+    let successfulUploads = 0;
 
-        const dataToSend = {
-            profile_id: profileID, // Add the profile ID to the JSON data
-            file_names: fileNamesArray.map(item => item.name), // Extract the 'name' property from each object in fileNamesArray
-            file_contents: fileContentArray,
-        };
+    // Iterate through each document and send a separate request
+    for (let i = 0; i < totalDocuments; i++) {
+      const fileName = fileNamesArray[i].name;
+      const fileContent = fileContentArray[i];
 
-        // checking if there are any files to upload
-        if (dataToSend.file_names.length == 0) {
-            alert("Please add documents to upload to profile");
-            return;
-        }
+      if (!fileName || !fileContent) {
+        continue; // Skip empty or invalid data
+      }
 
-        fetch("/add_profile_docs/", {
-            method: "POST",
-            headers: {
-                "X-CSRFToken": csrftoken,
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(dataToSend), // Send the modified data
+      const dataToSend = {
+        profile_id: profileID,
+        file_names: [fileName],
+        file_contents: [fileContent],
+      };
+
+      fetch("/add_profile_docs/", {
+        method: "POST",
+        headers: {
+          "X-CSRFToken": csrftoken,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dataToSend),
+      })
+        .then((response) => {
+          if (response.ok) {
+            successfulUploads++;
+
+            if (successfulUploads === totalDocuments) {
+              // Reload the page when all uploads are complete
+              location.reload('/profile/');
+            }
+          } else {
+            console.error(`Error uploading document ${fileName}`);
+          }
         })
-            .then((response) => {
-                if (response.ok) {
-                    // Reload page if successful
-                    location.reload('/profile/');
-                }
-            })
-            .catch((error) => {
-                // Handle errors
-            });
-    });
+        .catch((error) => {
+          console.error(`Error uploading document ${fileName}: ${error}`);
+        });
+    }
+  });
 }
+

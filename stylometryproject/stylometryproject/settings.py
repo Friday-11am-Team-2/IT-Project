@@ -43,6 +43,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+# File Upload
+DATA_UPLOAD_MAX_MEMORY_SIZE = 1024 * 1024 * 20  # 20MB
+FILE_UPLOAD_MAX_MEMORY_SIZE = 1024 * 1024 * 20  # 20MB
+
 
 # Application definition
 
