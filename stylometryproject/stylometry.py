@@ -163,24 +163,53 @@ class StyloNet:
         return results
 
 class TextAnalytics:
-
-    def __init__(text: str|list):
-        self.text = strip_text(text, True)
-
-    def rare_words_freq() -> float:
+    """Processes the input text, and provides style analysis functions"""
+    def __init__(self, text: str|list):
+        self.text:str = strip_text(text)
+        self.sentence_lengths = [ len (sentence.split()) for sentence in self.text.splitlines() ]
         
+        # remove punctuation, tokenize, filter out stop words and lemmatize
+        self.words:list = preprocess_text(text)
+        self.word_freqs = nltk.FreqDist(self.words)
 
-    def long_words_freq() -> float:
-        pass
+    def rare_words_freq(self, rare_threshold = 2) -> float:
+        """Based on the 'analyze_words' function.
+        Return the frequency of rare words, words used > 2 times (by default), in the text"""
+        count = np.sum([ freq <= rare_threshold for _, freq in self.word_freqs.items() ])
+        return count / len(self.words)
 
-    def long_words_percentage() -> float:
-        pass
+    def long_words_freq(self, long_threshold = 6) -> float:
+        """ Based on 'analyze_words' function.
+        Percentage score of long words (> 6 characters by default) in the text"""
+        count = np.sum([ len(word) > long_threshold for word in self.words ])
+        return count / len(self.words)
+        
+    def sentence_length_avg(self) -> float:
+        """Calcuate average sentence length"""
+        return np.mean(self.sentence_lengths)
+
+    def sentence_length_distrib(self) -> tuple:
+        """ Based on the sentence lengths section of 'analyze_sentence_lengths'.
+        Return a distribution of sentence lengths, relative to the rounded avg, in form
+        (below, equal, above)"""
+        avg = round(np.mean(self.sentence_lengths))
+
+        above = np.sum(filter(lambda x: x > avg, self.sentence_lengths))
+        below = np.sum(filter( lambda x: x < avg, self.sentence_lengths))
+        equals = len(self.sentence_lengths) - above - below
+
+        return (below, equals, above)
+
+    def most_common_words(self, num = 5) -> list[str]:
+        """List the top 5 (default) more common words in the text"""
+        return self.word_freqs.most_common(num)
+    
 
 ### Utility functions ###
 # Both imported from the original source code, or rewritten. Not intended for use outside the module.
 def setupNltk(path = f"{os.curdir}/nltk_data") -> None:
     """Set up the NLTK package path and downloads datapacks (if required)"""
-    nltk.data.path = [ path ]
+    if path: nltk.data.path = [ path ]
     nltk.download(["punkt", "stopwords","wordnet"], nltk.data.path[0], quiet=True)
 
 def unwrap(var):
@@ -197,10 +226,9 @@ def flatten(var:list) -> str:
         nextstr = f'{i}\n' if isinstance(i, str) else flatten(i)
         res = res + nextstr if res else nextstr
 
-
     return res.strip()
             
-def strip_text(data: list|str, split=False) -> list[str]:
+def strip_text(data: list|str, split=False) -> str|list[str]:
     """Strip whitespace from text data and format by separating lines"""
     if type(data) is list: data = flatten(data)
     if type(data) is str: data = data.splitlines()

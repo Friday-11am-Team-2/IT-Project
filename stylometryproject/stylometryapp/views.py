@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required
 
 import json
 import random
-from stylometry import StyloNet, analyze_sentence_lengths, analyze_words, strip_text
+from stylometry import StyloNet, TextAnalytics
 
 from .forms import DocumentForm
 from .models import *
@@ -255,23 +255,21 @@ def run_verification(request):
             score = round(score, 3)
 
             # Generate Style Analytics
-            known_word_data = analyze_words([strip_text(text) for text in text_data['known']])
-            unknown_word_data = analyze_words([strip_text(text) for text in text_data['unknown']])
-
-            known_sentence_data = analyze_sentence_lengths(strip_text(text_data['known'], True))
-            unknown_sentence_data = analyze_sentence_lengths(strip_text(text_data['unknown'], True))
+            known_analysis = TextAnalytics(text_data['known'])
+            unknown_analysis = TextAnalytics(text_data['unknown'])
+            jprep = lambda f: str(round(f, 3))
 
             # Return a success response
             return JsonResponse({
                     "message": "Verification Successful",
                     "result": True if result else False,   # Doesn't work otherwise, don't ask me why
                     "score": str(score),
-                    "k_rare_words": str(known_word_data[0]),
-                    "u_rare_words": str(unknown_word_data[0]),
-                    "k_long_words": str(known_word_data[1]),
-                    "u_long_words": str(unknown_word_data[1]),
-                    "k_sent_len": str(round(known_sentence_data[3], 1)),
-                    "u_sent_len": str(round(unknown_sentence_data[3], 1)),
+                    "k_rare_words": jprep(known_analysis.rare_words_freq() * 100),
+                    "u_rare_words": jprep(unknown_analysis.rare_words_freq() * 100),
+                    "k_long_words": jprep(known_analysis.long_words_freq() * 100),
+                    "u_long_words": jprep(unknown_analysis.long_words_freq() * 100),
+                    "k_sent_len": jprep(known_analysis.sentence_length_avg()),
+                    "u_sent_len": jprep(unknown_analysis.sentence_length_avg()),
                 }, status=201)
         
 
