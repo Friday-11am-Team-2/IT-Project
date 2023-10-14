@@ -34,12 +34,21 @@ fileInput.addEventListener("change", () => {
     fileContentArray.length = 0;
 
 
+    // Stops upload if there exists a file that would be too large
+    for (const file of fileInput.files) {
+        let fileSize = (file.size / 1024).toFixed(2);
+        if (fileSize > FILE_SIZE_LIMIT) {
+            alert("All uploaded files must be 10MB or less in size!");
+            return;
+        }
+    }
+
     // For each file selected, create a list item and add it to the list
     for (const file of fileInput.files) {
         let reader = new FileReader();
         let listItem = document.createElement("li");
         let fileName = file.name;
-        // let fileSize = (file.size / 1024).toFixed(1);
+        let fileSize = (file.size / 1024).toFixed(2);
 
         listItem.innerText = `${fileName}`;
 
@@ -52,7 +61,19 @@ fileInput.addEventListener("change", () => {
         // Read the file content and add it to the arrays
         reader.onload = (event) => {
             // encode file content (decode in file type handling)
-            const fileContent = btoa(String.fromCharCode(...new Uint8Array(event.target.result)));
+            const uint8Array = new Uint8Array(event.target.result);
+            const chunkSize = 65536; // Choose an appropriate chunk size based on your data
+            const chunks = [];
+            
+            for (let i = 0; i < uint8Array.length; i += chunkSize) {
+              const chunk = uint8Array.subarray(i, i + chunkSize);
+              const chunkString = String.fromCharCode.apply(null, chunk);
+              chunks.push(chunkString);
+            }
+            
+            const fileContent = btoa(chunks.join(''));
+            console.log(fileContent.length);
+
             fileNamesArray.push(fileName);
 
             fileContentArray.push(fileContent);
