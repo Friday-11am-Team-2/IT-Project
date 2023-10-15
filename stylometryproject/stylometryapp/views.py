@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required
 
 import json
 import random
-from stylometry import StyloNet, analyze_sentence_lengths, analyze_words, strip_text, total_words
+from stylometry import StyloNet, analyze_sentence_lengths, analyze_words, strip_text, total_words, average_word_length
 
 from .forms import DocumentForm
 from .models import *
@@ -268,6 +268,11 @@ def run_verification(request):
             unknown_word_count = total_words(
                 [strip_text(text) for text in text_data['unknown']])
 
+            known_word_length = average_word_length(
+                [strip_text(text) for text in text_data['known']])
+            unknown_word_length = average_word_length(
+                [strip_text(text) for text in text_data['unknown']])
+
             known_sentence_data = analyze_sentence_lengths(
                 strip_text(text_data['known'], True))
             unknown_sentence_data = analyze_sentence_lengths(
@@ -285,6 +290,16 @@ def run_verification(request):
                 "u_word_count": str(unknown_word_count),
                 "k_long_words": str(known_word_data[1]),
                 "u_long_words": str(unknown_word_data[1]),
+                "k_word_len": str(round(known_word_length, 1)),
+                "u_word_len": str(round(unknown_word_length, 1)),
+
+                # "k_over_sent_len": str(round(known_sentence_data[0], 1)),
+                # "u_over_sent_len": str(round(unknown_sentence_data[0], 1)),
+                # "k_under_sent_len": str(round(known_sentence_data[1], 1)),
+                # "u_under_sent_len": str(round(unknown_sentence_data[1], 1)),
+                # "k_avg_sent_len": str(round(known_sentence_data[2], 1)),
+                # "u_avg_sent_len": str(round(unknown_sentence_data[2], 1)),
+
                 "k_sent_len": str(round(known_sentence_data[3], 1)),
                 "u_sent_len": str(round(unknown_sentence_data[3], 1)),
             }, status=201)

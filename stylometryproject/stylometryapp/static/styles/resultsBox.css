@@ -24,3 +24,8 @@
 #long-container {
     margin-bottom: 40px;
 }
+
+.additional-results {
+    padding-top: 0;
+    font-size: 1em;
+}

@@ -111,23 +111,24 @@ document.addEventListener("DOMContentLoaded", () => {
                     console.log("Verification successful");
                     console.log("Result:", data.score);
 
-                    currentProfileId = $('#curr-profile').data('profile-id')
-                    currentProfileName = $('#curr-profile').textContent
+                    // let currentProfileId = $('#curr-profile').data('profile-id')
+                    let currentProfileName = $('#curr-profile').text()
+
 
                     // Update previous
-                    isNew = false;
-                    if (previousProfileID !== profileID || previousFileName !== fileNamesArray[0]) {
-                        previousProfileID = profileID;
-                        previousProfileName = currentProfileName;
-                        previousFileName = fileNamesArray[0];
-                        isNew = true;
-                    }
+                    // isNew = false;
+                    // if (previousProfileID !== profileID || previousFileName !== fileNamesArray[0]) {
+                    //     previousProfileID = profileID;
+                    //     previousProfileName = currentProfileName;
+                    //     previousFileName = fileNamesArray[0];
+                    //     isNew = true;
+                    // }
 
-                    // Update the <p> field within the "verification-results" div
-                    const verificationResultsParagraph = document.querySelector("#verification-results h3");
-                    if (verificationResultsParagraph) {
-                        verificationResultsParagraph.textContent = `${currentProfileName} vs ${fileNamesArray[0]}:`;
-                    }
+                    // // Update the <p> field within the "verification-results" div
+                    // const verificationResultsParagraph = document.querySelector("#verification-results p");
+                    // if (verificationResultsParagraph) {
+                    //     verificationResultsParagraph.textContent = `${currentProfileName} vs ${fileNamesArray[0]}:`;
+                    // }
 
                     // Set the result text display as appropriate
                     let resultValue = data.result;
@@ -142,7 +143,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     showModal.classList.remove("none");
                     console.log("Diplaying Results!");
 
-                    displayAnalytics(data);
+                    displayAnalytics(data, currentProfileName, fileNamesArray[0], resultValue ? true : false);
 
 
 
@@ -213,15 +214,36 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-function displayAnalytics(data) {
-    drawGraph(data.k_rare_words, data.u_rare_words, data.k_word_count, data.u_word_count, 'Rare', true);
-    drawGraph(data.k_long_words, data.u_long_words, data.k_word_count, data.u_word_count, 'Long', false);
+function displayAnalytics(data, known, unknown, pass) {
+    const introText = document.getElementById("intro")
+
+    if (pass) {
+        introText.innerHTML = `Based on our authorship verification algorithm, the features of document: <i><u>${unknown}</u></i> <b>successfully correspond</b> to the profile: <i><u>${known}</u></i>.<br>
+        Note - This result is calculated based on our algorithm that utilises stylistic analysis of the profile and document and should not be taken as a definite pass/fail.`
+    } else {
+        introText.innerHTML = `Based on our authorship verification algorithm, the features of document: <i><u>${unknown}</u></i> <b>do not correspond</b> the profile: <i><u>${known}</u></i>.<br>
+        Note - This result is calculated based on our algorithm that utilises stylistic analysis of the profile and document and should not be taken as a definite pass/fail.`
+    }
+
+
+    drawGraph(data.k_rare_words, data.u_rare_words, data.k_word_count, data.u_word_count, 'Rare', true, known, unknown);
+    drawGraph(data.k_long_words, data.u_long_words, data.k_word_count, data.u_word_count, 'Long', false, known, unknown);
+    drawPieChart(data.k_sent_len, data.u_sent_len, known, unknown, "Sentence");
+    drawPieChart(data.k_word_len, data.u_word_len, known, unknown, "Word");
 };
 
-function drawGraph(knownMetric, unknownMetric, knownCount, unknownCount, metric, legendBool) {
+function drawGraph(knownMetric, unknownMetric, knownCount, unknownCount, metric, legendBool, known, unknown) {
+    let chartStatus = Chart.getChart(metric); // <canvas> id
+    if (chartStatus != undefined) {
+        chartStatus.destroy();
+    };
+
+    const knownPercent = (knownMetric / knownCount) * 100
+    const unknownPercent = (unknownMetric / unknownCount) * 100
+
     const dataset = [
-        { label: `${metric} Words (%)`, value: (knownMetric / knownCount) * 100 },
-        { label: `${metric} Words (%)`, value: (unknownMetric / unknownCount) * 100 }
+        { label: `${metric} Words (%)`, value: Math.round(knownPercent * 10) / 10 },
+        { label: `${metric} Words (%)`, value: Math.round(unknownPercent * 10) / 10 },
     ];
 
     const options = {
@@ -242,29 +264,79 @@ function drawGraph(knownMetric, unknownMetric, knownCount, unknownCount, metric,
             }
         },
         maintainAspectRatio: false,
+
+        scale: {
+            pointLabels: {
+                fontStyle: "bold"
+            }
+        }
     };
     const barWidth = 0.6;
 
     const graph = document.getElementById(metric);
+
     new Chart(graph, {
         type: "bar",
         data: {
             labels: [`${metric} Words (%)`],
             datasets: [
                 {
-                    label: "Known",
+                    label: known,
                     data: [dataset[0].value],
-                    backgroundColor: 'blue',
+                    backgroundColor: '#FF5733',
                     barPercentage: barWidth,
+                    minBarLength: 3,
                 },
                 {
-                    label: "Unknown",
+                    label: unknown,
                     data: [dataset[1].value],
-                    backgroundColor: 'red',
+                    backgroundColor: '#FFC300',
                     barPercentage: barWidth,
+                    minBarLength: 3,
                 }
             ]
         },
         options: options,
+    });
+}
+
+function drawPieChart(k_data1, u_data1, known, unknown, metric) {
+    let chartStatus = Chart.getChart(`${metric}-Pie`); // <canvas> id
+    if (chartStatus != undefined) {
+        chartStatus.destroy();
+    };
+
+    var data = {
+        labels: [
+            known,
+            unknown,
+        ],
+        datasets: [{
+            data: [k_data1, u_data1],
+            backgroundColor: ["#FF5733", "#FFC300"]
+        }]
+    }
+
+    const ctx = document.getElementById(`${metric}-Pie`);
+
+    new Chart(ctx, {
+        type: 'pie',
+        data: data,
+        options: {
+            plugins: {
+                legend: {
+                    display: false
+                },
+                title: {
+                    display: true,
+                    text: `Average ${metric} Length`,
+                    font: {
+                        size: 14,
+                        weight: 700,
+                    },
+                }
+            },
+            maintainAspectRatio: false,
+        },
     });
 }

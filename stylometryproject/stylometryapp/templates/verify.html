@@ -185,24 +185,29 @@
                     <div class="modal-dialog modal-xl modal-dialog-scrollable">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Additional Information</h1>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
                                 <div class="container-fluid">
+                                    <div class="row justify-content-center">
+                                        <p class="additional-results" id="intro"></p>
+                                        <p class="additional-results">Some of the stylistic features analysed are
+                                            displayed below:</p>
+                                    </div>
                                     <div class="row justify-content-center" style="height: 200px" id="rare-container">
                                         <canvas id="Rare"></canvas>
                                     </div>
                                     <div class="row justify-content-center" style="height: 200px" id="long-container">
                                         <canvas id="Long"></canvas>
                                     </div>
-                                    <div class="row" style="height: 200px" id="chart-container">
+                                    <div class="row justify-content-center" style="height: 250px" id="pie-container">
                                         <div class="col-md-6 ms-auto">
-                                            <span> test </span>
+                                            <canvas id="Sentence-Pie"></canvas>
                                         </div>
                                         <div class="col-md-6 ms-auto">
-                                            <span> test </span>
+                                            <canvas id="Word-Pie"></canvas>
                                         </div>
                                     </div>
                                 </div>
