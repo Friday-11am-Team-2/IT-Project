@@ -1,3 +1,7 @@
+#results-message {
+    padding-top: 10px; /* Adjust the value to your desired amount of padding */
+}
+
 .results-box {
     margin-top: 15%;
 }
