@@ -133,10 +133,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     // Set the result text display as appropriate
                     let resultValue = data.result;
                     if (resultValue) {
-                        resultsMsg.textContent = "Pass!";
+                        resultsMsg.textContent = fileNamesArray[0] + " is likely to be written by " + currentProfileName;
                         passIcon.style.display = "block";
                     } else {
-                        resultsMsg.textContent = "Fail!";
+                        resultsMsg.textContent = fileNamesArray[0] + " is unlikely to be written by " + currentProfileName;
                         failIcon.style.display = "block";
                     }
                     resultsBox.style.display = "block";
