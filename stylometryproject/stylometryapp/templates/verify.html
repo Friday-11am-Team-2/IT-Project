@@ -26,6 +26,7 @@
     <link rel="stylesheet" href="{% static 'styles/dropdown.css' %}">
     <link rel="stylesheet" href="{% static 'styles/loadingSpinner.css' %}">
     <link rel="stylesheet" href="{% static 'styles/resultsBox.css' %}">
+    <link rel="stylesheet" href="{% static 'styles/infoIcon.css' %}">
     <link rel="icon" type="image/png" href="{% static 'images/Favicon.png' %}" />
 
     <title>Verify Documents</title>
@@ -63,7 +64,19 @@
                         <path
                             d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0ZM9.283 4.002H7.971L6.072 5.385v1.271l1.834-1.318h.065V12h1.312V4.002Z" />
                     </svg>Select Profile</h2>
-                <p>Select a profile to run the comparison tool on</p>
+                    
+                <!-- Information Icon + Description-->
+                <div class="container">
+                    <p>Select a profile to run comparison tool on</p>
+                    <div class="info-icon">
+                        <i class="fa fa-info-circle"></i>
+                        <div class="info-content">Profiles can be created on the 'Profile Manager' 
+                                                  page, verification runs on all documents 
+                                                  uploaded to the selected profile.
+                        </div>
+                    </div>
+                </div>
+
                 <div class="dropdown">
                     <button class="btn btn-large dropdown-toggle" type="button" data-bs-toggle="dropdown"
                         aria-expanded="false" id="curr-profile" data-profile-id="{{ profile_id }}"> {{ profile_name
@@ -107,8 +120,21 @@
                         <path
                             d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0ZM6.646 6.24c0-.691.493-1.306 1.336-1.306.756 0 1.313.492 1.313 1.236 0 .697-.469 1.23-.902 1.705l-2.971 3.293V12h5.344v-1.107H7.268v-.077l1.974-2.22.096-.107c.688-.763 1.287-1.428 1.287-2.43 0-1.266-1.031-2.215-2.613-2.215-1.758 0-2.637 1.19-2.637 2.402v.065h1.271v-.07Z" />
                     </svg>Upload Document</h2>
-                <p style="margin-bottom: 0;">Upload a document for comparision with a profile</p>
-                <p style="padding-top: 0; font-size: 0.85rem;">(10MB is the Max File Size)</p>
+                
+                    <!-- Information Icon + Description-->
+                    <div class="container">
+                        <p style="margin-bottom: 0;">Upload a document for comparison with a profile</p>
+                        <div class="info-icon">
+                            <i class="fa fa-info-circle"></i>
+                            <div class="info-content">Supported file types are .txt, .docx and .pdf.
+                                                      The verification algorithm will predict whether
+                                                      the selected profile's documents have the same authorship
+                                                      as the uploaded document.
+                            </div>
+                        </div>
+                    </div>    
+                    <p style="padding-top: 0; font-size: 0.85rem;">(10MB is the Max File Size)</p>
+
                 <!-- Restrict file type to .txt -->
                 <input type="file" id="upload" name="file-upload" accept=".txt, .docx, .pdf">
                 <label class="upload-label" for="upload">
@@ -161,7 +187,7 @@
                         </svg>
                     </div>
                     <div>
-                        <h1 class="text-center" id="results-message"></h1>
+                        <h3 class="text-center" id="results-message"></h3>
                     </div>
                 </div>
                 <!-- <table id="analytics-table" class="analytics-table" style="display: None;">
@@ -238,6 +264,7 @@
     <script src="{% static 'scripts/verify.js'%}"></script>
     <script src="{% static 'scripts/docDisplay.js'%}"></script>
     <script src="{% static 'scripts/removePlaceholder.js' %}"></script>
+    <script src="{% static 'scripts/infoIcon.js'%}"></script>
 
 
 </body>
