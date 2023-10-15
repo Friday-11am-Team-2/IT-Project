@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, reverse
 from django.urls import reverse
-from django.http import JsonResponse, HttpResponseRedirect
+from django.http import JsonResponse, HttpResponseRedirect, HttpRequest
 from django.views.decorators.csrf import csrf_protect
 
 from django.contrib.auth import login, authenticate
@@ -292,3 +292,52 @@ def register(request):
     else:
         form = UserCreationForm()
     return render(request, 'registration/register.html', {'form': form})
+
+@login_required
+def text_analytics(request:HttpRequest) -> JsonResponse:
+    """Provide analytics on a profile or uploaded file"""
+
+    try:
+        if 'profile' in request.GET:
+            profile = Profile.objects.get(pk=int(request.GET['profile']), user=request.user)
+
+            documents = Document.objects.filter(profile=profile)
+            if not len(documents):
+                raise AttributeError('No documents found for the profile')
+            
+            analysis = TextAnalytics(documents)
+        
+        elif 'file' in request.GET:
+            data = json.loads(request.body)
+            target = request.GET['file']
+
+            names = data['file_names']
+            text = data['file_contents']
+
+            if not target in names:
+                raise AttributeError("File to analyse not provided")
+            
+            converted = convert_file(target, text.index[target])
+
+            analysis = TextAnalytics(converted)
+
+        else:
+            raise ValueError("Request format bad")
+        
+
+        sentence_info = analysis.sentence_length_distrib()
+        jsonify_float = lambda x: str(round(x, 3))
+
+        return JsonResponse({
+            "rare_words": jsonify_float(analysis.rare_words_freq()),
+            "long_words": jsonify_float(analysis.long_words_freq()),
+            "sentence_avg": jsonify_float(analysis.sentence_length_avg()),
+            "sentence_below": str(sentence_info[0]),
+            "sentence_equal": str(sentence_info[1]),
+            "sentence_above": str(sentence_info[2]),
+        })
+    except (ValueError, AttributeError) as e:
+        return JsonResponse({"error": str(e)}, status=400)
+    
+    except Exception:
+        return JsonResponse({"error": "Server exception"}, status=400)
