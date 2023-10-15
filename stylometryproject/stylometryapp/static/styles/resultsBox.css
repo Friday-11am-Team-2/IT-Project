@@ -7,9 +7,25 @@
     padding-top: 30px;
 }
 
-.analytics-table th, .analytics-table td {
+.analytics-table th,
+.analytics-table td {
     padding: 5px;
     border-right: 1px solid black;
     border-bottom: 1px solid black;
     text-align: right;
+}
+
+#show-modal {
+    text-align: center;
+    margin-top: 10px;
+}
+
+#rare-container,
+#long-container {
+    margin-bottom: 40px;
+}
+
+.additional-results {
+    padding-top: 0;
+    font-size: 1em;
 }
