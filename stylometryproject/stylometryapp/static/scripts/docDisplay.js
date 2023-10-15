@@ -5,8 +5,8 @@ function updateProfileDisplay(profileId) {
         url: '/get_profile_name/' + profileId + '/',
         method: 'GET',
         success: function (data) {
-            $('#curr-profile').text(' ' + data.name + ' ');
-            $('#display-curr-profile-name').text(' ' + 'Files in Profile: ' + data.name + ' ');
+            $('#curr-profile').text(data.name);
+            $('#display-curr-profile-name').text('Files in Profile: ' + data.name);
 
             displayCurrentFiles();
 

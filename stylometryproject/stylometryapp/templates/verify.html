@@ -142,7 +142,7 @@
                 <p class="lead" id="verify-text" style="margin-bottom: 0; padding-bottom: 0;">
                     Run verification test to see results
                 </p>
-                <div class="text-center" style="font-size: 0.75rem; margin-top: 0;">
+                <div class="text-center" style="font-size: 0.75rem; margin-top: 5px;">
                     The results may not be accurate in 100% of the cases.
                 </div>
                 <div class="loader none">Loading...</div>
@@ -164,7 +164,7 @@
                         <h1 class="text-center" id="results-message"></h1>
                     </div>
                 </div>
-                <table id="analytics-table" class="analytics-table" style="display: None;">
+                <!-- <table id="analytics-table" class="analytics-table" style="display: None;">
                     <thead>
                         <th />
                         <th>Rare Words</th>
@@ -172,13 +172,58 @@
                         <th>Sentence Length</th>
                     </thead>
                     <tbody id="analytics-table-body" />
-                </table>
+                </table> -->
+                <div class="row justify-content-center">
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#resultsModal" id="show-modal" class="none">
+                        Click For More Information
+                    </a>
+                </div>
+
+                <!-- Additional Results Modal -->
+                <div class="modal fade" id="resultsModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Additional Information</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="container-fluid">
+                                    <div class="row justify-content-center">
+                                        <p class="additional-results" id="intro"></p>
+                                        <p class="additional-results">Some of the stylistic features analysed are
+                                            displayed below:</p>
+                                    </div>
+                                    <div class="row justify-content-center" style="height: 200px" id="rare-container">
+                                        <canvas id="Rare"></canvas>
+                                    </div>
+                                    <div class="row justify-content-center" style="height: 200px" id="long-container">
+                                        <canvas id="Long"></canvas>
+                                    </div>
+                                    <div class="row justify-content-center" style="height: 250px" id="pie-container">
+                                        <div class="col-md-6 ms-auto">
+                                            <canvas id="Sentence-Pie"></canvas>
+                                        </div>
+                                        <div class="col-md-6 ms-auto">
+                                            <canvas id="Word-Pie"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
 
             </div>
 
         </div>
     </div>
+
+    <!-- chart.js for visualisation -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <!-- Include jQuery (before Bootstrap JS) -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
