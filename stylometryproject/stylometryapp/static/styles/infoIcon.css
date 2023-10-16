@@ -1,0 +1,36 @@
+/* CSS for the Container */
+.container {
+  display: flex;
+  align-items: center;
+  padding: 0; /* Remove padding */
+}
+
+/* CSS for the Information Icon and Container */
+.info-icon {
+  margin-left: 10px; /* Add spacing between the <p> and the icon */
+  display: inline-block;
+  position: relative;
+}
+
+.info-icon .fa-info-circle {
+  cursor: pointer;
+  font-size: 24px; /* Adjust the size as needed */
+  color: #838383; /* Change the color as needed */
+}
+
+.info-content {
+  display: none;
+  position: absolute;
+  background-color: #f0f0f0; /* Change the background color as needed */
+  outline-color: #3f3f3f;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+  padding: 20px; 
+  width: 300px; 
+  top: 100%;
+  left: 0;
+  z-index: 1;
+}
+
+.info-icon:hover .info-content {
+  display: block;
+}

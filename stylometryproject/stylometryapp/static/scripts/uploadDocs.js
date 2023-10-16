@@ -128,6 +128,9 @@ if (submitButton) {
     const totalDocuments = fileNamesArray.length;
     let successfulUploads = 0;
 
+    // Prevent duplicate submissions
+    submitButton.disabled = true;
+
     // Iterate through each document and send a separate request
     for (let i = 0; i < totalDocuments; i++) {
       const fileName = fileNamesArray[i].name;
@@ -161,10 +164,12 @@ if (submitButton) {
             }
           } else {
             console.error(`Error uploading document ${fileName}`);
+            submitButton.disabled = false;
           }
         })
         .catch((error) => {
           console.error(`Error uploading document ${fileName}: ${error}`);
+          submitButton.disabled = false;
         });
     }
   });

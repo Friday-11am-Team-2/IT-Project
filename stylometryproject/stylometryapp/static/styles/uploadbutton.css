@@ -7,6 +7,8 @@ body {
     width: 80%;
     margin: 0 0 5% 0;
     height: 400px;
+    overflow-y: scroll;
+    overflow-x: scroll;
 }
 
 /*#curr-profile {
@@ -27,6 +29,8 @@ body {
     width: 80%;
     margin: 0 0 5% 0;
     height: 290px;
+    overflow-y: scroll;
+    overflow-x: scroll;
 }
 
 #uploaded-file-list-box {
