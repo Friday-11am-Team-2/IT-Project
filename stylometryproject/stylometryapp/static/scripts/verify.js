@@ -214,22 +214,90 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-function displayAnalytics(data, known, unknown, pass) {
-    const introText = document.getElementById("intro")
+async function displayAnalytics(pass) {
+    const introText = document.getElementById("intro");
+    const curProfile = document.getElementById("curr-profile");
+
+    // Fetch analytics data for the profile
+    const known = fetch("/text_analytics/?profile=" + curProfile.dataset.profile_id, {
+        method: "GET",
+        headers: {
+            "X-CSRFToken": csrftoken,
+            "Content-Type": "application/json",
+
+        },
+    }).then((response)=> {
+        if (response.ok) {
+            return response.json();
+        } else {
+            throw new Error("Error fetching profile analytics!");
+        }
+    }).catch((error) => {
+        console.log(error.message);
+        alert(error.message);
+        // This would be the place to add a more graceful response
+        // to the server not replying.
+        return null;
+    });
+
+    // Fetch analytics data for the current unknown file
+    const unknown = fetch("/text_analytics/?last", {
+        method: "GET",
+        headers: {
+            "X-CSRFToken": token,
+            "Content-Type": application/json,
+        }
+    }).then((response)=> {
+        if (!response.ok) {
+            // Fallback request that re-uploads the file content.
+            // Very unlikely to be needed, but the server cache *could* be cleared in the time.
+            response = fetch("/text_analytics/?file=" + file_contents[0], {
+                method: "GET",
+                headers: {
+                    "X-CSRFToken": token,
+                    "Content-Type": application/json,
+                },
+                body: JSON.stringify({
+                    file_names: fileNamesArray,
+                    file_contents: fileContentArray
+                })
+            })
+        }
+
+        if (response.ok) {
+            return response.json();
+        } else {
+            // Well, we tried
+            throw new Error("Error fetching new file analytics!");
+        }
+    }).catch((error) => {
+        console.log(error.message);
+        alert(error.message);
+        // This would be the place to add a more graceful response
+        // to the server not replying.
+        return null;
+    });
+
+    if (!unknown | !known) {
+        // TODO: hide the additional information display in case of failure. 
+        return;
+    }
+
+    const unknown_name = fileNamesArray[0]
+    const profile_name = curProfile.textContent
 
     if (pass) {
-        introText.innerHTML = `Based on our authorship verification algorithm, the features of document: <i><u>${unknown}</u></i> <b>successfully correspond</b> to the profile: <i><u>${known}</u></i>.<br>
+        introText.innerHTML = `Based on our authorship verification algorithm, the features of document: <i><u>${unknown_name}</u></i> <b>successfully correspond</b> to the profile: <i><u>${profile_name}</u></i>.<br>
         Note - This result is calculated based on our algorithm that utilises stylistic analysis of the profile and document and should not be taken as a definite pass/fail.`
     } else {
-        introText.innerHTML = `Based on our authorship verification algorithm, the features of document: <i><u>${unknown}</u></i> <b>do not correspond</b> the profile: <i><u>${known}</u></i>.<br>
+        introText.innerHTML = `Based on our authorship verification algorithm, the features of document: <i><u>${unknown_name}</u></i> <b>do not correspond</b> the profile: <i><u>${profile_name}</u></i>.<br>
         Note - This result is calculated based on our algorithm that utilises stylistic analysis of the profile and document and should not be taken as a definite pass/fail.`
     }
 
-
-    drawGraph(data.k_rare_words, data.u_rare_words, data.k_word_count, data.u_word_count, 'Rare', true, known, unknown);
-    drawGraph(data.k_long_words, data.u_long_words, data.k_word_count, data.u_word_count, 'Long', false, known, unknown);
-    drawPieChart(data.k_sent_len, data.u_sent_len, known, unknown, "Sentence");
-    drawPieChart(data.k_word_len, data.u_word_len, known, unknown, "Word");
+    drawGraph(known.rare_words, unknown.rare_words, known.word_count, unknown.word_count, 'Rare', true, profile_name, unknown_name);
+    drawGraph(known.rare_words, unknown.rare_words, known.word_count, unknown.word_count, 'Long', false, profile_name, unknown_name);
+    drawPieChart(known.sentence_avg, unknown.sentence_avg, profile_name, unknown_name, "Sentence");
+    drawPieChart(known.word_len_avg, unknown.word_len_avg, profile_name, unknown_name, "Word");
 };
 
 function drawGraph(knownMetric, unknownMetric, knownCount, unknownCount, metric, legendBool, known, unknown) {

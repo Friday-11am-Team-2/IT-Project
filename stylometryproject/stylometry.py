@@ -192,7 +192,8 @@ class TextAnalytics:
         self.sentence_lengths = [ len (sentence.split()) for sentence in self.text.splitlines() ]
         
         # remove punctuation, tokenize, filter out stop words and lemmatize
-        self.words:list = preprocess_text(text)
+        self.words:list = preprocess_text(self.text)
+        self.allwords:list = word_tokenize(self.text)
         self.word_freqs = nltk.FreqDist(self.words)
 
     def rare_words_freq(self, rare_threshold = 2) -> float:
@@ -226,6 +227,12 @@ class TextAnalytics:
     def most_common_words(self, num = 5) -> list[str]:
         """List the top 5 (default) more common words in the text"""
         return self.word_freqs.most_common(num)
+    
+    def word_count(self) -> int:
+        return len(self.allwords)
+    
+    def word_length_avg(self) -> float:
+        return np.mean(self.allwords)
     
 
 ### Utility functions ###
@@ -500,39 +507,6 @@ def analyze_words(texts):
     ttr = len(set(words)) / len(words) if words else 0
 
     return [rare_count, long_count, count_over_avg, count_under_avg, count_avg, ttr]
-
-# helper function
-
-
-def total_words(texts):
-    words = []
-    stop_words = set(stopwords.words('english'))
-    lemmatizer = WordNetLemmatizer()
-    for text in texts:
-        tokenized = word_tokenize(text.lower())
-        processed = [lemmatizer.lemmatize(
-            word) for word in tokenized if word not in stop_words]
-        words += processed
-
-    return len(words)
-
-# helper function
-
-
-def average_word_length(texts):
-    words = []
-    stop_words = set(stopwords.words('english'))
-    lemmatizer = WordNetLemmatizer()
-    for text in texts:
-        tokenized = word_tokenize(text.lower())
-        processed = [lemmatizer.lemmatize(
-            word) for word in tokenized if word not in stop_words]
-        words += processed
-    word_lengths = [len(word) for word in words]
-    average_length = np.mean(word_lengths)
-
-    return average_length
-
 
 def calculate_style_vector(texts):
     """

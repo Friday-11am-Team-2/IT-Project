@@ -222,7 +222,7 @@ def delete_document(request, document_id):
 
 @login_required
 @csrf_protect
-def run_verification(request):
+def run_verification(request:HttpRequest) -> JsonResponse:
     """ Runs the verification algorithm """
 
     if request.method == "POST":
@@ -257,6 +257,9 @@ def run_verification(request):
 
             result, score = model.predict(text_data)
             score = round(score, 3)
+
+            # Cache the most recent unknown file uploaded
+            request.session['prev_unknown'] = (strip_text(text_data['unknown']))
 
             # Generate Style Analytics
             known_word_data = analyze_words(
@@ -348,14 +351,20 @@ def text_analytics(request:HttpRequest) -> JsonResponse:
             text = data['file_contents']
 
             if not target in names:
-                raise AttributeError("File to analyse not provided")
+                raise AttributeError(f"File {target} not found!")
             
             converted = convert_file(target, text.index[target])
 
             analysis = TextAnalytics(converted)
 
+        elif 'last' in request.GET:
+            if not 'prev_unknown' in request.session:
+                raise AttributeError("Previous text not found")
+            
+            analysis = TextAnalytics(request.session['prev_unknown'])
+
         else:
-            raise ValueError("Request format bad")
+            raise ValueError("Empty request!")
         
 
         sentence_info = analysis.sentence_length_distrib()
@@ -368,6 +377,8 @@ def text_analytics(request:HttpRequest) -> JsonResponse:
             "sentence_below": str(sentence_info[0]),
             "sentence_equal": str(sentence_info[1]),
             "sentence_above": str(sentence_info[2]),
+            "word_len": str(analysis.word_length_avg()),
+            "word_count": jsonify_float(analysis.word_count())
         })
     except (ValueError, AttributeError) as e:
         return JsonResponse({"error": str(e)}, status=400)
