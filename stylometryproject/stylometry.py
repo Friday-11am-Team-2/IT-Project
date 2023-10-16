@@ -189,24 +189,23 @@ class TextAnalytics:
     """Processes the input text, and provides style analysis functions"""
     def __init__(self, text: str|list):
         self.text:str = strip_text(text)
-        self.sentence_lengths = [ len (sentence.split()) for sentence in self.text.splitlines() ]
+        self.sentence_lengths = [ len(sentence.split()) for sentence in self.text.splitlines() ]
         
         # remove punctuation, tokenize, filter out stop words and lemmatize
-        self.words:list = preprocess_text(self.text)
-        self.allwords:list = word_tokenize(self.text)
-        self.word_freqs = nltk.FreqDist(self.words)
+        self.keywords:list = preprocess_text(self.text)
+        self.word_freqs = nltk.FreqDist(self.keywords)
 
     def rare_words_freq(self, rare_threshold = 2) -> float:
         """Based on the 'analyze_words' function.
         Return the frequency of rare words, words used > 2 times (by default), in the text"""
         count = np.sum([ freq <= rare_threshold for _, freq in self.word_freqs.items() ])
-        return count / len(self.words)
+        return count / len(self.keywords)
 
     def long_words_freq(self, long_threshold = 6) -> float:
         """ Based on 'analyze_words' function.
         Percentage score of long words (> 6 characters by default) in the text"""
-        count = np.sum([ len(word) > long_threshold for word in self.words ])
-        return count / len(self.words)
+        count = np.sum([ len(word) > long_threshold for word in self.keywords ])
+        return count / len(self.keywords)
         
     def sentence_length_avg(self) -> float:
         """Calcuate average sentence length"""
@@ -218,8 +217,8 @@ class TextAnalytics:
         (below, equal, above)"""
         avg = round(np.mean(self.sentence_lengths))
 
-        above = np.sum(filter(lambda x: x > avg, self.sentence_lengths))
-        below = np.sum(filter( lambda x: x < avg, self.sentence_lengths))
+        above = np.sum([ length > avg for length in self.sentence_lengths ])
+        below = np.sum([ length < avg for length in self.sentence_lengths ])
         equals = len(self.sentence_lengths) - above - below
 
         return (below, equals, above)
@@ -229,10 +228,10 @@ class TextAnalytics:
         return self.word_freqs.most_common(num)
     
     def word_count(self) -> int:
-        return len(self.allwords)
+        return len(word_tokenize(self.text))
     
     def word_length_avg(self) -> float:
-        return np.mean(self.allwords)
+        return np.mean([len(word) for word in word_tokenize(self.text)])
     
 
 ### Utility functions ###
@@ -458,8 +457,7 @@ def count_punctuations(texts) -> list[int]:
     # Count punctuations in text_list
     for text in texts:
         for char in text:
-            if char in punctuations:
-                punctuations_count[char] += 1
+            if char in punctuations:analyze_words
 
     # Return list of punctuation counts
     return list(punctuations_count.values())

@@ -143,64 +143,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     showModal.classList.remove("none");
                     console.log("Diplaying Results!");
 
-                    displayAnalytics(data, currentProfileName, fileNamesArray[0], resultValue ? true : false);
-
-
-
-                    // Display analytics
-                    // function generate_row(name, f1, f2, f3) {
-                    //     var table_row = document.createElement("tr")
-
-                    //     var heading = document.createElement("th")
-                    //     heading.textContent = name
-                    //     table_row.appendChild(heading)
-
-                    //     var field = document.createElement("td")
-                    //     field.textContent = f1
-                    //     table_row.appendChild(field)
-
-                    //     field = document.createElement("td")
-                    //     field.textContent = f2
-                    //     table_row.appendChild(field)
-
-                    //     field = document.createElement("td")
-                    //     field.textContent = f3
-                    //     table_row.appendChild(field)
-
-                    //     return table_row
-                    // }
-
-                    // analyticsTableBody.appendChild(generate_row("Known", data.k_rare_words, data.k_long_words, data.k_sent_len))
-                    // analyticsTableBody.appendChild(generate_row("Unknown", data.u_rare_words, data.u_long_words, data.u_sent_len))
-
-                    // analyticsTable.style.display = "block"
-
-                    // Get Data Fields(redundant)
-                    //const results = document.createElement("strong");
-                    //results.textContent = finalResult;
-                    //const newField = document.createElement("p");
-                    //newField.appendChild(document.createTextNode("Value: "));
-                    //newField.appendChild(results);
-
-
-
-
-
-
-                    // Check if 'isNew' is true (redundant)
-                    //if (isNew) {
-                    //    // If 'isNew' is true, clear previous "Value" fields
-                    //    const verificationResultsDiv = document.getElementById("verification-results");
-                    //    const valueFields = verificationResultsDiv.querySelectorAll("p");
-
-                    // Iterate through the "Value" fields and remove them
-                    //valueFields.forEach((field) => {
-                    //    if (field.textContent.startsWith("Value: ")) {
-                    //        field.remove();
-                    //    }
-                    //});
-                    //}
-                    //document.getElementById("verification-results").appendChild(newField);
+                    displayAnalytics(resultValue ? true : false);
                 })
                 .catch((error) => {
                     // Hide the loading message when there's an error
@@ -214,100 +157,89 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-async function displayAnalytics(pass) {
+function displayAnalytics(pass) {
     const introText = document.getElementById("intro");
-    const curProfile = document.getElementById("curr-profile");
+    const curProfile = $('#curr-profile').data('profile-id');
+    const curProfileName = $('#curr-profile').text()
+    const csrftoken = $('input[name=csrfmiddlewaretoken]').val();
+    const unknown_name = fileNamesArray[0]
 
-    // Fetch analytics data for the profile
-    const known = fetch("/text_analytics/?profile=" + curProfile.dataset.profile_id, {
-        method: "GET",
+    const fetch_k = fetch("/text_analytics/?p=" + curProfile, {
+        method: "POST",
         headers: {
             "X-CSRFToken": csrftoken,
             "Content-Type": "application/json",
 
         },
-    }).then((response)=> {
-        if (response.ok) {
-            return response.json();
-        } else {
-            throw new Error("Error fetching profile analytics!");
-        }
-    }).catch((error) => {
-        console.log(error.message);
-        alert(error.message);
-        // This would be the place to add a more graceful response
-        // to the server not replying.
-        return null;
-    });
+    })
 
-    // Fetch analytics data for the current unknown file
-    const unknown = fetch("/text_analytics/?last", {
-        method: "GET",
+    const fetch_u = fetch("/text_analytics/?l=1", {
+        method: "POST",
         headers: {
-            "X-CSRFToken": token,
-            "Content-Type": application/json,
+            "X-CSRFToken": csrftoken,
+            "Content-Type": "application/json",
         }
-    }).then((response)=> {
+    }).then((response) => {
         if (!response.ok) {
-            // Fallback request that re-uploads the file content.
-            // Very unlikely to be needed, but the server cache *could* be cleared in the time.
-            response = fetch("/text_analytics/?file=" + file_contents[0], {
-                method: "GET",
-                headers: {
-                    "X-CSRFToken": token,
-                    "Content-Type": application/json,
-                },
-                body: JSON.stringify({
-                    file_names: fileNamesArray,
-                    file_contents: fileContentArray
-                })
+            throw new Error("Analytics fetch failed!")
+        }
+        return response
+    }).catch((error) => {
+        // Fallback request that re-uploads the file content.
+        // Very unlikely to be needed, but the server cache *could* be cleared in the time.
+        response = fetch("/text_analytics/?f=" + fileNamesArray[0], {
+            method: "GET",
+            headers: {
+                "X-CSRFToken": csrftoken,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                file_names: fileNamesArray[0],
+                file_contents: fileContentArray[0]
             })
+        })
+        return response
+    })
+
+    Promise.all([fetch_k, fetch_u]).then(responses => {
+        const [res_k, res_u] = responses
+
+        if (!res_k && res_u) {
+            throw new Error("Fetching analytics failed!")
         }
 
-        if (response.ok) {
-            return response.json();
+        return Promise.all([res_k.json(), res_u.json()])
+    }).then((data) => {
+        const [known, unknown] = data
+
+        if (pass) {
+            introText.innerHTML = `Based on our authorship verification algorithm, the features of document: <i><u>${unknown_name}</u></i> <b>successfully correspond</b> to the profile: <i><u>${curProfileName}</u></i>.<br>
+            Note - This result is calculated based on our algorithm that utilises stylistic analysis of the profile and document and should not be taken as a definite pass/fail.`
         } else {
-            // Well, we tried
-            throw new Error("Error fetching new file analytics!");
+            introText.innerHTML = `Based on our authorship verification algorithm, the features of document: <i><u>${unknown_name}</u></i> <b>do not correspond</b> the profile: <i><u>${curProfileName}</u></i>.<br>
+            Note - This result is calculated based on our algorithm that utilises stylistic analysis of the profile and document and should not be taken as a definite pass/fail.`
         }
+
+        drawGraph(known.rare_words, unknown.rare_words, 'Rare', true, curProfileName, unknown_name);
+        drawGraph(known.rare_words, unknown.rare_words, 'Long', false, curProfileName, unknown_name);
+        drawPieChart(known.sentence_avg, unknown.sentence_avg, curProfileName, unknown_name, "Sentence");
+        drawPieChart(known.word_len_avg, unknown.word_len_avg, curProfileName, unknown_name, "Word");
     }).catch((error) => {
         console.log(error.message);
         alert(error.message);
-        // This would be the place to add a more graceful response
+        // TODO: This would be the place to add a more graceful response
         // to the server not replying.
-        return null;
     });
-
-    if (!unknown | !known) {
-        // TODO: hide the additional information display in case of failure. 
-        return;
-    }
-
-    const unknown_name = fileNamesArray[0]
-    const profile_name = curProfile.textContent
-
-    if (pass) {
-        introText.innerHTML = `Based on our authorship verification algorithm, the features of document: <i><u>${unknown_name}</u></i> <b>successfully correspond</b> to the profile: <i><u>${profile_name}</u></i>.<br>
-        Note - This result is calculated based on our algorithm that utilises stylistic analysis of the profile and document and should not be taken as a definite pass/fail.`
-    } else {
-        introText.innerHTML = `Based on our authorship verification algorithm, the features of document: <i><u>${unknown_name}</u></i> <b>do not correspond</b> the profile: <i><u>${profile_name}</u></i>.<br>
-        Note - This result is calculated based on our algorithm that utilises stylistic analysis of the profile and document and should not be taken as a definite pass/fail.`
-    }
-
-    drawGraph(known.rare_words, unknown.rare_words, known.word_count, unknown.word_count, 'Rare', true, profile_name, unknown_name);
-    drawGraph(known.rare_words, unknown.rare_words, known.word_count, unknown.word_count, 'Long', false, profile_name, unknown_name);
-    drawPieChart(known.sentence_avg, unknown.sentence_avg, profile_name, unknown_name, "Sentence");
-    drawPieChart(known.word_len_avg, unknown.word_len_avg, profile_name, unknown_name, "Word");
 };
 
-function drawGraph(knownMetric, unknownMetric, knownCount, unknownCount, metric, legendBool, known, unknown) {
+function drawGraph(knownMetric, unknownMetric, metric, legendBool, known, unknown) {
     let chartStatus = Chart.getChart(metric); // <canvas> id
     if (chartStatus != undefined) {
         chartStatus.destroy();
     };
 
-    const knownPercent = (knownMetric / knownCount) * 100
-    const unknownPercent = (unknownMetric / unknownCount) * 100
+    const knownPercent = (knownMetric) * 100
+    const unknownPercent = (unknownMetric) * 100
 
     const dataset = [
         { label: `${metric} Words (%)`, value: Math.round(knownPercent * 10) / 10 },
