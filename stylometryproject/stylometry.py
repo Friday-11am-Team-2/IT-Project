@@ -2,40 +2,28 @@
 # the StyloNet class encapsulates the entire model and can be call to make predictions on text datasets
 
 ### Required imports ###
+import os
+import json
+import string
 import gensim
 import tensorflow as tf
 from nltk.stem import WordNetLemmatizer
 from nltk.corpus import stopwords
-from nltk.tokenize import word_tokenize
+from nltk.tokenize import word_tokenize, sent_tokenize
 import nltk
 import numpy as np
-import os
-import json
-import string
 
 # Lambda for print out module name/version
-
-
-def ver(module): return print(
-    f"{__name__} loading: {module.__name__}=={module.__version__}")
-
+def ver(module): return print(f"{__name__} loading: {module.__name__}=={module.__version__}")
 
 if __debug__:
     ver(np)
-
-if __debug__:
     ver(nltk)
-
-# Restrict tensorflow logging to only critical events
-if not __debug__:
-    os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
-
-if __debug__:
     ver(tf)
-
-if __debug__:
     ver(gensim)
-
+else:
+    # Restrict tensorflow logging to only critical events
+    os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 ### Classes (for use outside the module) ###
 class StyloNet:
@@ -52,8 +40,7 @@ class StyloNet:
 
     def __init__(self, profile: str = None, profile_dir: str = "stylometry_models"):
         # Load the profile path (if no profile is specified, use the current directory)
-        profile_path = os.path.join(
-            profile_dir, profile) if profile else os.curdir
+        profile_path = os.path.join(profile_dir, profile) if profile else os.curdir
         if profile and not os.path.isdir(profile_dir):
             raise FileNotFoundError("Profile directory doesn't exist!")
 
@@ -62,19 +49,15 @@ class StyloNet:
             with open(os.path.join(profile_path, "manifest.json"), "rb") as f:
                 manifest = json.load(f)
         except FileNotFoundError:
-            # If the manifest isn't there, set to an empty dictionary to use default values
+            # If the manifest isn't there, set to an empty dictionary to use defaults
             manifest = {}
 
         self.valid_threshold = manifest.get("valid_threshold", 0.5)
-        embedding_dim = (manifest.get('embedding_dim', 323),) if type(manifest.get(
-            'embedding_dim', 323)) is int else tuple(manifest.get('embedding_dim', 323))
+        embedding_dim = (manifest.get('embedding_dim', 323),) if isinstance(manifest.get('embedding_dim', 323), int) else tuple(manifest.get('embedding_dim', 323))
 
-        nltk_path = os.path.join(
-            profile_path, manifest.get("nltk_data", "nltk_data"))
-        w2v_save = os.path.join(
-            profile_path, manifest.get("word2vec", "word2vec.model"))
-        model_checkpoints = os.path.join(
-            profile_path, manifest.get("ckpts", "model_weights/cp.ckpt"))
+        nltk_path = os.path.join(profile_path, manifest.get("nltk_data", "nltk_data"))
+        w2v_save = os.path.join(profile_path, manifest.get("word2vec", "word2vec.model"))
+        model_checkpoints = os.path.join(profile_path, manifest.get("ckpts", "model_weights/cp.ckpt"))
 
         # Load Word2Vec model
         self.word2vec = loadW2v(w2v_save)
@@ -84,7 +67,7 @@ class StyloNet:
         self.base_network = self.siamese_model.base
         self.clf_network = self.siamese_model.clf
 
-        setupNltk(nltk_path)
+        setup_nltk(nltk_path)
 
     def _vectorize(self, text: dict):
         vectors = {
@@ -100,16 +83,13 @@ class StyloNet:
         return vectors
 
     def _concatenate(self, vectors: dict):
-        known_feature_vectors = self.base_network.predict(
-            np.array(vectors['known']), verbose=0)
-        unknown_feature_vectors = self.base_network.predict(
-            np.array(vectors['unknown']), verbose=0)
+        known_feature_vectors = self.base_network.predict(np.array(vectors['known']), verbose=0)
+        unknown_feature_vectors = self.base_network.predict(np.array(vectors['unknown']), verbose=0)
 
         author_representation = np.mean(known_feature_vectors, axis=0)
         unknown_representation = np.mean(unknown_feature_vectors, axis=0)
 
-        concat_vec = np.concatenate(
-            (author_representation, unknown_representation), axis=None)
+        concat_vec = np.concatenate((author_representation, unknown_representation), axis=None)
         return concat_vec
 
     def _concatenate_multi(self, vectors: list[dict]):
@@ -127,8 +107,7 @@ class StyloNet:
         vectors = self._vectorize(texts)
         concats = self._concatenate(vectors)
 
-        prediction = self.clf_network.predict(
-            np.expand_dims(concats, axis=0), verbose=0)
+        prediction = self.clf_network.predict(np.expand_dims(concats, axis=0), verbose=0)
 
         # Convert to numpy array and flatten, as output shape will be (1,1)
         return unwrap(prediction)
@@ -137,12 +116,10 @@ class StyloNet:
         """Calculate score over a list or dictionary of texts and return a list/dict of the results"""
 
         # Return a key/value pair generator for both a list and existing dictionary
-        def unpack(texts): return texts.items() if type(
-            texts) is dict else enumerate(data)
+        def unpack(texts): return texts.items() if type(texts) is dict else enumerate(data)
 
         # Check whether a value is valid input (i.e. it's unknown text is non-empty)
-        def good_input(text): return type(
-            text['unknown']) is list and len(text['unknown']) != 0
+        def good_input(text): return type(text['unknown']) is list and len(text['unknown']) != 0
 
         # Convert input to a dictionary, if not already.
         # Ensures bad input can be filtered out and given a 0.0 rating at the end
@@ -152,11 +129,10 @@ class StyloNet:
         # Run the predictions
         vectors = self._vectorize_multi(data.values())
         concates = self._concatenate_multi(vectors)
-        predictions = {k: unwrap(v) for k, v in zip(
-            data.keys(), self.clf_network.predict(concates, verbose=0))}
+        predictions = {k: unwrap(v) for k, v in zip(data.keys(), self.clf_network.predict(concates, verbose=0))}
 
         # Format the output (unwrapping already done above)
-        if type(texts) is list:
+        if isinstance(texts, list):
             results = [predictions.get(x, 0.0) for x in range(len(texts))]
         else:
             results = {k: predictions.get(k, 0.0) for k in texts.keys()}
@@ -185,28 +161,86 @@ class StyloNet:
 
         return results
 
+class TextAnalytics:
+    """Processes the input text, and provides style analysis functions"""
+    def __init__(self, text: str|list):
+        # Text as a single string
+        self.text:str = strip_text(text)
+
+        # remove punctuation, tokenize, filter out stop words and lemmatize
+        self.keywords:list[str] = preprocess_text(self.text)
+
+        # tokenize by sentence, remove punctuation and calculate lengths
+        self.sentences:list[str] = [ sent.translate(str.maketrans('', '', string.punctuation)) for sent in sent_tokenize(self.text) ]
+        self.sentence_lengths:list[int]  = [ len(sent.split()) for sent in self.sentences ]
+
+        # generate a frequency distribution of all keywords
+        self.word_freqs = nltk.FreqDist(self.keywords)
+
+    def rare_words_freq(self, rare_threshold = 2) -> float:
+        """Based on the 'analyze_words' function.
+        Return the frequency of rare words, words used > 2 times (by default), in the text"""
+        count = np.sum([ freq <= rare_threshold for _, freq in self.word_freqs.items() ])
+        return count / len(self.keywords)
+
+    def long_words_freq(self, long_threshold = 6) -> float:
+        """ Based on 'analyze_words' function.
+        Percentage score of long words (> 6 characters by default) in the text"""
+        count = np.sum([ len(word) > long_threshold for word in self.keywords ])
+        return count / len(self.keywords)
+
+    def sentence_length_avg(self) -> float:
+        """Calcuate average sentence length"""
+        return np.mean(self.sentence_lengths)
+
+    def sentence_length_distrib(self) -> tuple:
+        """ Based on the sentence lengths section of 'analyze_sentence_lengths'.
+        Return a distribution of sentence lengths, relative to the rounded avg, in form
+        (below, equal, above)"""
+        avg = round(np.mean(self.sentence_lengths))
+
+        above = np.sum([ length > avg for length in self.sentence_lengths ]) / len(self.sentence_lengths)
+        below = np.sum([ length < avg for length in self.sentence_lengths ]) / len(self.sentence_lengths)
+        equals = (len(self.sentence_lengths) - above - below) / len(self.sentence_lengths)
+
+        return (below, equals, above)
+
+    def sentence_count(self) -> int:
+        """Counts  the number of sentences in the text"""
+        return len(self.sentence_lengths)
+
+    def most_common_words(self, num = 5) -> list[str]:
+        """List the top 5 (default) more common words in the text"""
+        return self.word_freqs.most_common(num)
+
+    def word_count(self) -> int:
+        """Total word count for the text"""
+        return len(word_tokenize(self.text))
+
+    def word_length_avg(self) -> float:
+        """Average word length"""
+        return np.mean([len(word) for word in word_tokenize(self.text)])
+
+
 ### Utility functions ###
-# Both imported from the original source code, or rewritten. Not intended for use outside the module.
+# Both imported from the original source code, or rewritten
 
 
-def setupNltk(path=f"{os.curdir}/nltk_data") -> None:
+def setup_nltk(path=f"{os.curdir}/nltk_data") -> None:
     """Set up the NLTK package path and downloads datapacks (if required)"""
-    nltk.data.path = [path]
-    nltk.download(["punkt", "stopwords", "wordnet"],
-                  nltk.data.path[0], quiet=True)
-
+    if path: nltk.data.path = [path]
+    nltk.download(["punkt", "stopwords","wordnet"], nltk.data.path[0], quiet=True)
 
 def unwrap(var):
     """Function to extract variables nested inside 1-element lists/arrays"""
-    def is_array(var): return isinstance(var, (list, tuple, set, np.ndarray))
-    while is_array(var) and len(var) == 1:
-        var = var[0]
+    is_array = lambda var: isinstance(var, (list, tuple, set, np.ndarray))
+    while is_array(var) and len(var) == 1: var = var[0]
+
     return var
 
 
 def flatten(var: list) -> str:
-    if isinstance(var, str):
-        return var
+    if isinstance(var, str): return var
 
     res = ""
     for i in var:
@@ -214,14 +248,11 @@ def flatten(var: list) -> str:
         res = res + nextstr if res else nextstr
 
     return res.strip()
-
-
-def strip_text(data: list | str, split=False) -> list[str]:
+      
+def strip_text(data: list|str, split=False) -> str|list[str]:
     """Strip whitespace from text data and format by separating lines"""
-    if type(data) is list:
-        data = flatten(data)
-    if type(data) is str:
-        data = data.splitlines()
+    data = flatten(data) if isinstance(data, list) else data
+    data = data.splitlines() if isinstance(data, str) else data
 
     text = []
     for line in data:
@@ -231,8 +262,7 @@ def strip_text(data: list | str, split=False) -> list[str]:
             continue
         text.append(cleaned)
 
-    if not split:
-        text = '\n'.join(text)
+    text = '\n'.join(text) if not split else text
 
     return text
 
@@ -265,12 +295,10 @@ class SiameseNet(tf.keras.Model):
 
         return (x1_out, x2_out)
 
+
 ### Supporting functions to recreate the model ###
-
-
 def create_dense_block(x, units, dropout_rate, l1_reg, l2_reg):
-    x = tf.keras.layers.Dense(
-        units, kernel_regularizer=tf.keras.regularizers.l1_l2(l1=l1_reg, l2=l2_reg))(x)
+    x = tf.keras.layers.Dense(units, kernel_regularizer=tf.keras.regularizers.l1_l2(l1=l1_reg, l2=l2_reg))(x)
     x = tf.keras.layers.BatchNormalization()(x)
     x = tf.keras.layers.Activation('relu')(x)
     return tf.keras.layers.Dropout(dropout_rate)(x)
@@ -310,12 +338,10 @@ def customer_loss(y_true, y_pred):
 
     return loss
 
+
 ### Model Loading Functions ###
-
-
 def buildSiameseNet(checkpoint_file: str, embedding_dim: tuple = (323,)) -> SiameseNet:
-    """Construct the SiameseNet model using code from PAN14_data_demo.ipynb
-        using saved weights at checkpoint_dir
+    """Construct the SiameseNet model using code from PAN14_data_demo.ipynb using saved weights at checkpoint_dir
         embedding_dim defines the input shape for the model, the default from the build process is (323,None)"""
 
     # Create sub-model frame
@@ -327,8 +353,7 @@ def buildSiameseNet(checkpoint_file: str, embedding_dim: tuple = (323,)) -> Siam
 
     # Compile models
     siamese_model.compile(optimizer='adam', loss=customer_loss)
-    clf_network.compile(optimizer='adam', loss='binary_crossentropy', metrics=[
-                        'accuracy', tf.keras.metrics.AUC()])
+    clf_network.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy', tf.keras.metrics.AUC()])
 
     siamese_model.load_weights(checkpoint_file).expect_partial()
 
@@ -339,9 +364,8 @@ def loadW2v(path: str) -> gensim.models.Word2Vec:
     """Load a pre-saved gensim Word2Vec model from file"""
     return gensim.models.Word2Vec.load(path)
 
+
 ### Text Processing ###
-
-
 def preprocess_text(text: list | str) -> list[str]:
     """
     Text preprocessor from PAN14_Data_Demo.ipnyb
@@ -367,8 +391,7 @@ def preprocess_text(text: list | str) -> list[str]:
 
     # Remove stop words
     stop_words = set(stopwords.words('english'))
-    tokens = [word for word in tokens if (
-        not word in stop_words) and (word != '')]
+    tokens = [word for word in tokens if (not word in stop_words) and (word != '')]
 
     # Lemmatize words
     lemmatizer = WordNetLemmatizer()
@@ -385,8 +408,7 @@ def convert_text_to_vector(texts: list, model: gensim.models.Word2Vec) -> list:
     vectors = []
     for text in texts:
         words = preprocess_text(text)
-        vector = np.sum([model.wv[word]
-                        for word in words if word in model.wv], axis=0)
+        vector = np.sum([model.wv[word]for word in words if word in model.wv], axis=0)
         word_count = np.sum([word in model.wv for word in words])
         if word_count != 0:
             vector /= word_count
@@ -402,8 +424,7 @@ def count_punctuations(texts) -> list[int]:
     Count the frequency of different punctuations in the texts
     """
     # Define punctuations to count
-    punctuations = set(['.', ',', ';', ':', '!', '?', '-',
-                       '(', ')', '\"', '\'', '`', '/'])
+    punctuations = set(['.', ',', ';', ':', '!', '?', '-','(', ')', '\"', '\'', '`', '/'])
 
     # Initialize dictionary to count punctuations
     punctuations_count = {p: 0 for p in punctuations}
@@ -425,10 +446,8 @@ def analyze_sentence_lengths(sentences):
     """
     sentence_lengths = [len(sentence.split()) for sentence in sentences]
     average_length = np.mean(sentence_lengths)
-    count_over_avg = np.sum(
-        [length > average_length for length in sentence_lengths])
-    count_under_avg = np.sum(
-        [length < average_length for length in sentence_lengths])
+    count_over_avg = np.sum([length > average_length for length in sentence_lengths])
+    count_under_avg = np.sum([length < average_length for length in sentence_lengths])
     count_avg = len(sentence_lengths) - count_over_avg - count_under_avg
 
     return [count_over_avg, count_under_avg, count_avg, average_length]
@@ -452,57 +471,20 @@ def analyze_words(texts):
     long_count = np.sum([len(word) > 6 for word in words])
     word_lengths = [len(word) for word in words]
     average_length = np.mean(word_lengths)
-    count_over_avg = np.sum(
-        [length > average_length for length in word_lengths])
-    count_under_avg = np.sum(
-        [length < average_length for length in word_lengths])
+    count_over_avg = np.sum([length > average_length for length in word_lengths])
+    count_under_avg = np.sum([length < average_length for length in word_lengths])
     count_avg = len(word_lengths) - count_over_avg - count_under_avg
     ttr = len(set(words)) / len(words) if words else 0
 
     return [rare_count, long_count, count_over_avg, count_under_avg, count_avg, ttr]
-
-# helper function
-
-
-def total_words(texts):
-    words = []
-    stop_words = set(stopwords.words('english'))
-    lemmatizer = WordNetLemmatizer()
-    for text in texts:
-        tokenized = word_tokenize(text.lower())
-        processed = [lemmatizer.lemmatize(
-            word) for word in tokenized if word not in stop_words]
-        words += processed
-
-    return len(words)
-
-# helper function
-
-
-def average_word_length(texts):
-    words = []
-    stop_words = set(stopwords.words('english'))
-    lemmatizer = WordNetLemmatizer()
-    for text in texts:
-        tokenized = word_tokenize(text.lower())
-        processed = [lemmatizer.lemmatize(
-            word) for word in tokenized if word not in stop_words]
-        words += processed
-    word_lengths = [len(word) for word in words]
-    average_length = np.mean(word_lengths)
-
-    return average_length
-
 
 def calculate_style_vector(texts):
     """
     calculate_style_vector from PAN14_Data_Demo.ipynb
     Calculate the style vector of the texts
     """
-    punctuation_vec = count_punctuations(
-        texts)     # Punctuations stylistic features
-    sentence_vec = analyze_sentence_lengths(
-        texts)  # Sentences stylistic features
+    punctuation_vec = count_punctuations(texts)     # Punctuations stylistic features
+    sentence_vec = analyze_sentence_lengths(texts)  # Sentences stylistic features
     word_vec = analyze_words(texts)                 # Words stylistic features
     word_count = np.sum([len(text.split()) for text in texts])
 

@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, reverse
 from django.urls import reverse
-from django.http import JsonResponse, HttpResponseRedirect
+from django.http import JsonResponse, HttpResponseRedirect, HttpRequest
 from django.views.decorators.csrf import csrf_protect
 
 from django.contrib.auth import login, authenticate
@@ -9,7 +9,8 @@ from django.contrib.auth.decorators import login_required
 
 import json
 import random
-from stylometry import StyloNet, analyze_sentence_lengths, analyze_words, strip_text, total_words, average_word_length
+
+from stylometry import StyloNet, TextAnalytics, strip_text
 
 from .forms import DocumentForm
 from .models import *
@@ -221,7 +222,7 @@ def delete_document(request, document_id):
 
 @login_required
 @csrf_protect
-def run_verification(request):
+def run_verification(request:HttpRequest) -> JsonResponse:
     """ Runs the verification algorithm """
 
     if request.method == "POST":
@@ -244,7 +245,7 @@ def run_verification(request):
             documents = Document.objects.filter(profile=profile)
             if (len(documents) == 0):
                 print("No documents found for the profile")
-                return JsonResponse({"error": "No documents found for the profile"}, status=400)
+                raise Exception("No documents found for the profile")
 
             # RUN ALGORITHM #
             text_data = {
@@ -257,51 +258,14 @@ def run_verification(request):
             result, score = model.predict(text_data)
             score = round(score, 3)
 
-            # Generate Style Analytics
-            known_word_data = analyze_words(
-                [strip_text(text) for text in text_data['known']])
-            unknown_word_data = analyze_words(
-                [strip_text(text) for text in text_data['unknown']])
-
-            known_word_count = total_words(
-                [strip_text(text) for text in text_data['known']])
-            unknown_word_count = total_words(
-                [strip_text(text) for text in text_data['unknown']])
-
-            known_word_length = average_word_length(
-                [strip_text(text) for text in text_data['known']])
-            unknown_word_length = average_word_length(
-                [strip_text(text) for text in text_data['unknown']])
-
-            known_sentence_data = analyze_sentence_lengths(
-                strip_text(text_data['known'], True))
-            unknown_sentence_data = analyze_sentence_lengths(
-                strip_text(text_data['unknown'], True))
+            # Cache the most recent unknown file uploaded
+            request.session['prev_unknown'] = (strip_text(text_data['unknown']))
 
             # Return a success response
             return JsonResponse({
                 "message": "Verification Successful",
-                # Doesn't work otherwise, don't ask me why
                 "result": True if result else False,
                 "score": str(score),
-                "k_rare_words": str(known_word_data[0]),
-                "u_rare_words": str(unknown_word_data[0]),
-                "k_word_count": str(known_word_count),
-                "u_word_count": str(unknown_word_count),
-                "k_long_words": str(known_word_data[1]),
-                "u_long_words": str(unknown_word_data[1]),
-                "k_word_len": str(round(known_word_length, 1)),
-                "u_word_len": str(round(unknown_word_length, 1)),
-
-                # "k_over_sent_len": str(round(known_sentence_data[0], 1)),
-                # "u_over_sent_len": str(round(unknown_sentence_data[0], 1)),
-                # "k_under_sent_len": str(round(known_sentence_data[1], 1)),
-                # "u_under_sent_len": str(round(unknown_sentence_data[1], 1)),
-                # "k_avg_sent_len": str(round(known_sentence_data[2], 1)),
-                # "u_avg_sent_len": str(round(unknown_sentence_data[2], 1)),
-
-                "k_sent_len": str(round(known_sentence_data[3], 1)),
-                "u_sent_len": str(round(unknown_sentence_data[3], 1)),
             }, status=201)
 
         except Exception as e:
@@ -324,3 +288,60 @@ def register(request):
     else:
         form = UserCreationForm()
     return render(request, 'registration/register.html', {'form': form})
+
+@login_required
+def text_analytics(request:HttpRequest) -> JsonResponse:
+    """Provide analytics on a profile or uploaded file"""
+    try:
+        if request.GET.get('p'):
+            profile = Profile.objects.get(pk=request.GET.get('p'), user=request.user)
+
+            documents = Document.objects.filter(profile=profile)
+            if not documents:
+                raise AttributeError('No documents found for the profile')
+
+            analysis = TextAnalytics([ doc.text for doc in documents ])
+        
+        elif request.GET.get('f'):
+            data = json.loads(request.body)
+            target = request.GET.get('f')
+
+            names = data['file_names']
+            text = data['file_contents']
+
+            if not target in names:
+                raise AttributeError(f"File {target} not found!")
+            
+            converted = convert_file(target, text.index[target])
+
+            analysis = TextAnalytics(converted)
+
+        elif request.GET.get('l'):
+            if not 'prev_unknown' in request.session:
+                raise AttributeError("Previous text not found")
+            
+            analysis = TextAnalytics(request.session['prev_unknown'])
+
+        else:
+            raise ValueError("Empty request!")
+        
+
+        sentence_info = analysis.sentence_length_distrib()
+        jsonify_float = lambda x: str(round(x, 3))
+
+        return JsonResponse({
+            "rare_words": jsonify_float(analysis.rare_words_freq()),
+            "long_words": jsonify_float(analysis.long_words_freq()),
+            "sentence_avg": jsonify_float(analysis.sentence_length_avg()),
+            "sentence_below": str(sentence_info[0]),
+            "sentence_equal": str(sentence_info[1]),
+            "sentence_above": str(sentence_info[2]),
+            "word_len_avg": str(analysis.word_length_avg()),
+            "word_count": jsonify_float(analysis.word_count())
+        }, status=201)
+    except (ValueError, AttributeError) as e:
+        if __debug__: print(f"analytics err: {e}")
+        return JsonResponse({"error": str(e)}, status=400)
+    except Exception as e:
+        if __debug__: print(f"general err: {type(e)}: {e}")
+        return JsonResponse({"error": "Internal Server Error"}, status=400)

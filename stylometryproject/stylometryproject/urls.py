@@ -58,4 +58,6 @@ urlpatterns = [
     # Run Verification
     path('run_verify/', run_verification, name='run_verify'),
     
+    # Get text analytics
+    path('text_analytics/', text_analytics, name='text_analytics'),
 ] 
