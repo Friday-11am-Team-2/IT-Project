@@ -125,8 +125,15 @@ if (submitButton) {
       return;
     }
 
+
     const totalDocuments = fileNamesArray.length;
     let successfulUploads = 0;
+
+    if (totalDocuments <= 0){
+      alert("Please Select Files to Upload");
+      return;
+    }
+
 
     // Prevent duplicate submissions
     submitButton.disabled = true;
