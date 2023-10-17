@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, reverse
 from django.urls import reverse
-from django.http import JsonResponse, HttpResponseRedirect
+from django.http import JsonResponse, HttpResponseRedirect, HttpRequest
 from django.views.decorators.csrf import csrf_protect
 
 from django.contrib.auth import login, authenticate
@@ -9,7 +9,8 @@ from django.contrib.auth.decorators import login_required
 
 import json
 import random
-from stylometry import StyloNet, analyze_sentence_lengths, analyze_words, strip_text
+
+from stylometry import StyloNet, TextAnalytics, strip_text
 
 from .forms import DocumentForm
 from .models import *
@@ -19,6 +20,8 @@ from .utils import stylonet_preload, get_stylonet, convert_file, safe_profile_se
 stylonet_preload()
 
 # TO DO - remove CSRF decorators
+
+
 def home_page_view(request):
     """ Renders the home page """
     return render(request, 'index.html')
@@ -63,7 +66,7 @@ def verify_page_view(request):
     return render(request, 'verify.html', {
         'profiles': profiles,
         'profile_name': cur_profile_name,
-        'profile_id' : cur_profile_id
+        'profile_id': cur_profile_id
     })
 
 
@@ -113,7 +116,8 @@ def get_documents(request, profile_id):
     try:
         profile = Profile.objects.get(pk=profile_id, user=request.user)
         documents = Document.objects.filter(profile=profile)
-        documents_data = [{'id': document.id, 'title': document.title} for document in documents]
+        documents_data = [{'id': document.id, 'title': document.title}
+                          for document in documents]
 
         # Set this as the selected profile (assume getting docs mean's selecting)
         safe_profile_select(request, profile)
@@ -147,11 +151,11 @@ def add_profile_docs(request):
 
             # Create and save ProfileDocument instances for each file
             for i in range(len(names)):
-                Document.objects.create(profile=profile, title=names[i], text=texts[i])
+                Document.objects.create(
+                    profile=profile, title=names[i], text=texts[i])
 
             # Return a success response
             return JsonResponse({"message": "Documents added successfully"}, status=201)
-        
 
         except Exception as e:
             # Handle exceptions and return an error response
@@ -180,7 +184,7 @@ def delete_profile(request):
             return JsonResponse({"error": "Profile not found"}, status=404)
     else:
         return JsonResponse({"error": "Invalid request"}, status=400)
-    
+
 
 @login_required
 @csrf_protect
@@ -218,7 +222,7 @@ def delete_document(request, document_id):
 
 @login_required
 @csrf_protect
-def run_verification(request):
+def run_verification(request:HttpRequest) -> JsonResponse:
     """ Runs the verification algorithm """
 
     if request.method == "POST":
@@ -233,7 +237,7 @@ def run_verification(request):
 
             # Handle file type conversion
             text[0] = convert_file(name[0], text[0])
-            
+
             # Check if the profile exists (you can add more error handling here)
             profile = Profile.objects.get(pk=profile_id, user=request.user)
 
@@ -241,12 +245,12 @@ def run_verification(request):
             documents = Document.objects.filter(profile=profile)
             if (len(documents) == 0):
                 print("No documents found for the profile")
-                return JsonResponse({"error": "No documents found for the profile"}, status=400)
-            
+                raise Exception("No documents found for the profile")
+
             # RUN ALGORITHM #
             text_data = {
-                'known': [ document.text for document in documents ],
-                'unknown': [ text ]
+                'known': [document.text for document in documents],
+                'unknown': [text]
             }
 
             model = get_stylonet()
@@ -254,30 +258,20 @@ def run_verification(request):
             result, score = model.predict(text_data)
             score = round(score, 3)
 
-            # Generate Style Analytics
-            known_word_data = analyze_words([strip_text(text) for text in text_data['known']])
-            unknown_word_data = analyze_words([strip_text(text) for text in text_data['unknown']])
-
-            known_sentence_data = analyze_sentence_lengths(strip_text(text_data['known'], True))
-            unknown_sentence_data = analyze_sentence_lengths(strip_text(text_data['unknown'], True))
+            # Cache the most recent unknown file uploaded
+            request.session['prev_unknown'] = (strip_text(text_data['unknown']))
 
             # Return a success response
             return JsonResponse({
-                    "message": "Verification Successful",
-                    "result": True if result else False,   # Doesn't work otherwise, don't ask me why
-                    "score": str(score),
-                    "k_rare_words": str(known_word_data[0]),
-                    "u_rare_words": str(unknown_word_data[0]),
-                    "k_long_words": str(known_word_data[1]),
-                    "u_long_words": str(unknown_word_data[1]),
-                    "k_sent_len": str(round(known_sentence_data[3], 1)),
-                    "u_sent_len": str(round(unknown_sentence_data[3], 1)),
-                }, status=201)
-        
+                "message": "Verification Successful",
+                "result": True if result else False,
+                "score": str(score),
+            }, status=201)
 
         except Exception as e:
             # Handle exceptions and return an error response
             return JsonResponse({"error": str(e)}, status=400)
+
 
 def register(request):
     """User Registration"""
@@ -288,9 +282,66 @@ def register(request):
             form.save()
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password1')
-            user = authenticate(username = username, password = password)
+            user = authenticate(username=username, password=password)
             login(request, user)
             return redirect('/home/')
     else:
         form = UserCreationForm()
     return render(request, 'registration/register.html', {'form': form})
+
+@login_required
+def text_analytics(request:HttpRequest) -> JsonResponse:
+    """Provide analytics on a profile or uploaded file"""
+    try:
+        if request.GET.get('p'):
+            profile = Profile.objects.get(pk=request.GET.get('p'), user=request.user)
+
+            documents = Document.objects.filter(profile=profile)
+            if not documents:
+                raise AttributeError('No documents found for the profile')
+
+            analysis = TextAnalytics([ doc.text for doc in documents ])
+        
+        elif request.GET.get('f'):
+            data = json.loads(request.body)
+            target = request.GET.get('f')
+
+            names = data['file_names']
+            text = data['file_contents']
+
+            if not target in names:
+                raise AttributeError(f"File {target} not found!")
+            
+            converted = convert_file(target, text.index[target])
+
+            analysis = TextAnalytics(converted)
+
+        elif request.GET.get('l'):
+            if not 'prev_unknown' in request.session:
+                raise AttributeError("Previous text not found")
+            
+            analysis = TextAnalytics(request.session['prev_unknown'])
+
+        else:
+            raise ValueError("Empty request!")
+        
+
+        sentence_info = analysis.sentence_length_distrib()
+        jsonify_float = lambda x: str(round(x, 3))
+
+        return JsonResponse({
+            "rare_words": jsonify_float(analysis.rare_words_freq()),
+            "long_words": jsonify_float(analysis.long_words_freq()),
+            "sentence_avg": jsonify_float(analysis.sentence_length_avg()),
+            "sentence_below": str(sentence_info[0]),
+            "sentence_equal": str(sentence_info[1]),
+            "sentence_above": str(sentence_info[2]),
+            "word_len_avg": str(analysis.word_length_avg()),
+            "word_count": jsonify_float(analysis.word_count())
+        }, status=201)
+    except (ValueError, AttributeError) as e:
+        if __debug__: print(f"analytics err: {e}")
+        return JsonResponse({"error": str(e)}, status=400)
+    except Exception as e:
+        if __debug__: print(f"general err: {type(e)}: {e}")
+        return JsonResponse({"error": "Internal Server Error"}, status=400)
