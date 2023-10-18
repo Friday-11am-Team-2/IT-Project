@@ -41,8 +41,8 @@ def profile_page_view(request):
 
     # Grab currently select profile from session, "None" otherwise
     cur_profile = safe_profile_select(request)
-    cur_profile_name = cur_profile.name if cur_profile else "None"
-    cur_profile_id = cur_profile.id if cur_profile else -1
+    cur_profile_name = str(cur_profile.name) if cur_profile else "None"
+    cur_profile_id = str(cur_profile.id) if cur_profile else -1
 
     return render(request, 'profile.html', {
         'profiles': profiles,
