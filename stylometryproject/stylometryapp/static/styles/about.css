@@ -16,6 +16,11 @@ h1{
     font-weight:bold;
 }
 
+li{
+    padding-bottom: 1%;
+    font-size: large;
+}
+
 
 #title{
     text-align: center;
