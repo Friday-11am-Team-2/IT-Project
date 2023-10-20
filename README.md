@@ -71,11 +71,12 @@ For those that wish to run the application locally, follow the following instruc
 7. Alter the ```DATABASES``` dictionary in ```/stylometryproject/settings.py``` to either a local db.sqlite3 or an external database of your ownership. [Django Database Documentation](https://docs.djangoproject.com/en/4.2/ref/databases/)
 8. Run ```python manage.py runserver``` to run the web application on local host.
 
-#### Deployment (Incomplete)
+#### Deployment 
 The app uses Docker to easily create a highly flexible and easy to deploy web server, follow these simple steps to deploy this appication.
 1. Ensure ```settings.py``` is connected to your external database of choice.
 2. Build the docker for the web application.
 3. Deploy to any hosting service that supports docker containers. (AWS, Heroku, etc.)
+For a full guide on how to deploy to AWS Elastic Beanstalk, see the confluence documents (Handover Documents/Deployment Guide)
 
 
 #### Docker Usage
