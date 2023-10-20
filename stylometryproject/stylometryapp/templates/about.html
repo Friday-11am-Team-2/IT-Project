@@ -21,6 +21,11 @@
     <link rel="icon" type="image/png" href="{% static 'images/Favicon.png' %}" />
     <link rel="stylesheet" href="{% static 'styles/about.css' %}">
 
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+    crossorigin="anonymous" defer></script>
+
     <title>About AuthorGuard</title>
 </head>
 
@@ -54,23 +59,42 @@
             <h3>What is AuthorGuard</h3>
             <p>AuthorGuard leverages powerful modern day AI and machine learning techniques to detect
                 the likelihood that a given piece of writing was written by a
-                particular individual, with a high accuracy. It works by identifying and analysing
-                certain stylistic features
-                unique to each users and compares a document based on a user's 'profile'.
+                particular individual. It works by identifying and analysing certain important stylistic features
+                unique to a given set of documents. Documents can be uploaded, stored & analysed through the 
+                intuitive 'Profile' system located on the 'Profile Mananger' page. 
             </p>
+            <p>Profiles provide a flexible
+                way for users to upload documents and have them analysed by AuthorGuard's machine learning model.
+                For example, a student may wish to analyse their own writing by creating a profile 
+                for themself and uploading documents they have written.
+                Similarly, a professor may wish to create a profile for each of their students and 
+                upload documents that the given student has previously written. The system is flexible to your needs.
+            </p>
+            <p>Authorship and stylometry analysis can then be performed on the 'Verify Documents' page. 
+                Simply select a previously created profile, upload a new document to compare the profile with,
+                and press 'Run Verification'. AuthorGuard will then perform complex AI and machine learning
+                analysis comparing the selected profile's documents vs the uploaded document in order to determine the
+                stylistic similarity. The results are then displayed in an easy to understand
+                manner, with a simple prediction on authorship and the option to view a detailed breakdown 
+                of the stylometry analysis.
+            </p>
+            <p>With AuthorGuard, the power is in your hands. Start verifying the authorial integrity today with AuthorGuard!</p>
         </section>
         <section>
             <h3>Why is this needed?</h3>
             <p>Universities and other institutions have always had the need to check for the
                 orginality of works of students and researchers.
-                There are tools like Turnitin that checks for plagerism in work done by students or researchers.
+                There are tools like Turnitin that checks for plagiarism in work done by students or researchers.
                 However, with the rise of AI technologies such as ChatGPT which is able to generate essays and
-                other work, tools
-                that checks for plagerism are unable to provide authorship verification.
-                This is where Authorguard hopes to help.
+                other work, tools that checks for plagiarism are unable to provide authorship verification.
+            </p>
+            <p>This is where Authorguard hopes to help.</p>
+            <p>
                 By detecting stylistic feature unique to each person, AuthorGuard is able to distinguish work
-                written by the author in quesiton from work
-                potentially written by AI or others.
+                written by the author in question from work potentially written by AI or others. Students can use
+                this tool to verify that their own work is original and stylistically consistent with their previous
+                works to help avoid plagiarism. Likewise, professors can use the technology to verify the authorship of students'
+                work and use AuthorGuard in tandem with other tools to detect plagiarism in work submitted by students.
             </p>
         </section>
 
@@ -80,17 +104,29 @@
                 it's written by the person in question or is potentially sourced from other sources. In the future,
                 the application may be fitted with the ability to report aspects of stylometry unique to each
                 individuals and the comparisons will have a detailed breakdown of areas
-                the model has detected to be different. In addition, the application
-                may be extended to handle more file types as well as files with images.
+                the model has detected to be different.
+            </p>
+            <p>In addition, the current machine learning model was trained a small set of data and hence is subject to
+                bias and innacuracies. As a result, a major improvment is to implemented a more powerful machine learning
+                model trained on a larger dataset to improve the accuracy of the predictions.
             </p>
         </section>
+
+        <section>
+            <h3>AuthorGuard Team</h3>
+            <br>
+            <ul>
+                <li><strong>Ayush Tyagi</strong> - Product Owner</li>
+                <li><strong>Ke Liao</strong> - Scrum Master</li>
+                <li><strong>Jack Perry</strong> - Developer</li>
+                <li><strong>Josh Costa</strong> - Developer</li>
+                <li><strong>Bryce Copeland</strong> - Developer</li>
+            </ul>
+        </section>
+        
+        
     </div>
 
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
-        crossorigin="anonymous"></script>
 </body>
 
 </html>
