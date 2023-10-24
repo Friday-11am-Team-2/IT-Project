@@ -14,7 +14,7 @@ import nltk
 import numpy as np
 
 # Lambda for print out module name/version
-def ver(module): return print(f"{__name__} loading: {module.__name__}=={module.__version__}")
+ver = lambda module: print(f"{__name__} loading: {module.__name__}=={module.__version__}")
 
 if __debug__:
     ver(np)
@@ -41,6 +41,7 @@ class StyloNet:
     def __init__(self, profile: str = None, profile_dir: str = "stylometry_models"):
         # Load the profile path (if no profile is specified, use the current directory)
         profile_path = os.path.join(profile_dir, profile) if profile else os.curdir
+
         if profile and not os.path.isdir(profile_dir):
             raise FileNotFoundError("Profile directory doesn't exist!")
 
@@ -52,6 +53,7 @@ class StyloNet:
             # If the manifest isn't there, set to an empty dictionary to use defaults
             manifest = {}
 
+        # Load metadata and paths (with defaults as fallback)
         self.valid_threshold = manifest.get("valid_threshold", 0.5)
         embedding_dim = (manifest.get('embedding_dim', 323),) if isinstance(manifest.get('embedding_dim', 323), int) else tuple(manifest.get('embedding_dim', 323))
 
@@ -62,21 +64,23 @@ class StyloNet:
         # Load Word2Vec model
         self.word2vec = loadW2v(w2v_save)
 
-        # Redefine and load the SiameseNet model from checkpoints
+        # Define the SiameseNet model and load the weights from checkpoints
         self.siamese_model = buildSiameseNet(model_checkpoints, embedding_dim)
         self.base_network = self.siamese_model.base
         self.clf_network = self.siamese_model.clf
 
+        # Setup path for NLTK and ensure required packages are downloaded
         setup_nltk(nltk_path)
 
-    def _vectorize(self, text: dict):
+    def _vectorize(self, text: dict) -> dict:
+        """Use Word2Vec model to generate text vectors"""
         vectors = {
             'known': get_vectors(text['known'], self.word2vec),
             'unknown': get_vectors(text['unknown'], self.word2vec)
         }
         return vectors
 
-    def _vectorize_multi(self, texts: list[dict]):
+    def _vectorize_multi(self, texts: list[dict]) -> list[dict]:
         vectors = []
         for text in texts:
             vectors.append(self._vectorize(text))
@@ -104,15 +108,16 @@ class StyloNet:
         if len(texts['unknown']) == 0:
             return 0  # Incase of empty unknown set
 
-        vectors = self._vectorize(texts)
-        concats = self._concatenate(vectors)
+        vectors = self._vectorize(texts)  # Run Word2Vec
+        concats = self._concatenate(vectors)  # Run base_network
 
+        # Run clf_network
         prediction = self.clf_network.predict(np.expand_dims(concats, axis=0), verbose=0)
 
         # Convert to numpy array and flatten, as output shape will be (1,1)
         return unwrap(prediction)
 
-    def score_batch(self, texts: list | dict) -> list[float] | dict:
+    def score_batch(self, texts: list|dict) -> list[float]|dict:
         """Calculate score over a list or dictionary of texts and return a list/dict of the results"""
 
         # Return a key/value pair generator for both a list and existing dictionary
@@ -126,7 +131,7 @@ class StyloNet:
         data = {k: v for k, v in unpack(texts) if good_input(v)}
         # Important for list ordering and including all keys in dictionaries
 
-        # Run the predictions
+        # Run the predictions (usually tensorflow batch functions where possible)
         vectors = self._vectorize_multi(data.values())
         concates = self._concatenate_multi(vectors)
         predictions = {k: unwrap(v) for k, v in zip(data.keys(), self.clf_network.predict(concates, verbose=0))}
@@ -145,7 +150,7 @@ class StyloNet:
         result = score >= self.valid_threshold
         return (result, score)
 
-    def predict_batch(self, texts: list | dict) -> list[bool] | dict:
+    def predict_batch(self, texts: list|dict) -> list[bool]|dict:
         """Run predict over a list/dict of texts and return the result with a boolean result"""
         scores = self.score_batch(texts)
         def pred(s): return s >= self.valid_threshold
@@ -160,6 +165,7 @@ class StyloNet:
                 results.append(pred(val))
 
         return results
+
 
 class TextAnalytics:
     """Processes the input text, and provides style analysis functions"""
@@ -228,11 +234,13 @@ class TextAnalytics:
 
 def setup_nltk(path=f"{os.curdir}/nltk_data") -> None:
     """Set up the NLTK package path and downloads datapacks (if required)"""
-    if path: nltk.data.path = [path]
+    if path:
+        nltk.data.path = [path]
+        
     nltk.download(["punkt", "stopwords","wordnet"], nltk.data.path[0], quiet=True)
 
 def unwrap(var):
-    """Function to extract variables nested inside 1-element lists/arrays"""
+    """Function to extract variables nested inside single-element lists/arrays"""
     is_array = lambda var: isinstance(var, (list, tuple, set, np.ndarray))
     while is_array(var) and len(var) == 1: var = var[0]
 
@@ -240,6 +248,8 @@ def unwrap(var):
 
 
 def flatten(var: list) -> str:
+    """Convert string arrays, of any depth, into a raw string.
+        Any joins are separated with newlines."""
     if isinstance(var, str): return var
 
     res = ""
@@ -249,17 +259,25 @@ def flatten(var: list) -> str:
 
     return res.strip()
       
+
 def strip_text(data: list|str, split=False) -> str|list[str]:
-    """Strip whitespace from text data and format by separating lines"""
+    """Strip whitespace from text data and format by separating lines,
+        'split' determines whether output is split into individual lines."""
+    
+    # Eliminate multi-dimensional arrays of strings
     data = flatten(data) if isinstance(data, list) else data
+
+    # Ensure strings are split along new-lines
     data = data.splitlines() if isinstance(data, str) else data
 
     text = []
     for line in data:
-        # Flatten any more than 1D arrays of strings/chars
         cleaned = line.strip().lstrip("\ufeff")
+
         if len(cleaned) == 0:
+            # Eliminate empty lines
             continue
+
         text.append(cleaned)
 
     text = '\n'.join(text) if not split else text
@@ -368,7 +386,8 @@ def loadW2v(path: str) -> gensim.models.Word2Vec:
 ### Text Processing ###
 def preprocess_text(text: list | str) -> list[str]:
     """
-    Text preprocessor from PAN14_Data_Demo.ipnyb
+    Text preprocessor from PAN14_Data_Demo.ipnyb,
+    with some changes to handle more complex input
 
     Preprocess a given text by tokenizing, removing punctuation and numbers,
     removing stop words, and lemmatizing.
@@ -439,11 +458,16 @@ def count_punctuations(texts) -> list[int]:
     return list(punctuations_count.values())
 
 
-def analyze_sentence_lengths(sentences):
+def analyze_sentence_lengths(text):
     """
     analyze_sentence_lengths from PAN14_Data_Demo.ipynb
-    Analyze the lengths of sentences
+    Analyze the lengths of sentences.
+    Modifed to operate on a text instead of 'sentences', as
+    the value passed to the function in calcuate_style_vector is just the text
     """
+    # Use NLTK sentence tokenizer instead of splitting by line
+    sentences = sent_tokenize(text)
+
     sentence_lengths = [len(sentence.split()) for sentence in sentences]
     average_length = np.mean(sentence_lengths)
     count_over_avg = np.sum([length > average_length for length in sentence_lengths])
@@ -453,19 +477,22 @@ def analyze_sentence_lengths(sentences):
     return [count_over_avg, count_under_avg, count_avg, average_length]
 
 
-def analyze_words(texts):
+def analyze_words(text):
     """
     anaylze_words from PAN14_Data_Demo.ipynb
-    Analyze the words used in the texts
+    Analyze the words used in the texts.
+    Modified to operate on a single text at a time.
     """
-    words = []
+    #words = []
     stop_words = set(stopwords.words('english'))
     lemmatizer = WordNetLemmatizer()
-    for text in texts:
-        tokenized = word_tokenize(text.lower())
-        processed = [lemmatizer.lemmatize(
-            word) for word in tokenized if word not in stop_words]
-        words += processed
+
+    # Previously a for loop to iterate over all texts.
+    # However function is only actually called on a single text
+    tokenized = word_tokenize(text.lower())
+    processed = [lemmatizer.lemmatize(word) for word in tokenized if word not in stop_words]
+    words = processed
+
     word_freq = nltk.FreqDist(words)
     rare_count = np.sum([freq <= 2 for word, freq in word_freq.items()])
     long_count = np.sum([len(word) > 6 for word in words])
@@ -478,15 +505,15 @@ def analyze_words(texts):
 
     return [rare_count, long_count, count_over_avg, count_under_avg, count_avg, ttr]
 
-def calculate_style_vector(texts):
+def calculate_style_vector(text):
     """
     calculate_style_vector from PAN14_Data_Demo.ipynb
     Calculate the style vector of the texts
     """
-    punctuation_vec = count_punctuations(texts)     # Punctuations stylistic features
-    sentence_vec = analyze_sentence_lengths(texts)  # Sentences stylistic features
-    word_vec = analyze_words(texts)                 # Words stylistic features
-    word_count = np.sum([len(text.split()) for text in texts])
+    punctuation_vec = count_punctuations(text)     # Punctuations stylistic features
+    sentence_vec = analyze_sentence_lengths(text)  # Sentences stylistic features
+    word_vec = analyze_words(text)                 # Words stylistic features
+    word_count = len(word_tokenize(text))
 
     vector = np.concatenate((punctuation_vec, sentence_vec, word_vec))
 
@@ -497,8 +524,9 @@ def get_vectors(texts: list, w2v_model: gensim.models.Word2Vec) -> list:
     """get_vectors from PAN14_Data_Demo.ipynb"""
     res = []
     for text in texts:
-        w2v_vec = np.mean(convert_text_to_vector(text, w2v_model), axis=0)
-        style_vec = calculate_style_vector(text)
+        clean_text = strip_text(text)
+        w2v_vec = np.mean(convert_text_to_vector(clean_text, w2v_model), axis=0)
+        style_vec = calculate_style_vector(clean_text)
         res.append(np.concatenate((w2v_vec, style_vec), axis=None))
         # res.append(w2v_vec)
 

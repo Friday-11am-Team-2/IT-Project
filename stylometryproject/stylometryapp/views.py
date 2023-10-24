@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, reverse
 from django.urls import reverse
-from django.http import JsonResponse, HttpResponseRedirect, HttpRequest
+from django.http import JsonResponse, HttpResponse, HttpRequest
 from django.views.decorators.csrf import csrf_protect
 
 from django.contrib.auth import login, authenticate
@@ -22,18 +22,18 @@ stylonet_preload()
 # TO DO - remove CSRF decorators
 
 
-def home_page_view(request):
+def home_page_view(request) -> HttpResponse:
     """ Renders the home page """
     return render(request, 'index.html')
 
 
-def about_page_view(request):
+def about_page_view(request) -> HttpResponse:
     """ Renders the about page """
     return render(request, 'about.html')
 
 
 @login_required
-def profile_page_view(request):
+def profile_page_view(request) -> HttpResponse:
     """ Renders the profile page """
     current_user = request.user
 
@@ -52,7 +52,7 @@ def profile_page_view(request):
 
 
 @login_required
-def verify_page_view(request):
+def verify_page_view(request) -> HttpResponse:
     """ Renders the verify page """
     current_user = request.user
     profiles = Profile.objects.filter(user=current_user)
@@ -72,7 +72,7 @@ def verify_page_view(request):
 
 @login_required
 @csrf_protect
-def create_profile(request):
+def create_profile(request) -> JsonResponse:
     """ Creates a new profile """
 
     if request.method == 'POST':
@@ -99,7 +99,7 @@ def create_profile(request):
 
 
 @login_required
-def get_profile_name(request, profile_id):
+def get_profile_name(request, profile_id) -> JsonResponse:
     """ Returns the name of the profile with the given ID """
 
     try:
@@ -110,7 +110,7 @@ def get_profile_name(request, profile_id):
 
 
 @login_required
-def get_documents(request, profile_id):
+def get_documents(request, profile_id) -> JsonResponse:
     """ Returns the documents for the profile with the given ID """
 
     try:
@@ -129,7 +129,7 @@ def get_documents(request, profile_id):
 
 @login_required
 @csrf_protect
-def add_profile_docs(request):
+def add_profile_docs(request) -> JsonResponse:
     """ Adds documents to a profile """
 
     if request.method == "POST":
@@ -164,7 +164,7 @@ def add_profile_docs(request):
 
 @login_required
 @csrf_protect
-def delete_profile(request):
+def delete_profile(request) -> JsonResponse:
     """ Deletes a profile """
 
     if request.method == "POST" and request.META.get("HTTP_X_REQUESTED_WITH") == "XMLHttpRequest":
@@ -188,7 +188,7 @@ def delete_profile(request):
 
 @login_required
 @csrf_protect
-def edit_profile(request, profile_id):
+def edit_profile(request, profile_id) -> JsonResponse:
     """ Edits a profile's name """
 
     if request.method == "POST" and request.META.get("HTTP_X_REQUESTED_WITH") == "XMLHttpRequest":
@@ -207,7 +207,7 @@ def edit_profile(request, profile_id):
 
 @login_required
 @csrf_protect
-def delete_document(request, document_id):
+def delete_document(request, document_id) -> JsonResponse:
     """ Deletes a document """
 
     try:
@@ -259,7 +259,7 @@ def run_verification(request:HttpRequest) -> JsonResponse:
             score = round(score, 3)
 
             # Cache the most recent unknown file uploaded
-            request.session['prev_unknown'] = (strip_text(text_data['unknown']))
+            request.session['prev_unknown'] = strip_text(text_data['unknown'])
 
             # Return a success response
             return JsonResponse({
@@ -273,7 +273,7 @@ def run_verification(request:HttpRequest) -> JsonResponse:
             return JsonResponse({"error": str(e)}, status=400)
 
 
-def register(request):
+def register(request) -> HttpResponse:
     """User Registration"""
 
     if request.method == 'POST':
