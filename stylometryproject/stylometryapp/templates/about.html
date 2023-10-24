@@ -9,12 +9,14 @@
     <!-- Google Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;1,300;1,400&display=swap"
+    <link 
+        href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;1,300;1,400&display=swap"
         rel="stylesheet">
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+        integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" 
+        crossorigin="anonymous">
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{% static 'styles/app.css' %}">
@@ -32,8 +34,8 @@
 <body>
     <nav class="navbar navbar-expand-md py-2">
         <div class="container-xxl">
-            <a class="navbar-brand" href="/"><img id="logo" src="{% static 'images/Logo.png' %}" alt="AuthorGuard"
-                    width="30" height="30">AuthorGuard</a>
+            <a class="navbar-brand" href="/"><img id="logo" src="{% static 'images/Logo.png' %}" 
+                alt="AuthorGuard" width="30" height="30">AuthorGuard</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navLinks"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -78,37 +80,43 @@
                 manner, with a simple prediction on authorship and the option to view a detailed breakdown 
                 of the stylometry analysis.
             </p>
-            <p>With AuthorGuard, the power is in your hands. Start verifying the authorial integrity today with AuthorGuard!</p>
+            <p>
+                With AuthorGuard, the power is in your hands. Start 
+                verifying the authorial integrity today with AuthorGuard!
+            </p>
         </section>
         <section>
             <h3>Why is this needed?</h3>
             <p>Universities and other institutions have always had the need to check for the
-                orginality of works of students and researchers.
-                There are tools like Turnitin that checks for plagiarism in work done by students or researchers.
-                However, with the rise of AI technologies such as ChatGPT which is able to generate essays and
-                other work, tools that checks for plagiarism are unable to provide authorship verification.
+                orginality of works of students and researchers. There are tools like Turnitin 
+                that checks for plagiarism in work done by students or researchers.
+                However, with the rise of AI technologies such as ChatGPT which is able to
+                generate essays and other work, tools that checks for plagiarism are unable 
+                to provide authorship verification.
             </p>
             <p>This is where Authorguard hopes to help.</p>
             <p>
                 By detecting stylistic feature unique to each person, AuthorGuard is able to distinguish work
-                written by the author in question from work potentially written by AI or others. Students can use
-                this tool to verify that their own work is original and stylistically consistent with their previous
-                works to help avoid plagiarism. Likewise, professors can use the technology to verify the authorship of students'
-                work and use AuthorGuard in tandem with other tools to detect plagiarism in work submitted by students.
+                written by the author in question from work potentially written by AI or others. 
+                Students can use this tool to verify that their own work is original and 
+                stylistically consistent with their previous works to help avoid plagiarism. 
+                Likewise, professors can use the technology to verify the authorship of students'work and 
+                use AuthorGuard in tandem with other tools to detect plagiarism in work submitted by students.
             </p>
         </section>
 
         <section>
             <h3>Future Plans</h3>
             <p>Currently, the application is only able to respond with predictions on whether
-                it's written by the person in question or is potentially sourced from other sources. In the future,
-                the application may be fitted with the ability to report aspects of stylometry unique to each
-                individuals and the comparisons will have a detailed breakdown of areas
-                the model has detected to be different.
+                it's written by the person in question or is potentially sourced from other sources.
+                In the future, the application may be fitted with the ability to report aspects of 
+                stylometry unique to each individuals and the comparisons will have a detailed 
+                breakdown of areas the model has detected to be different.
             </p>
-            <p>In addition, the current machine learning model was trained a small set of data and hence is subject to
-                bias and innacuracies. As a result, a major improvment is to implemented a more powerful machine learning
-                model trained on a larger dataset to improve the accuracy of the predictions.
+            <p>In addition, the current machine learning model was trained a small set of data and 
+                hence is subject to bias and innacuracies. As a result, a major improvment is to 
+                implemented a more powerful machine learning model trained on a larger dataset to 
+                improve the accuracy of the predictions.
             </p>
         </section>
 
