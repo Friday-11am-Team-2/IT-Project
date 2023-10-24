@@ -10,11 +10,13 @@
     <!-- Google Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;1,300;1,400&display=swap"
+    <link 
+        href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;1,300;1,400&display=swap"
         rel="stylesheet">
 
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    <link 
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
 
     <!-- Upload Button Icon Source-->
@@ -78,10 +80,11 @@
             <!-- Select Profile -->
             <div class="col-md-4">
 
-                <h2 class="display-5"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                        class="bi bi-1-circle-fill" viewBox="0 0 16 16">
+                <h2 class="display-5"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" 
+                        fill="currentColor" class="bi bi-1-circle-fill" viewBox="0 0 16 16">
                         <path
-                            d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0ZM9.283 4.002H7.971L6.072 5.385v1.271l1.834-1.318h.065V12h1.312V4.002Z" />
+                            d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0ZM9.283 4.002H7.971L6.072 
+                              5.385v1.271l1.834-1.318h.065V12h1.312V4.002Z" />
                     </svg>Select Profile
                 </h2>
 
@@ -101,7 +104,9 @@
                 <!-- Profile Dropdown -->
                 <div class="dropdown">
                     <button class="btn btn-lg dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                        aria-expanded="false" id="curr-profile" data-profile-id="{{ profile_id }}"> {{ profile_name }} </button>
+                        aria-expanded="false" id="curr-profile" data-profile-id="{{ profile_id }}"> 
+                        {{ profile_name }} 
+                    </button>
                     <ul class="dropdown-menu" id="profile-list">
                         {% for profile in profiles %}
                         <li>
@@ -114,14 +119,30 @@
                                                 xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                 fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
                                                 <path
-                                                    d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z" />
+                                                    d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 
+                                                      2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0
+                                                      5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 
+                                                      1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 
+                                                      1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 
+                                                      0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 
+                                                      1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 
+                                                      1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 
+                                                      0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 
+                                                      1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 
+                                                      1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z" />
                                             </svg></button>
                                         <button class="edit edit-profile btn btn-outline-danger btn-sm ml-auto"
                                             data-profile-id="{{ profile.id }}" style="color: #6a994e;"><svg
                                                 xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                 fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
                                                 <path
-                                                    d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
+                                                    d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 
+                                                      10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0
+                                                      1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207
+                                                      11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1
+                                                      .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 
+                                                      5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 
+                                                      12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
                                             </svg></button>
                                     </div>
                                 </div>
@@ -132,7 +153,8 @@
                                 data-bs-target="#addProfileModal"><svg xmlns="http://www.w3.org/2000/svg" width="16"
                                     height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
                                     <path fill-rule="evenodd"
-                                        d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z" />
+                                        d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 
+                                          0 1 0-1h5v-5A.5.5 0 0 1 8 2Z" />
                                 </svg> New Profile</a></li>
                     </ul>
                 </div>
@@ -142,9 +164,11 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                         class="bi bi-check2-circle" viewBox="0 0 16 16">
                         <path
-                            d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0z" />
+                            d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 
+                              8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0z" />
                         <path
-                            d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l7-7z" />
+                            d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 
+                              0-.708.708l3 3a.5.5 0 0 0 .708 0l7-7z" />
                     </svg>
                     Profile deleted successfully!
                 </div>
@@ -171,10 +195,14 @@
 
             <!-- Upload File -->
             <div class="col-md-4">
-                <h2 class="display-5"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                        class="bi bi-2-circle-fill" viewBox="0 0 16 16">
+                <h2 class="display-5"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" 
+                        fill="currentColor" class="bi bi-2-circle-fill" viewBox="0 0 16 16">
                         <path
-                            d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0ZM6.646 6.24c0-.691.493-1.306 1.336-1.306.756 0 1.313.492 1.313 1.236 0 .697-.469 1.23-.902 1.705l-2.971 3.293V12h5.344v-1.107H7.268v-.077l1.974-2.22.096-.107c.688-.763 1.287-1.428 1.287-2.43 0-1.266-1.031-2.215-2.613-2.215-1.758 0-2.637 1.19-2.637 2.402v.065h1.271v-.07Z" />
+                            d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0ZM6.646 6.24c0-.691.493-1.306
+                              1.336-1.306.756 0 1.313.492 1.313 1.236 0 .697-.469 1.23-.902 1.705l-2.971
+                              3.293V12h5.344v-1.107H7.268v-.077l1.974-2.22.096-.107c.688-.763 1.287-1.428
+                              1.287-2.43 0-1.266-1.031-2.215-2.613-2.215-1.758 0-2.637 1.19-2.637
+                              2.402v.065h1.271v-.07Z" />
                     </svg>Upload Documents</h2>
 
                 <!-- Information Icon + Description-->
@@ -219,14 +247,15 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="addProfileModalLabel">Add New Profile</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" 
+                        aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form id="addProfileForm">
                         <div class="mb-3">
                             <label for="newProfileName" class="form-label">Profile Name:</label>
-                            <input type="text" class="form-control" id="newProfileName" name="newProfileName"
-                                maxlength="20" minlength="2" required>
+                            <input type="text" class="form-control" id="newProfileName" 
+                                name="newProfileName" maxlength="20" minlength="2" required>
                             <label for="newProfileName" class="form-label">(Max Characters 20)</label>
                         </div>
                         <div class="modal-footer">
@@ -239,13 +268,14 @@
     </div>
 
     <!-- Edit Profile Modal -->
-    <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel"
-        aria-hidden="true">
+    <div class="modal fade" id="editProfileModal" tabindex="-1" 
+        aria-labelledby="editProfileModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="editProfileModalLabel">Edit Profile Name</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" 
+                        aria-label="Close"></button>
                 </div>
                 <form id="editProfileForm" method="POST">
                     {% csrf_token %}
