@@ -1,4 +1,3 @@
-// Javascript for making buttons and display work
 let profileDropdownOptions = document.querySelectorAll(".dropdown-menu li a");
 let fileInput = document.getElementById("upload");
 let fileList = document.getElementById("files-list");
@@ -21,9 +20,9 @@ fileInput.addEventListener("change", () => {
         }
     }
 
+    // update local storage flag to indicate button not clicked
     localStorage.removeItem('buttonClicked');
     runVerificationButton.disabled = false;
-
 
     fileList.innerHTML = "";
     if (fileInput.files.length != 0) {
@@ -32,7 +31,6 @@ fileInput.addEventListener("change", () => {
 
     fileNamesArray.length = 0;
     fileContentArray.length = 0;
-
 
     // Stops upload if there exists a file that would be too large
     for (const file of fileInput.files) {
@@ -48,13 +46,7 @@ fileInput.addEventListener("change", () => {
         let reader = new FileReader();
         let listItem = document.createElement("li");
         let fileName = file.name;
-        let fileSize = (file.size / 1024).toFixed(2);
-
         listItem.innerText = `${fileName}`;
-
-        //if (fileSize >= 1024) {
-        //    fileSize = (fileSize / 1024).toFixed(1);
-        //}
 
         fileList.appendChild(listItem);
 
@@ -64,27 +56,22 @@ fileInput.addEventListener("change", () => {
             const uint8Array = new Uint8Array(event.target.result);
             const chunkSize = 65536; // Choose an appropriate chunk size based on your data
             const chunks = [];
-            
+
             for (let i = 0; i < uint8Array.length; i += chunkSize) {
-              const chunk = uint8Array.subarray(i, i + chunkSize);
-              const chunkString = String.fromCharCode.apply(null, chunk);
-              chunks.push(chunkString);
+                const chunk = uint8Array.subarray(i, i + chunkSize);
+                const chunkString = String.fromCharCode.apply(null, chunk);
+                chunks.push(chunkString);
             }
-            
+
             const fileContent = btoa(chunks.join(''));
-            console.log(fileContent.length);
 
             fileNamesArray.push(fileName);
-
             fileContentArray.push(fileContent);
 
             // See file name & file content here
             // console.log(`File "${fileName}" content: ${fileContent}`);
         };
 
-
-        // Read file as byte string
-        //reader.readAsText(file);
         reader.readAsArrayBuffer(file);
     }
 

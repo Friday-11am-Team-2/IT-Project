@@ -21,20 +21,36 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" />
 
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="{% static 'styles/app.css' %}">
-    <link rel="stylesheet" href="{% static 'styles/uploadbutton.css' %}">
-    <link rel="stylesheet" href="{% static 'styles/dropdown.css' %}">
-    <link rel="stylesheet" href="{% static 'styles/infoIcon.css' %}">
+    <link rel="stylesheet" href="{% static 'styles/app.css' %}"/>
+    <link rel="stylesheet" href="{% static 'styles/uploadbutton.css' %}"/>
+    <link rel="stylesheet" href="{% static 'styles/dropdown.css' %}"/>
+    <link rel="stylesheet" href="{% static 'styles/infoIcon.css' %}"/>
     <link rel="icon" type="image/png" href="{% static 'images/Favicon.png' %}" />
 
+    <!-- Include jQuery (before Bootstrap JS) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" defer></script>
 
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+        crossorigin="anonymous" defer></script>
 
-
+    <!-- Upload Button Script -->
+    <script src="{% static 'scripts/uploadDocs.js'%}" defer></script>
+    <script src="{% static 'scripts/docDisplay.js'%}" defer></script>
+    <script src="{% static 'scripts/profileManage.js'%}" defer></script>
+    <script src="{% static 'scripts/infoIcon.js'%}" defer></script>
 
     <title>Manage Profiles</title>
 </head>
 
 <body>
+    <script>
+        document.body.style.visibility = "hidden";
+        document.addEventListener("DOMContentLoaded", function() {
+            document.body.style.visibility = "visible";
+        })
+    </script>
     <nav class="navbar navbar-expand-md py-2">
         <div class="container-xxl">
             <a class="navbar-brand" href="/"><img id="logo" src="{% static 'images/Logo.png' %}" alt="AuthorGuard"
@@ -85,8 +101,7 @@
                 <!-- Profile Dropdown -->
                 <div class="dropdown">
                     <button class="btn btn-lg dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                        aria-expanded="false" id="curr-profile" data-profile-id="{{ profile_id }}"> {{ profile_name }}
-                    </button>
+                        aria-expanded="false" id="curr-profile" data-profile-id="{{ profile_id }}"> {{ profile_name }} </button>
                     <ul class="dropdown-menu" id="profile-list">
                         {% for profile in profiles %}
                         <li>
@@ -247,20 +262,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Include jQuery (before Bootstrap JS) -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
-        crossorigin="anonymous"></script>
-
-    <!-- Upload Button Script -->
-    <script src="{% static 'scripts/uploadDocs.js'%}"></script>
-    <script src="{% static 'scripts/docDisplay.js'%}"></script>
-    <script src="{% static 'scripts/profileManage.js'%}"></script>
-    <script src="{% static 'scripts/infoIcon.js'%}"></script>
 
 </body>
 

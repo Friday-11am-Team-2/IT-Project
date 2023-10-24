@@ -1,4 +1,4 @@
-// Javascript for verification button (ONLY ON VERIFY)
+// Javascript for verification button
 document.addEventListener("DOMContentLoaded", () => {
     const runVerificationButton = document.getElementById("verify-button");
     const verifyTextPlaceholder = document.getElementById("verify-text");
@@ -9,24 +9,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const showModal = document.getElementById("show-modal");
     const resultsMsg = document.getElementById("results-message");
 
-    const analyticsTable = document.getElementById("analytics-table");
-    const analyticsTableBody = document.getElementById("analytics-table-body");
-
-    let previousProfileID = 0;
-    let previousProfileName = "";
-    let previousFileName = "";
-
-    // Check if the button has been clicked before by looking for a flag in local storage
+    // default flag in storage indicating verify button not clicked yet
     localStorage.setItem('buttonClicked', false);
-    // const buttonClicked = localStorage.getItem('buttonClicked');
-    // console.log(`Button Clicked: ${buttonClicked}`);
-
-    // if (buttonClicked) {
-    //     // If the button has been clicked before, disable it
-    //     // runVerificationButton.disabled = true;
-    // } else {
-    //     runVerificationButton.disabled = false;
-    // }
 
     if (runVerificationButton) {
         runVerificationButton.addEventListener("click", (event) => {
@@ -36,18 +20,11 @@ document.addEventListener("DOMContentLoaded", () => {
             passIcon.style.display = "none";
             failIcon.style.display = "none";
 
-            // analyticsTable.style.display = "none";
-            // while (analyticsTableBody.firstChild) {
-            //     // Clear the table contents
-            //     analyticsTableBody.removeChild(analyticsTableBody.lastChild);
-            // }
-
             event.preventDefault();
             var csrftoken = $('input[name=csrfmiddlewaretoken]').val();
 
             // Set a flag in local storage to indicate that the button has been clicked
             localStorage.setItem('buttonClicked', true);
-
             // Disable the button after clicking
             runVerificationButton.disabled = true;
 
@@ -69,17 +46,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // don't show additional text until results loaded
             showModal.classList.add("none");
-
-            // Redundant code
-            //const verificationResults = document.getElementById("verification-results");
-            //const values = verificationResults.querySelectorAll("p");
-            // Iterate through the "Value" fields and remove them (no longer needed)
-            //values.forEach((field) => {
-            //    if (field.textContent.startsWith("Value: ")) {
-            //        field.remove();
-            //    }
-            //});
-
 
             // Send the data
             const dataToSend = {
@@ -108,27 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     loadingSpinner.classList.toggle("none");
 
                     // Handle the response data
-                    console.log("Verification successful");
-                    console.log("Result:", data.score);
-
-                    // let currentProfileId = $('#curr-profile').data('profile-id')
                     let currentProfileName = $('#curr-profile').text()
-
-
-                    // Update previous
-                    // isNew = false;
-                    // if (previousProfileID !== profileID || previousFileName !== fileNamesArray[0]) {
-                    //     previousProfileID = profileID;
-                    //     previousProfileName = currentProfileName;
-                    //     previousFileName = fileNamesArray[0];
-                    //     isNew = true;
-                    // }
-
-                    // // Update the <p> field within the "verification-results" div
-                    // const verificationResultsParagraph = document.querySelector("#verification-results p");
-                    // if (verificationResultsParagraph) {
-                    //     verificationResultsParagraph.textContent = `${currentProfileName} vs ${fileNamesArray[0]}:`;
-                    // }
 
                     // Set the result text display as appropriate
                     let resultValue = data.result;
@@ -141,15 +87,12 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
                     resultsBox.style.display = "block";
                     showModal.classList.remove("none");
-                    console.log("Diplaying Results!");
 
                     displayAnalytics(resultValue ? true : false);
                 })
                 .catch((error) => {
                     // Hide the loading message when there's an error
                     loadingSpinner.classList.toggle("none");
-
-                    console.log(error.message)
                     alert(error.message);
                 });
         });
@@ -184,7 +127,7 @@ function displayAnalytics(pass) {
             throw new Error("Analytics fetch failed!")
         }
         return response
-    }).catch((error) => {
+    }).catch(() => {
         // Fallback request that re-uploads the file content.
         // Very unlikely to be needed, but the server cache *could* be cleared in the time.
         response = fetch("/text_analytics/?f=" + fileNamesArray[0], {
@@ -220,13 +163,14 @@ function displayAnalytics(pass) {
             Note - This result is calculated based on our algorithm that utilises stylistic analysis of the profile and document and should not be taken as a definite pass/fail.`
         }
 
+        // draw the visualisations using chart.js
         drawGraph(known.rare_words, unknown.rare_words, 'Rare', true, curProfileName, unknown_name);
         drawGraph(known.rare_words, unknown.rare_words, 'Long', false, curProfileName, unknown_name);
         drawPieChart(known.sentence_avg, unknown.sentence_avg, curProfileName, unknown_name, "Sentence");
         drawPieChart(known.word_len_avg, unknown.word_len_avg, curProfileName, unknown_name, "Word");
     }).catch((error) => {
-        console.log(error.message);
         alert(error.message);
+
         // TODO: This would be the place to add a more graceful response
         // to the server not replying.
     });
