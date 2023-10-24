@@ -1,12 +1,12 @@
 $(document).ready(function () {
-    // check if a profile was deleted earlier
     // Get the query parameters from the current URL
     const urlParams = new URLSearchParams(window.location.search);
 
     // Check if the 'profileDeleted' query parameter exists and is set to 'true'
     if (urlParams.has('profileDeleted') && urlParams.get('profileDeleted') === 'true') {
         $("#profile-deleted-alert").removeClass("none");
-        console.dir($("#profile-deleted-alert"));
+
+        // fade the notification in
         $("#profile-deleted-alert").fadeTo(1500, 500).slideUp(300, function () {
             $("#profile-deleted-alert").slideUp(300);
         });
@@ -17,7 +17,7 @@ $(document).ready(function () {
         history.replaceState({}, document.title, newURL);
     }
 
-    // function to add create new profiles
+    // function to create new profiles
     $('#addProfileForm').on('submit', function (event) {
         event.preventDefault(); // Prevent default behaviour when form is submitted
 
@@ -26,22 +26,20 @@ $(document).ready(function () {
         if (newProfileName.length < 1) {
             alert("Profile Name Must Not Be Empty!");
         }
+
         // Perform AJAX request to create the new profile
         else {
-            console.log("Creating new profile");
-
             // Get CSRF Token from the hidden input field
             var csrftoken = $('input[name=csrfmiddlewaretoken]').val();
 
             $.ajax({
-                url: '/create_profile/',  // Update with your Django URL for creating profiles
+                url: '/create_profile/',
                 method: 'POST',
                 headers: {
                     'X-CSRFToken': csrftoken
                 },
                 data: {
                     'name': newProfileName,
-                    // TO DO? - any new profiles fields in the future go here
                 },
                 success: function (data) {
                     // Create a new list item for the profile with the same structure and classes as the existing ones
@@ -66,19 +64,14 @@ $(document).ready(function () {
 
     // Function to handle profile deletion
     $(".delete-profile").click(function (e) {
-
         var csrftoken = $('input[name=csrfmiddlewaretoken]').val();
-
-        console.log("delete profile clicked");
         e.preventDefault();
 
         // Get the profile ID from the data attribute
         var profileId = $(this).data("profile-id");
 
-
         // Prompt the user for confirmation
         var confirmDelete = confirm("Are you sure you want to delete this profile?");
-
         if (confirmDelete) {
             // Send an AJAX request to delete the profile
             $.ajax({
@@ -91,13 +84,10 @@ $(document).ready(function () {
                     profile_id: profileId,
                 },
                 success: function () {
-                    // change selected ID to -1 "None"
-                    // $('#curr-profile').data('profile-id', -1);
-                    // console.log(`changed id to ${$('#curr-profile').data('profile-id')}`)
+                    // add query parameter to indicated deletion and reload
                     const currentURL = window.location.href;
                     const newURL = `${currentURL}?profileDeleted=true`;
                     window.location.href = newURL;
-                    // location.reload();
                 }
             });
         }
@@ -124,7 +114,6 @@ $(document).ready(function () {
     // Function to handle form submission
     $("#editProfileForm").submit(function (e) {
         e.preventDefault();
-
         var csrftoken = $('input[name=csrfmiddlewaretoken]').val();
 
         // Serialize the form data
