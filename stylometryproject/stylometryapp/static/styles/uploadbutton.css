@@ -11,11 +11,6 @@ body {
     overflow-x: auto;
 }
 
-/*#curr-profile {
-    width: 80%;
-    background-color: #FCEEC0;
-}*/
-
 #files-list {
     list-style-type: none;
 }
