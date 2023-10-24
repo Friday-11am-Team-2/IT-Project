@@ -1,24 +1,26 @@
 from django.conf import settings
 import os
+# stylometry
 import threading
 from stylometry import StyloNet
-from django.http import HttpRequest
-from .models import Profile
 # file type handling
 import base64
 import io
 from docx import Document
 import PyPDF2
+# profile selection
+from django.http import HttpRequest
+from .models import Profile
 
 ### Stylometry Model Utils ###
-stylometry_model = None
+_stylometry_model: StyloNet = None
 
 def get_stylonet() -> StyloNet:
-	"""Initialize or return the existing instance of the StyloNet object"""
-	global stylometry_model
+	"""Create or fetch the singleton instance of the StyloNet class"""
+	global _stylometry_model
 
 	# Initialize if not already, otherwise just return existing
-	if stylometry_model is None:
+	if _stylometry_model is None:
 		try:
 			profile_base = settings.STYLOMETRY_PROFILE_DIR
 		except AttributeError:
@@ -29,18 +31,20 @@ def get_stylonet() -> StyloNet:
 		except AttributeError:
 			profile = os.listdir(profile_base)[0]
 
-		stylometry_model = StyloNet(profile, profile_base)
-		print(f"Initialized Stylometry Model at {id(stylometry_model)}")
+		_stylometry_model = StyloNet(profile, profile_base)
+		print(f"Initialized Stylometry Model at {id(_stylometry_model)}")
 
-	return stylometry_model
+	return _stylometry_model
+
 
 def stylonet_preload() -> None:
 	"""Spawn a separate thread to preload the model"""
 	preload = threading.Thread(target=get_stylonet)
 	preload.start()
 
+
 # File type prosessing
-def convert_file(file_name, file_content):             
+def convert_file(file_name, file_content) -> str:
 	#print("convert_file")
 	file_extension = os.path.splitext(file_name)[1].lower()
 	file_content = base64.b64decode(file_content)
@@ -65,7 +69,7 @@ def convert_file(file_name, file_content):
 	#print("converted content: " + converted_content)
 	return converted_content
 
-def convert_docx_to_txt(content):
+def convert_docx_to_txt(content) -> str:
 	try:
 		# create word document from encoded string
 		doc = Document(io.BytesIO(content))
@@ -78,7 +82,7 @@ def convert_docx_to_txt(content):
 		print("Error during DOCX conversion:", str(e))
 		return ""
 
-def convert_pdf_to_txt(content):
+def convert_pdf_to_txt(content) -> str:
 	try:
 		# create pdf from encoded string
 		pdf_file = io.BytesIO(content)

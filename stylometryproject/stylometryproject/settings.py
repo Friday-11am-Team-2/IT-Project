@@ -14,15 +14,22 @@ from pathlib import Path
 import os
 import dotenv
 
-# Load environment variables from .env file
-if os.path.isfile(".env"):
-    dotenv.load_dotenv()
-elif os.path.isfile("../secrets.env"):
-    dotenv.load_dotenv("../secrets.env")
-elif os.path.isdir("../secrets"):
-    for file in os.listdir("../secrets"):
-        if os.path.isfile(os.path.join("../secrets", file)):
-            dotenv.load_dotenv(os.path.join("../secrets", file))
+# Paths to check, in order, for environment variables
+# First hit is loaded, if it's a folder then load single-depth files only
+DOT_ENVS = { ".env", "../secrets.env", "../secrets/" }
+
+for env in DOT_ENVS:
+    if os.path.isfile(env):
+        # If it works, we're done here
+        if dotenv.load_dotenv(env): break
+
+    elif os.path.isdir(env):
+        any_loaded = False
+        for sub in os.listdir(env):
+            if dotenv.load_dotenv(os.path.join(env, sub)):
+                any_loaded = True
+
+        if any_loaded: break
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -40,6 +47,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+if DEBUG: print(f"WARN: Debug is enabled! Set DEBUG = False in 'stylometryproject/settings.py' to disable.")
 
 ALLOWED_HOSTS = ['*']
 
