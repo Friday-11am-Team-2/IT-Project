@@ -34,6 +34,13 @@
 </head>
 
 <body>
+    <script>
+        // Momentarily delay display until styles are loaded
+        document.body.style.visibility = "hidden";
+        document.addEventListener("DOMContentLoaded", function() {
+            document.body.style.visibility = "visible";
+        })
+    </script>
     <nav class="navbar sticky-top navbar-expand-md py-2">
         <div class="container-xxl">
             <a class="navbar-brand" href="/"><img id="logo" src="{% static 'images/Logo.png' %}" alt="AuthorGuard"
