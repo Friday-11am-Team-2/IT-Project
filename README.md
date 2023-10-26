@@ -1,5 +1,5 @@
 # AuthorGuard - IT Project
-[Current Deployment Version](http://authorguard-demo.ap-southeast-2.elasticbeanstalk.com/)
+[Current Deployment Link](http://authorguard.ap-southeast-2.elasticbeanstalk.com/)
 
 ### Project Overview
 This project is a web-based interface to allow non-technical users to use stylographic technologies to detect plagiarism in academic writing. This usable interface, branded with the name “AuthorGuard” is a full-stack web application that leverages powerful modern day machine learning techniques to detect with a high level of accuracy the likelihood that a given piece of writing was written by a particular individual. 
