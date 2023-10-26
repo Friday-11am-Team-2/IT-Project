@@ -1,4 +1,5 @@
 # AuthorGuard - IT Project
+[Current Deployment Link](http://authorguard.ap-southeast-2.elasticbeanstalk.com/)
 
 ### Project Overview
 This project is a web-based interface to allow non-technical users to use stylographic technologies to detect plagiarism in academic writing. This usable interface, branded with the name “AuthorGuard” is a full-stack web application that leverages powerful modern day machine learning techniques to detect with a high level of accuracy the likelihood that a given piece of writing was written by a particular individual. 
@@ -30,13 +31,13 @@ written by the author in quesiton from work potentially written by AI or others.
 - Front-End: *Javascript/HTML/CSS*
 - Back-End: *Django (Python)*
 - Database: *PostegreSQL*
-- Deployment: *Docker + AWS*
+- Deployment: *Docker + AWS Elastic Beanstalk*
 
 <br>
 
 ### Repository Directories
 #### ```/.github```
-This directory contains github workflows for the project, including automated testing and the CI/CD pipeline for building and deployment. The automated testing workflow occurs whenever a pull request is made to either the ```main``` or ```development``` branches, which ensures that untested code will never reach production.
+This directory contains github workflows for the project, including automated testing and the CI/CD pipeline for building and deployment. The automated testing workflow occurs whenever a pull request is made to either the ```main``` or ```development``` branches, which ensures that untested code will never reach production. Likewise, the Elastic Beanstalk deployment through Docker workflow can also be found in this directory, and is run whenever on push for ```main```.
 
 #### ```/PAN14_Code_Model_Code```
 This directory contains adapted jupyter notebooks from the original machine learning algorithm provided to the team by the client near the inception of the project. It is also contains a depersonalised dataset for both training and testing the machine learning algorithm. The directory also contains the model weight files that was trained using Google Colab hardware, allowing the model to be easily loaded by the web application.
@@ -54,7 +55,13 @@ This directory contains the model weights and model files for both the word2vec 
 This directory contains all files relating to the core functionality of the web application specifically, including django files such as ```models.py```, ```views.py``` and other critical functionality. It also contains template files for the HTML of the web page in ```/templates``` as well as static files, such as CSS stylesheets and JavaScript code for the front-end of the application in ```/static```.
 
 - ##### ```/stylometryproject```
-This direcotry contains more project related django files such as ```urls.py``` and ```settings.py```, which more involves how the web application runs in terms of architecture and settings as opposed to core functionality. The database settings need to be setup in this directory.
+This directory contains more project related django files such as ```urls.py``` and ```settings.py```, which more involves how the web application runs in terms of architecture and settings as opposed to core functionality. The database settings need to be setup in this directory.
+
+For an overview of the front-end codebase, see the [confluence documents](https://github.com/Friday-11am-Team-2/IT-Project/blob/main/confluence/sprint3/2023_Writing_Style_COMP30022_Sprint3_Team2.pdf) 
+*(Development & Deployment Documents/Front-End Documentation)*.
+
+For an overview of the back-end codebase, see the [confluence documents](https://github.com/Friday-11am-Team-2/IT-Project/blob/main/confluence/sprint3/2023_Writing_Style_COMP30022_Sprint3_Team2.pdf) 
+*(Development & Deployment Documents/Back-End Documentation)*.
 
 <br>
 
@@ -69,14 +76,17 @@ For those that wish to run the application locally, follow the following instruc
 5. Run ```pip install -r requirements.txt``` to install the required libraries and modules.
 6. Run ```cd stylometryproject``` to change to the Django app directory
 7. Alter the ```DATABASES``` dictionary in ```/stylometryproject/settings.py``` to either a local db.sqlite3 or an external database of your ownership. [Django Database Documentation](https://docs.djangoproject.com/en/4.2/ref/databases/)
-8. Run ```python manage.py runserver``` to run the web application on local host.
+8. Create a new secret key with ```python manage.py shell -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"``` and either add it as an environment variable as ```SECRET_KEY``` or change the secret key in ```/stylometryproject/settings.py```.
+9. Run ```python manage.py runserver``` to run the web application on local host.
 
 #### Deployment 
-The app uses Docker to easily create a highly flexible and easy to deploy web server, follow these simple steps to deploy this appication.
-1. Ensure ```settings.py``` is connected to your external database of choice.
-2. Build the docker for the web application.
-3. Deploy to any hosting service that supports docker containers. (AWS, Heroku, etc.)
-For a full guide on how to deploy to AWS Elastic Beanstalk, see the confluence documents (Handover Documents/Deployment Guide)
+The app uses Docker to easily create a highly flexible and easy to deploy web server, the following is a high level overview of the deployment steps:
+1. Ensure ```settings.py``` is connected to your external database of choice, or use environemnt variables.
+2. Ensure a secret key is configured through ```settings.py``` or through environment variables.
+3. Build the docker for the web application with ```docker build -t <repositoryname>:latest```
+4. Push the docker image to a [Docker Hub Repository](https://hub.docker.com/).
+5. Deploy to any hosting service that supports docker containers. (AWS, Heroku, Azure, etc.)
+For a full guide on how to deploy to AWS Elastic Beanstalk, see the [confluence documents](https://github.com/Friday-11am-Team-2/IT-Project/blob/main/confluence/sprint3/2023_Writing_Style_COMP30022_Sprint3_Team2.pdf) (Handover Documents/Deployment Guide)
 
 
 #### Docker Usage

@@ -72,8 +72,8 @@ jobs:
         with:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          application_name: AuthorGuard-Demo
-          environment_name: AuthorGuard-Demo-env
+          application_name: AuthorGuard
+          environment_name: authorguard-env
           version_label: "docker-app-${{ steps.format-time.outputs.replaced }}"
           region: ap-southeast-2
           deployment_package: deploy.zip
