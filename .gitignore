@@ -11,7 +11,7 @@ stylometryproject/db.sqlite3
 db.sqlite3
 
 # PAN14_Code Ignores
-PAN14_Model_Code/nltk_data
+nltk_data
 PAN14_Model_Code/model_weights
 PAN14_Model_Code/word2vec.model
 PAN14_Model_Code/models
