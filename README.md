@@ -1,5 +1,5 @@
 # AuthorGuard - IT Project
-[Current Deployment Link](http://authorguard-prod.ap-southeast-2.elasticbeanstalk.com/)
+[Current Deployment Link](http://authorguard.ap-southeast-2.elasticbeanstalk.com/)
 
 ### Project Overview
 This project is a web-based interface to allow non-technical users to use stylographic technologies to detect plagiarism in academic writing. This usable interface, branded with the name “AuthorGuard” is a full-stack web application that leverages powerful modern day machine learning techniques to detect with a high level of accuracy the likelihood that a given piece of writing was written by a particular individual. 
@@ -57,10 +57,10 @@ This directory contains all files relating to the core functionality of the web 
 - ##### ```/stylometryproject```
 This directory contains more project related django files such as ```urls.py``` and ```settings.py```, which more involves how the web application runs in terms of architecture and settings as opposed to core functionality. The database settings need to be setup in this directory.
 
-For an overview of the front-end codebase, see the [confluence documents](https://github.com/Friday-11am-Team-2/IT-Project/blob/main/confluence/sprint3/2023_Writing_Style_COMP30022_Sprint3_Team2.pdf) 
+For an overview of the front-end codebase, see the [confluence documents](https://github.com/Friday-11am-Team-2/IT-Project/blob/main/confluence/product_report/2023_Writing_Style_COMP30022_Final_Product_Report_Team2.pdf) 
 *(Development & Deployment Documents/Front-End Documentation)*.
 
-For an overview of the back-end codebase, see the [confluence documents](https://github.com/Friday-11am-Team-2/IT-Project/blob/main/confluence/sprint3/2023_Writing_Style_COMP30022_Sprint3_Team2.pdf) 
+For an overview of the back-end codebase, see the [confluence documents](https://github.com/Friday-11am-Team-2/IT-Project/blob/confluence/product_report/2023_Writing_Style_COMP30022_Final_Product_Report_Team2.pdf) 
 *(Development & Deployment Documents/Back-End Documentation)*.
 
 <br>
@@ -86,7 +86,7 @@ The app uses Docker to easily create a highly flexible and easy to deploy web se
 3. Build the docker for the web application with ```docker build -t <repositoryname>:latest```
 4. Push the docker image to a [Docker Hub Repository](https://hub.docker.com/).
 5. Deploy to any hosting service that supports docker containers. (AWS, Heroku, Azure, etc.)
-For a full guide on how to deploy to AWS Elastic Beanstalk, see the [confluence documents](https://github.com/Friday-11am-Team-2/IT-Project/blob/main/confluence/sprint3/2023_Writing_Style_COMP30022_Sprint3_Team2.pdf) (Handover Documents/Deployment Guide)
+For a full guide on how to deploy to AWS Elastic Beanstalk, see the [confluence documents](https://github.com/Friday-11am-Team-2/IT-Project/blob/main/confluence/product_report/2023_Writing_Style_COMP30022_Final_Product_Report_Team2.pdf) (Handover Documents/Deployment Guide)
 
 
 #### Docker Usage
