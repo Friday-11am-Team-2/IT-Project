@@ -9,6 +9,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    continue-on-error: true
     steps:
       - name: Checkout Latest Repo
         uses: actions/checkout@master
@@ -77,4 +78,3 @@ jobs:
           version_label: "docker-app-${{ steps.format-time.outputs.replaced }}"
           region: ap-southeast-2
           deployment_package: deploy.zip
-          continue-on-error: true
