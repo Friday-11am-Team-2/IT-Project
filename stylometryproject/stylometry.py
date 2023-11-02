@@ -524,7 +524,7 @@ def get_vectors(texts: list, w2v_model: gensim.models.Word2Vec) -> list:
     """get_vectors from PAN14_Data_Demo.ipynb"""
     res = []
     for text in texts:
-        clean_text = strip_text(text)
+        clean_text = strip_text(text)  # Yucky user input
         w2v_vec = np.mean(convert_text_to_vector(clean_text, w2v_model), axis=0)
         style_vec = calculate_style_vector(clean_text)
         res.append(np.concatenate((w2v_vec, style_vec), axis=None))
